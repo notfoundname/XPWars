@@ -5,6 +5,7 @@ import java.util.HashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.nfn11.bwaddon.commands.SBWACommand;
+import org.nfn11.bwaddon.commands.SBWACommandExecutor;
 import org.screamingsandals.bedwars.commands.BaseCommand;
 import org.screamingsandals.bedwars.commands.BwCommandsExecutor;
 
@@ -28,6 +29,9 @@ public class BwAddon extends JavaPlugin {
 		
 		commands = new HashMap<>();
 		new SBWACommand();
+		SBWACommandExecutor cmd = new SBWACommandExecutor();
+		getCommand("sbwa").setExecutor(cmd);
+        getCommand("sbwa").setTabCompleter(cmd);
 		
 	}
 	

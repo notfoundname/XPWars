@@ -87,7 +87,8 @@ public class Configurator {
         checkOrSetConfig(modify, "messages.placeholders.rebuilding", "&7Rebuilding...");
                 
         checkOrSetConfig(modify, "messages.commands.reloaded", "[SBWA] &aReloaded!");
-        checkOrSetConfig(modify, "messages.commands.failed", "[SBWA] &cSomething fkt up, look into your console!");
+        checkOrSetConfig(modify, "messages.commands.unknown", "[SBWA] &cUnknown command!");
+        checkOrSetConfig(modify, "messages.commands.noperm", "[SBWA] &cYou don't have permission!");
         checkOrSetConfig(modify, "messages.commands.fastdeath115", "[SBWA] &eFast Death option can't be used on versions above 1.15");
 
         if (modify.get()) {
