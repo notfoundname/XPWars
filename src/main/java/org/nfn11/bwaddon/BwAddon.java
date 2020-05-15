@@ -29,9 +29,6 @@ public class BwAddon extends JavaPlugin {
 		
 		commands = new HashMap<>();
 		new SBWACommand();
-		SBWACommandExecutor cmd = new SBWACommandExecutor();
-		getCommand("sbwa").setExecutor(cmd);
-        getCommand("sbwa").setTabCompleter(cmd);
 		
 	}
 	

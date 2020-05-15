@@ -9,21 +9,40 @@ import org.screamingsandals.bedwars.commands.BaseCommand;
 public class SBWACommand extends BaseCommand {
 
 	public SBWACommand() {
-		super("reload", ADMIN_PERMISSION, true);
+		super("sbwa", ADMIN_PERMISSION, true);
 	}
 
 	@Override
-	public void completeTab(List<String> completion, CommandSender sender, List<String> args) {}
+	public void completeTab(List<String> completion, CommandSender sender, List<String> args) {
+		if (args.size() == 1) {
+			completion.add("reload");
+		}
+	}
 
 	@Override
 	public boolean execute(CommandSender sender, List<String> args) {
-		Bukkit.getServer().getPluginManager().disablePlugin(BwAddon.getInstance());
-		Bukkit.getServer().getPluginManager().enablePlugin(BwAddon.getInstance());
-		if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-			new org.nfn11.bwaddon.placeholderapi.PlaceholderAPIHook(BwAddon.getInstance()).register();
-			Bukkit.getLogger().info("Succesfully registered PlaceholderAPI!");
+		if (args.size() >= 1) {
+			switch (args.get(1)) {
+				case "reload":
+					if (!sender.hasPermission(ADMIN_PERMISSION)) {
+						sender.sendMessage(BwAddon.getConfigurator().config.getString("messages.commands.reloaded".replace("&", "§")));
+						break;
+					}
+					Bukkit.getServer().getPluginManager().disablePlugin(BwAddon.getInstance());
+					Bukkit.getServer().getPluginManager().enablePlugin(BwAddon.getInstance());
+					if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+						new org.nfn11.bwaddon.placeholderapi.PlaceholderAPIHook(BwAddon.getInstance()).register();
+						Bukkit.getLogger().info("Succesfully registered PlaceholderAPI!");
+					}
+					sender.sendMessage(BwAddon.getConfigurator().config.getString("messages.commands.reloaded".replace("&", "§")));
+					break;
+				default:
+					sender.sendMessage(BwAddon.getConfigurator().config.getString("messages.commands.unknown".replace("&", "§")));
+					break;
+			}
+			
 		}
-		sender.sendMessage(BwAddon.getConfigurator().config.getString("messages.commands.reloaded".replace("&", "§")));
+		
 		return true;
 	}
 
