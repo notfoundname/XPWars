@@ -1,0 +1,7 @@
+name: ScreamingBedwarsAddon
+version: 1.0
+main: org.nfn11.bwaddon.BwAddon
+api-version: 1.13
+depend: [BedWars]
+softdepend: [PlaceholderAPI]
+author: notfoundname11
