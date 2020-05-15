@@ -10,7 +10,7 @@ import org.screamingsandals.bedwars.commands.BaseCommand;
 
 public class SBWACommand extends BaseCommand {
 
-	protected SBWACommand(String name, String permission, boolean allowConsole) {
+	public SBWACommand() {
 		super("sbwa", ADMIN_PERMISSION, true);
 	}
 
