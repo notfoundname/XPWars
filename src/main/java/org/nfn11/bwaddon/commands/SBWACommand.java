@@ -25,20 +25,17 @@ public class SBWACommand extends BaseCommand {
 			if (args.get(1).equals("reload")) {
 				if (!sender.hasPermission(ADMIN_PERMISSION)) {
 					sender.sendMessage(BwAddon.getConfigurator().config.getString("messages.commands.reloaded".replace("&", "§")));
-					return true;
+				} else {
+					Bukkit.getServer().getPluginManager().disablePlugin(BwAddon.getInstance());
+					Bukkit.getServer().getPluginManager().enablePlugin(BwAddon.getInstance());
+					if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+						new org.nfn11.bwaddon.placeholderapi.PlaceholderAPIHook(BwAddon.getInstance()).register();
+						Bukkit.getLogger().info("Succesfully registered PlaceholderAPI!");
+					}
+					sender.sendMessage(BwAddon.getConfigurator().config.getString("messages.commands.reloaded".replace("&", "§")));
 				}
-				Bukkit.getServer().getPluginManager().disablePlugin(BwAddon.getInstance());
-				Bukkit.getServer().getPluginManager().enablePlugin(BwAddon.getInstance());
-				if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-					new org.nfn11.bwaddon.placeholderapi.PlaceholderAPIHook(BwAddon.getInstance()).register();
-					Bukkit.getLogger().info("Succesfully registered PlaceholderAPI!");
-				}
-				sender.sendMessage(BwAddon.getConfigurator().config.getString("messages.commands.reloaded".replace("&", "§")));
-			} else {
-				sender.sendMessage(BwAddon.getConfigurator().config.getString("messages.commands.unknown".replace("&", "§")));
-			}
 		}
-		return true;
 	}
-
+	return true;
+}
 }
