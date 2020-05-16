@@ -50,7 +50,9 @@ public class Configurator {
 		AtomicBoolean modify = new AtomicBoolean(false);
 		
 		
-        checkOrSetConfig(modify, "fast-death-enabled-games", new ArrayList<String>().add("ArenaNameCaseSensetive"));
+        checkOrSetConfig(modify, "fast-death-enabled-games", new ArrayList<String>() {{
+        	add("ArenaNameCaseSensetive");
+        }});
                 
         checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.bronze", 5);
         checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.iron", 15);
@@ -58,7 +60,9 @@ public class Configurator {
         checkOrSetConfig(modify, "level.default.bronze", 3);
         checkOrSetConfig(modify, "level.default.iron", 10);
         checkOrSetConfig(modify, "level.default.gold", 20);
-        checkOrSetConfig(modify, "level.default-enabled-games", new ArrayList<String>().add("ArenaNameCaseSensetive"));
+        checkOrSetConfig(modify, "level.default-enabled-games", new ArrayList<String>() {{
+        	add("ArenaNameCaseSensetive");
+        }});
                 
         checkOrSetConfig(modify, "villager.default.cancel-shop-open", false);
         checkOrSetConfig(modify, "villager.default.commands", new ArrayList<String>());
