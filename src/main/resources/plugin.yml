@@ -1,5 +1,5 @@
 name: ScreamingBedwarsAddon
-version: 1.0
+version: ${project.version}
 main: org.nfn11.bwaddon.BwAddon
 api-version: 1.13
 depend: [BedWars]
