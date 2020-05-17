@@ -4,7 +4,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.nfn11.bwaddon</groupId>
   <artifactId>ScreamingBedwarsAddon</artifactId>
-  <version>1</version>
+  <version>${addon.ver}</version>
   <name>ScreamingBedwarsAddon</name>
   <description>addon for screaming bedwars</description>
   
