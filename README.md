@@ -1,2 +1,2 @@
-# ScreamingBedwarsAddon ![Java CI with Maven](vk.com)
+# ScreamingBedwarsAddon
 Addon for ScreamingBedwars that makes some stuff.
