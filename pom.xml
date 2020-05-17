@@ -73,7 +73,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
     </resources>
 	
     <defaultGoal>clean install</defaultGoal>
-    <finalName>ScreamingBedwarsAddon-*</finalName>
+    <finalName>ScreamingBedwarsAddon-${project.version}</finalName>
     <plugins>
       <plugin>
 	<artifactId>maven-compiler-plugin</artifactId>
