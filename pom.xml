@@ -4,7 +4,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.nfn11.bwaddon</groupId>
   <artifactId>ScreamingBedwarsAddon</artifactId>
-  <version>${addon.ver}</version>
+  <version>1</version>
   <name>ScreamingBedwarsAddon</name>
   <description>addon for screaming bedwars</description>
   
@@ -64,6 +64,18 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
   </dependencies>
   
   <build>
+  
+    <resources>
+      <resource>
+        <targetPath>.</targetPath>
+        <filtering>true</filtering>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>**/*</include>
+        </includes>
+      </resource>
+    </resources>
+	
     <defaultGoal>clean install</defaultGoal>
     <finalName>ScreamingBedwarsAddon-${addon.ver}</finalName>
     <plugins>
