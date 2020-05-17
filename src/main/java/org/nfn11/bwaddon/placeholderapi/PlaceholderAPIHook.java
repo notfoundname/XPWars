@@ -26,7 +26,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 
 	@Override
 	public String getIdentifier() {
-		return "bwaddon";
+		return "sbwa";
 	}
 
 	@Override
@@ -39,8 +39,8 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 
 		if(player == null) return "";
 		
-		if(parsed.endsWith("_count_game")) {
-			parsed = parsed.replace("_count_game", "");
+		if(parsed.endsWith("_ingame")) {
+			parsed = parsed.replace("_ingame", "");
 			if(!BedwarsAPI.getInstance().isGameWithNameExists(parsed)) return "";
 			
 			GameStatus status = BedwarsAPI.getInstance().getGameByName(parsed).getStatus();
@@ -49,8 +49,8 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
         	return "0";
 		}
 		
-		if(parsed.endsWith("_count_lobby")) {
-			parsed = parsed.replace("_count_lobby", "");
+		if(parsed.endsWith("_inlobby")) {
+			parsed = parsed.replace("_inlobby", "");
 			if(!BedwarsAPI.getInstance().isGameWithNameExists(parsed)) return "";
 			
 			if(BedwarsAPI.getInstance().getGameByName(parsed).getStatus()==GameStatus.WAITING) 
@@ -58,8 +58,8 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
         	return "0";
 		}
 		
-		if(parsed.endsWith("_count")) {
-			parsed = parsed.replace("_count", "");
+		if(parsed.endsWith("_inall")) {
+			parsed = parsed.replace("_inall", "");
 			if(!BedwarsAPI.getInstance().isGameWithNameExists(parsed)) return "";
 			
 			org.screamingsandals.bedwars.api.game.Game game = BedwarsAPI.getInstance().getGameByName(parsed);
@@ -83,7 +83,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 			
 			int gameTime = Main.getGame(parsed).getGameTime();
 			int countdown = Main.getGame(parsed).getPauseCountdown();
-			
+
 			if(status==GameStatus.WAITING && BedwarsAPI.getInstance().getGameByName(parsed).getMinPlayers()
 					>= BedwarsAPI.getInstance().getGameByName(parsed).countConnectedPlayers()) {
 				return plugin.getConfig().getString("messages.placeholders.waiting").replace("&", "§");
@@ -111,29 +111,29 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 			
 		}
 		
-		if(parsed.endsWith("_maxplayers")) {
-			parsed = parsed.replace("_maxplayers", "");
+		if(parsed.endsWith("_mxpl")) {
+			parsed = parsed.replace("_mxpl", "");
 			if(!BedwarsAPI.getInstance().isGameWithNameExists(parsed)) return "";
 			
 			return Integer.toString(BedwarsAPI.getInstance().getGameByName(parsed).getMaxPlayers());
 		}
 		
-		if(parsed.endsWith("_minplayers")) {
-			parsed = parsed.replace("_minplayers", "");
+		if(parsed.endsWith("_mnpl")) {
+			parsed = parsed.replace("_mnpl", "");
 			if(!BedwarsAPI.getInstance().isGameWithNameExists(parsed)) return "";
 			
 			return Integer.toString(BedwarsAPI.getInstance().getGameByName(parsed).getMinPlayers());
 		}
 		
-		if(parsed.endsWith("_time_left")) {
-			parsed = parsed.replace("_left", "");
+		if(parsed.endsWith("_tl")) {
+			parsed = parsed.replace("_tl", "");
 			if(!BedwarsAPI.getInstance().isGameWithNameExists(parsed)) return "";
 			
 			return Main.getGame(parsed).getFormattedTimeLeft();
 		}
 		
-		if(parsed.endsWith("_time_passed")) {
-			parsed = parsed.replace("_time", "");
+		if(parsed.endsWith("_tp")) {
+			parsed = parsed.replace("_tp", "");
 			if(!BedwarsAPI.getInstance().isGameWithNameExists(parsed)) return "";
 				
 			int gameTime = Main.getGame(parsed).getGameTime();
@@ -157,13 +157,13 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
             
 		}
 		
-		if(parsed.equals("time_left")) {
+		if(parsed.equals("tl")) {
 			if(!Main.isPlayerInGame(player)) return "00:00";
 			
 			return Main.getPlayerGameProfile(player).getGame().getFormattedTimeLeft();
 		}
 		
-		if(parsed.equals("time_passed")) {
+		if(parsed.equals("tp")) {
 			if(!Main.isPlayerInGame(player)) return "00:00";
 			
 			int gameTime = Main.getGame(parsed).getGameTime();
