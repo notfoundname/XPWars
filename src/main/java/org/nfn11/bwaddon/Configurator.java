@@ -55,6 +55,9 @@ public class Configurator {
         }});
                 
         checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.bronze", 5);
+        checkOrSetConfig(modify, "level.percentage.give-from-killed-player", 33);
+        checkOrSetConfig(modify, "level.percentage.keep-from-death", 33);
+        checkOrSetConfig(modify, "level.max-level", 1000);
         checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.iron", 15);
         checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.gold", 30);
         checkOrSetConfig(modify, "level.default.bronze", 3);
@@ -90,6 +93,8 @@ public class Configurator {
         checkOrSetConfig(modify, "messages.placeholders.end-celebration", "&9Game ended!");
         checkOrSetConfig(modify, "messages.placeholders.rebuilding", "&7Rebuilding...");
                 
+        checkOrSetConfig(modify, "messages.level.max-reached", "&cYou can't carry more than %max% levels!");
+        
         checkOrSetConfig(modify, "messages.commands.reloaded", "[SBWA] &aReloaded!");
         checkOrSetConfig(modify, "messages.commands.unknown", "[SBWA] &cUnknown command!");
         checkOrSetConfig(modify, "messages.commands.noperm", "[SBWA] &cYou don't have permission!");
