@@ -21,7 +21,7 @@ public class SBWACommand extends BaseCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, List<String> args)  throws IndexOutOfBoundsException  {
-		if (args.size() >= 1) {
+		if (args.size() == 1) {
 			if (args.get(0).equals("reload")) {
 				if (!sender.hasPermission(ADMIN_PERMISSION)) {
 					sender.sendMessage(BwAddon.getConfigurator().config.getString("messages.commands.noperm").replace("&", "§"));
