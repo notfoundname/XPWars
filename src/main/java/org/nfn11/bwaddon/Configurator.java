@@ -76,10 +76,11 @@ public class Configurator {
         	add("[console] say &cYou can use this to replace default shop with some GUI plugin.");
         }});
                 
-        checkOrSetConfig(modify, "special.tnt.damage-placer", true);
-        checkOrSetConfig(modify, "special.tnt.fuse-ticks", 100);
-        checkOrSetConfig(modify, "special.tnt.detonator-allow-drop", false);
-        checkOrSetConfig(modify, "special.tnt.detonator-itemstack", new ItemStack(Material.TRIPWIRE_HOOK));
+        checkOrSetConfig(modify, "special.remote-tnt.damage-placer", true);
+        checkOrSetConfig(modify, "special.remote-tnt.fuse-ticks", 100);
+        checkOrSetConfig(modify, "special.remote-tnt.detonator.allow-drop", false);
+        checkOrSetConfig(modify, "special.remote-tnt.detonator.material", "TRIPWIRE_HOOK");
+        checkOrSetConfig(modify, "special.remote-tnt.detonator.name", "&fDetonate all placed TNTs &7(Right-click)");
                 
         checkOrSetConfig(modify, "special.trampoline.remove-when-used", true);
         checkOrSetConfig(modify, "special.trampoline.y-check", 0);
@@ -98,7 +99,6 @@ public class Configurator {
         checkOrSetConfig(modify, "messages.commands.reloaded", "[SBWA] &aReloaded!");
         checkOrSetConfig(modify, "messages.commands.unknown", "[SBWA] &cUnknown command!");
         checkOrSetConfig(modify, "messages.commands.noperm", "[SBWA] &cYou don't have permission!");
-        checkOrSetConfig(modify, "messages.commands.fastdeath115", "[SBWA] &eFast Death option can't be used on versions above 1.15");
         
         checkOrSetConfig(modify, "version", 1);
 
