@@ -7,6 +7,8 @@ import org.nfn11.bwaddon.BwAddon;
 import org.nfn11.bwaddon.utils.SpecialItemUtils;
 import org.screamingsandals.bedwars.api.APIUtils;
 import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
+import org.screamingsandals.bedwars.api.events.BedwarsPlayerBuildBlock;
+import org.screamingsandals.bedwars.api.special.SpecialItem;
 
 public class RemoteTNTListener implements Listener {
 	private static final String REMOTE_TNT_PREFIX = "Module:RemoteTnt:";
@@ -20,7 +22,18 @@ public class RemoteTNTListener implements Listener {
 
     }
 	
-	
+	@EventHandler
+    public void onTntPlace(BedwarsPlayerBuildBlock event) {
+        if (event.isCancelled()) return;
+
+        ItemStack tnt = event.getItemInHand();
+        String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(tnt, REMOTE_TNT_PREFIX);
+        if (unhidden != null) {
+            int classID = Integer.parseInt(unhidden.split(":")[2]);
+
+        }
+
+    }
 	
 	private String applyProperty(BedwarsApplyPropertyToBoughtItem event) {
 		return REMOTE_TNT_PREFIX
