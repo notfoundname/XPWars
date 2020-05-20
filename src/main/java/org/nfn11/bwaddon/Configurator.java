@@ -99,6 +99,8 @@ public class Configurator {
         checkOrSetConfig(modify, "messages.commands.unknown", "[SBWA] &cUnknown command!");
         checkOrSetConfig(modify, "messages.commands.noperm", "[SBWA] &cYou don't have permission!");
         checkOrSetConfig(modify, "messages.commands.fastdeath115", "[SBWA] &eFast Death option can't be used on versions above 1.15");
+        
+        checkOrSetConfig(modify, "version", 1);
 
         if (modify.get()) {
             try {

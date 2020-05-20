@@ -22,4 +22,5 @@ public class SBWAUtils {
 
 		return count;
 	}
+
 }
