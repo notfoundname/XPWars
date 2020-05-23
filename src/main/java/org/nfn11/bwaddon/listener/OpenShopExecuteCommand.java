@@ -22,14 +22,14 @@ public class OpenShopExecuteCommand implements Listener {
     	
     	String name = e.getGame().getName();
     	
-    	if (!BwAddon.getConfigurator().config.getConfigurationSection("villager.enabled-arenas").getValues(false).keySet().contains(name)) {
-    		result = BwAddon.getConfigurator().config.getBoolean("villager.default.cancel-shop-open");
-    		c_list = BwAddon.getConfigurator().config.getConfigurationSection("villager.default").getStringList("console-commands");
-    		p_list = BwAddon.getConfigurator().config.getConfigurationSection("villager.default").getStringList("player-commands");
+    	if (!BwAddon.getConfigurator().getStringKeys("villager.enabled-arenas").contains(name)) {
+    		result = BwAddon.getConfigurator().getBoolean("villager.default.cancel-shop-open");
+    		c_list = BwAddon.getConfigurator().getStringList("villager.default.console-commands");
+    		p_list = BwAddon.getConfigurator().getStringList("villager.default.player-commands");
     	} else {
-    		result = BwAddon.getConfigurator().config.getBoolean("villager.enabled-arenas." + name + ".cancel-shop-open");
-    		c_list = BwAddon.getConfigurator().config.getConfigurationSection("villager.enabled-arenas." + name).getStringList("console-commands");
-    		p_list = BwAddon.getConfigurator().config.getConfigurationSection("villager.enabled-arenas." + name).getStringList("player-commands");
+    		result = BwAddon.getConfigurator().getBoolean("villager.enabled-arenas." + name + ".cancel-shop-open");
+    		c_list = BwAddon.getConfigurator().config.getStringList("villager.enabled-arenas." + name + "console-commands");
+    		p_list = BwAddon.getConfigurator().config.getStringList("villager.enabled-arenas." + name + "player-commands");
     	}
     	
     	if (c_list.size() != 0) {

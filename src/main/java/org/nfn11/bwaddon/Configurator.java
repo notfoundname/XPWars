@@ -3,8 +3,11 @@ package org.nfn11.bwaddon;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -121,7 +124,29 @@ public class Configurator {
 	        e.printStackTrace();
 	    }
 	}
+	
+	
+	public String getString(String string) {
+		return config.getString(string.replace("&", "§"));
+	}
+	
+	public boolean getBoolean(String string) {
+		return config.getBoolean(string);
+	}
+	
+	public int getInt(String string) {
+		return config.getInt(string);
+	}
+	
+	public List<String> getStringList(String string) {
+		return config.getConfigurationSection("").getStringList(string.replace("&", "§"));
+	}
+	
+	public Set<String> getStringKeys(String string) {
+		return config.getConfigurationSection(string.replace("&", "§")).getKeys(true);
+	}
 
+	
     private void checkOrSetConfig(AtomicBoolean modify, String path, Object value) {
         checkOrSet(modify, this.config, path, value);
     }
