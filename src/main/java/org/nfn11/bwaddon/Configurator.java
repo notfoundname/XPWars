@@ -129,7 +129,7 @@ public class Configurator {
 	
 	
 	public String getString(String string) {
-		return config.getString(ChatColor.translateAlternateColorCodes('&', string));
+		return ChatColor.translateAlternateColorCodes('&', config.getString(string));
 	}
 	
 	public boolean getBoolean(String string) {
@@ -141,11 +141,11 @@ public class Configurator {
 	}
 	
 	public List<String> getStringList(String string) {
-		return config.getConfigurationSection("").getStringList(ChatColor.translateAlternateColorCodes('&', string));
+		return config.getConfigurationSection("").getStringList(string);
 	}
 	
 	public Set<String> getStringKeys(String string) {
-		return config.getConfigurationSection(ChatColor.translateAlternateColorCodes('&', string)).getKeys(true);
+		return config.getConfigurationSection(string).getKeys(true);
 	}
 
 	

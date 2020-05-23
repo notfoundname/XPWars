@@ -49,6 +49,13 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
       <version>0.2.8-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
+    
+    <dependency>
+      <groupId>org.screamingsandals.simpleinventories</groupId>
+      <artifactId>SimpleInventories-Core</artifactId>
+      <version>1.0.2-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
  	
     <dependency>
       <groupId>org.screamingsandals.bedwars</groupId>
@@ -60,7 +67,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
   </dependencies>
   
   <build>
-  
     <resources>
       <resource>
         <targetPath>.</targetPath>
@@ -75,14 +81,37 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
     <defaultGoal>clean install</defaultGoal>
     <finalName>ScreamingBedwarsAddon-${project.version}</finalName>
     <plugins>
+    
       <plugin>
-	<artifactId>maven-compiler-plugin</artifactId>
-	<version>3.1</version>
-	<configuration>
-	  <source>1.8</source>
-	  <target>1.8</target>
-	</configuration>
+	    <artifactId>maven-compiler-plugin</artifactId>
+	    <version>3.1</version>
+	    <configuration>
+	      <source>1.8</source>
+	      <target>1.8</target>
+	    </configuration>
       </plugin>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <relocations>
+                <relocation>
+                  <pattern>org.screamingsandals.simpleinventories</pattern>
+                  <shadedPattern>${project.groupId}.si</shadedPattern>
+                </relocation>
+              </relocations>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      
     </plugins>
   </build>
 	
