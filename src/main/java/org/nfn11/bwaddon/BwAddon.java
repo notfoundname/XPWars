@@ -27,7 +27,6 @@ public class BwAddon extends JavaPlugin {
 		
 		commands = new HashMap<>();
 		new SBWACommand();
-		
 	}
 	
 	public static Configurator getConfigurator() {
@@ -35,7 +34,6 @@ public class BwAddon extends JavaPlugin {
     }
 
 	public static BwAddon getInstance() {
-		// TODO Auto-generated method stub
 		return instance;
 	}
 	

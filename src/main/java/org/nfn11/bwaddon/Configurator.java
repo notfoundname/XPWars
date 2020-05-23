@@ -12,7 +12,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 /*
- * huh
+ * bruh
  */
 public class Configurator {
 
@@ -68,12 +68,15 @@ public class Configurator {
         }});
                 
         checkOrSetConfig(modify, "villager.default.cancel-shop-open", false);
-        checkOrSetConfig(modify, "villager.default.commands", new ArrayList<String>());
+        checkOrSetConfig(modify, "villager.default.console-commands", new ArrayList<String>());
+        checkOrSetConfig(modify, "villager.default.player-commands", new ArrayList<String>());
         checkOrSetConfig(modify, "villager.enabled-arenas.ArenaNameCaseSensetive.cancel-shop-open", false);
-        checkOrSetConfig(modify, "villager.enabled-arenas.ArenaNameCaseSensetive.commands", new ArrayList<String>() {{
-        	add("[player] say Hey guys! It's me, %player%! And I just opened a shop!");
-        	add("[console] say Yes! %player% really did it!");
-        	add("[console] say &cYou can use this to replace default shop with some GUI plugin.");
+        checkOrSetConfig(modify, "villager.enabled-arenas.ArenaNameCaseSensetive.console-commands", new ArrayList<String>() {{
+        	add("say Yes! %player% really did it!");
+        	add("say &cYou can use this to replace default shop with some GUI plugin.");
+        }});
+        checkOrSetConfig(modify, "villager.enabled-arenas.ArenaNameCaseSensetive.player-commands", new ArrayList<String>() {{
+        	add("say Hey guys! It's me, %player%! And I just opened a shop!");
         }});
                 
         checkOrSetConfig(modify, "special.remote-tnt.damage-placer", true);
@@ -97,7 +100,7 @@ public class Configurator {
         checkOrSetConfig(modify, "messages.level.max-reached", "&cYou can't carry more than %max% levels!");
         
         checkOrSetConfig(modify, "messages.commands.reloaded", "[SBWA] &aReloaded!");
-        checkOrSetConfig(modify, "messages.commands.unknown", "[SBWA] &cUnknown command!");
+        checkOrSetConfig(modify, "messages.commands.unknown", "[SBWA] &cUnknown command or wrong usage!");
         checkOrSetConfig(modify, "messages.commands.noperm", "[SBWA] &cYou don't have permission!");
         
         checkOrSetConfig(modify, "version", 1);

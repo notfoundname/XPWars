@@ -30,10 +30,9 @@ public class SBWACommand extends BaseCommand {
 					Bukkit.getServer().getPluginManager().enablePlugin(BwAddon.getInstance());
 					sender.sendMessage(BwAddon.getConfigurator().config.getString("messages.commands.reloaded").replace("&", "§"));
 				}
-			} else {
-				sender.sendMessage("[SBWA] &cWrong usage! /bw sbwa reload to reload addon.".replace("&", "§"));
-			}
-		}
+			} else sender.sendMessage(BwAddon.getConfigurator().config.getString("messages.commands.unknown").replace("&", "§"));
+		} else sender.sendMessage(BwAddon.getConfigurator().config.getString("messages.commands.unknown").replace("&", "§"));
+		
 		return true;
 	}
 }
