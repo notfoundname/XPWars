@@ -14,6 +14,8 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
+
+import net.md_5.bungee.api.ChatColor;
 /*
  * bruh
  */
@@ -127,7 +129,7 @@ public class Configurator {
 	
 	
 	public String getString(String string) {
-		return config.getString(string.replace("&", "§"));
+		return config.getString(ChatColor.translateAlternateColorCodes('&', string));
 	}
 	
 	public boolean getBoolean(String string) {
@@ -139,11 +141,11 @@ public class Configurator {
 	}
 	
 	public List<String> getStringList(String string) {
-		return config.getConfigurationSection("").getStringList(string.replace("&", "§"));
+		return config.getConfigurationSection("").getStringList(ChatColor.translateAlternateColorCodes('&', string));
 	}
 	
 	public Set<String> getStringKeys(String string) {
-		return config.getConfigurationSection(string.replace("&", "§")).getKeys(true);
+		return config.getConfigurationSection(ChatColor.translateAlternateColorCodes('&', string)).getKeys(true);
 	}
 
 	

@@ -1,6 +1,5 @@
 package org.nfn11.bwaddon.commands;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -8,9 +7,14 @@ import java.util.Arrays;
 import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.nfn11.bwaddon.BwAddon;
 import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.api.BedwarsAPI;
+import org.screamingsandals.bedwars.api.game.GameStore;
 import org.screamingsandals.bedwars.commands.BaseCommand;
+import org.screamingsandals.simpleinventories.SimpleInventories;
+import org.screamingsandals.simpleinventories.inventory.Options;
 
 public class SBWACommand extends BaseCommand {
 	private List<String> files;
@@ -36,7 +40,6 @@ public class SBWACommand extends BaseCommand {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				
 			}
 		}
 	}
@@ -52,7 +55,28 @@ public class SBWACommand extends BaseCommand {
 					Bukkit.getServer().getPluginManager().enablePlugin(BwAddon.getInstance());
 					sender.sendMessage(BwAddon.getConfigurator().getString("messages.commands.reloaded"));
 				}
-			} else sender.sendMessage(BwAddon.getConfigurator().getString("messages.commands.unknown"));
+			} 
+			if (args.get(0).equals("openstore")) {
+				if (!sender.hasPermission("sbwa.openstore")) {
+					sender.sendMessage(BwAddon.getConfigurator().getString("messages.commands.noperm"));
+				} else {
+					try {
+						files = Files.readAllLines(Main.getConfigurator().dataFolder.toPath(), Charset.defaultCharset());
+						files.remove("config");
+						files.remove("record");
+						files.remove("sign");
+						files.remove("stats");
+						if (files.contains(args.get(1))) {
+							if (sender instanceof Player) {
+								
+							}
+						}
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					
+				}
+			}else sender.sendMessage(BwAddon.getConfigurator().getString("messages.commands.unknown"));
 		} else sender.sendMessage(BwAddon.getConfigurator().getString("messages.commands.unknown"));
 		
 		return true;
