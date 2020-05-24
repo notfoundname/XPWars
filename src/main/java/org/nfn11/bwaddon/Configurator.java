@@ -107,6 +107,7 @@ public class Configurator {
         checkOrSetConfig(modify, "messages.commands.reloaded", "[SBWA] &aReloaded!");
         checkOrSetConfig(modify, "messages.commands.unknown", "[SBWA] &cUnknown command or wrong usage!");
         checkOrSetConfig(modify, "messages.commands.noperm", "[SBWA] &cYou don't have permission!");
+        checkOrSetConfig(modify, "messages.commands.wrongshop", "[SBWA] Wrong shop file!");
         
         checkOrSetConfig(modify, "version", 1);
 
@@ -128,20 +129,35 @@ public class Configurator {
 	}
 	
 	
-	public String getString(String string) {
+	public String getString(String string, String defaultString) {
+		if (config.getConfigurationSection(string) == null) {
+			return ChatColor.translateAlternateColorCodes('&', defaultString);
+		}
 		return ChatColor.translateAlternateColorCodes('&', config.getString(string));
 	}
 	
-	public boolean getBoolean(String string) {
+	public boolean getBoolean(String string, boolean defaultBoolean) {
+		if (config.getConfigurationSection(string) == null) {
+			return defaultBoolean;
+		}
 		return config.getBoolean(string);
 	}
 	
-	public int getInt(String string) {
+	public int getInt(String string, int defaultInt) {
+		if (config.getConfigurationSection(string) == null) {
+			return defaultInt;
+		}
 		return config.getInt(string);
 	}
 	
 	public List<String> getStringList(String string) {
+		if (config.getConfigurationSection("").getStringList(string).size() == 0) {
+			for (String l : config.getConfigurationSection("").getStringList(string)) {
+				ChatColor.translateAlternateColorCodes('&', l);
+			}
+		}
 		return config.getConfigurationSection("").getStringList(string);
+		
 	}
 	
 	public Set<String> getStringKeys(String string) {

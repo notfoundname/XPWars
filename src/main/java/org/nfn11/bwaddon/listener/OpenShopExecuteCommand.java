@@ -23,11 +23,11 @@ public class OpenShopExecuteCommand implements Listener {
     	String name = e.getGame().getName();
     	
     	if (!BwAddon.getConfigurator().getStringKeys("villager.enabled-arenas").contains(name)) {
-    		result = BwAddon.getConfigurator().getBoolean("villager.default.cancel-shop-open");
+    		result = BwAddon.getConfigurator().getBoolean("villager.default.cancel-shop-open", true);
     		c_list = BwAddon.getConfigurator().getStringList("villager.default.console-commands");
     		p_list = BwAddon.getConfigurator().getStringList("villager.default.player-commands");
     	} else {
-    		result = BwAddon.getConfigurator().getBoolean("villager.enabled-arenas." + name + ".cancel-shop-open");
+    		result = BwAddon.getConfigurator().getBoolean("villager.enabled-arenas."+name+".cancel-shop-open", true);
     		c_list = BwAddon.getConfigurator().config.getStringList("villager.enabled-arenas." + name + "console-commands");
     		p_list = BwAddon.getConfigurator().config.getStringList("villager.enabled-arenas." + name + "player-commands");
     	}

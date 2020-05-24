@@ -52,17 +52,17 @@ public class SBWACommand extends BaseCommand {
 		if (args.size() == 1) {
 			if (args.get(0).equals("reload")) {
 				if (!sender.hasPermission(ADMIN_PERMISSION)) {
-					sender.sendMessage(BwAddon.getConfigurator().getString("messages.commands.noperm"));
+					sender.sendMessage(BwAddon.getConfigurator().getString("messages.commands.noperm", "[SBWA] &cYou don't have permission!"));
 				} else {
 					Bukkit.getServer().getPluginManager().disablePlugin(BwAddon.getInstance());
 					Bukkit.getServer().getPluginManager().enablePlugin(BwAddon.getInstance());
-					sender.sendMessage(BwAddon.getConfigurator().getString("messages.commands.reloaded"));
+					sender.sendMessage(BwAddon.getConfigurator().getString("messages.commands.reloaded", "[SBWA] &aReloaded!"));
 					return true;
 				}
 			} 
 			if (args.get(0).equals("openstore")) {
 				if (!sender.hasPermission("sbwa.openstore")) {
-					sender.sendMessage(BwAddon.getConfigurator().getString("messages.commands.noperm"));
+					sender.sendMessage(BwAddon.getConfigurator().getString("messages.commands.noperm", "[SBWA] &cYou don't have permission!"));
 				} else {
 					if (BwAddon.getShopFileNames().contains(args.get(1))) {
 						if (sender instanceof Player) {
@@ -77,12 +77,14 @@ public class SBWACommand extends BaseCommand {
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
+							return true;
 						}
-					}
+					} 
+					else BwAddon.getConfigurator().getString("messages.commands.wrongshop", "[SBWA] Wrong shop file!");
 					return true;
 				}
 			}
-		} else sender.sendMessage(BwAddon.getConfigurator().getString("messages.commands.unknown"));
+		} else sender.sendMessage(BwAddon.getConfigurator().getString("messages.commands.unknown", "[SBWA] &cUnknown command or wrong usage!"));
 		
 		return true;
 	}
