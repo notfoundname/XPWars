@@ -106,16 +106,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
                   <pattern>org.screamingsandals.simpleinventories</pattern>
                   <shadedPattern>${project.groupId}.si</shadedPattern>
                 </relocation>
-                <!-- OLD Libraries -->
-				<relocation>
-					<pattern>misat11.lib</pattern>
-					<shadedPattern>${project.groupId}.lib</shadedPattern>
-				</relocation>
-				<!-- NEW Libraries -->
-				<relocation>
-					<pattern>org.screamingsandals.lib</pattern>
-					<shadedPattern>${project.groupId}.lib</shadedPattern>
-				</relocation>
               </relocations>
             </configuration>
           </execution>

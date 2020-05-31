@@ -5,7 +5,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
-import org.nfn11.bwaddon.utils.SBWAUtils;
 import org.screamingsandals.bedwars.api.BedwarsAPI;
 
 public class ResourcePickup implements Listener {

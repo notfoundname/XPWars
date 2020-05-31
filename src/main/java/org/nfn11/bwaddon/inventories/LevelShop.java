@@ -23,7 +23,7 @@ import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GamePlayer;
 import org.screamingsandals.bedwars.utils.Debugger;
 import org.screamingsandals.bedwars.utils.Sounds;
-import org.screamingsandals.lib.debug.Debug;
+import org.nfn11.misat11.lib.Debug;
 import org.screamingsandals.simpleinventories.SimpleInventories;
 import org.screamingsandals.simpleinventories.events.GenerateItemEvent;
 import org.screamingsandals.simpleinventories.events.PreActionEvent;
@@ -39,8 +39,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static misat11.lib.lang.I18n.i18n;
-import static misat11.lib.lang.I18n.i18nonly;
+import static org.nfn11.misat11.lib.I18n.i18n;
+import static org.nfn11.misat11.lib.I18n.i18nonly;
 
 public class LevelShop implements Listener {
 	/*

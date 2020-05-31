@@ -11,7 +11,6 @@ import org.screamingsandals.simpleinventories.listeners.InventoryListener;
 public class BwAddon extends JavaPlugin {
 	
 	private static BwAddon instance;
-	private LevelShop shop;
 	private Configurator configurator;
 	private HashMap<String, BaseCommand> commands;
 	
@@ -28,7 +27,7 @@ public class BwAddon extends JavaPlugin {
         }
 		
 		InventoryListener.init(this);
-		shop = new LevelShop();
+		LevelShop shop = new LevelShop();
 		
 		commands = new HashMap<>();
 		new SBWACommand();
