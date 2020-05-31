@@ -46,21 +46,21 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
     <dependency>
       <groupId>org.screamingsandals.bedwars</groupId>
       <artifactId>BedWars</artifactId>
-      <version>0.2.8-SNAPSHOT</version>
+      <version>0.2.10-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     
     <dependency>
       <groupId>org.screamingsandals.simpleinventories</groupId>
       <artifactId>SimpleInventories-Core</artifactId>
-      <version>1.0.2-SNAPSHOT</version>
+      <version>1.0.3-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
  	
     <dependency>
       <groupId>org.screamingsandals.bedwars</groupId>
       <artifactId>BedWars-API</artifactId>
-      <version>0.2.8-SNAPSHOT</version>
+      <version>0.2.10-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
  	
@@ -106,6 +106,16 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
                   <pattern>org.screamingsandals.simpleinventories</pattern>
                   <shadedPattern>${project.groupId}.si</shadedPattern>
                 </relocation>
+                <!-- OLD Libraries -->
+				<relocation>
+					<pattern>misat11.lib</pattern>
+					<shadedPattern>${project.groupId}.lib</shadedPattern>
+				</relocation>
+				<!-- NEW Libraries -->
+				<relocation>
+					<pattern>org.screamingsandals.lib</pattern>
+					<shadedPattern>${project.groupId}.lib</shadedPattern>
+				</relocation>
               </relocations>
             </configuration>
           </execution>

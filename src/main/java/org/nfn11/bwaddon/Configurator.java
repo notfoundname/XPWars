@@ -3,6 +3,7 @@ package org.nfn11.bwaddon;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.io.IOException;
@@ -55,40 +56,25 @@ public class Configurator {
 		AtomicBoolean modify = new AtomicBoolean(false);
 		
 		
-        checkOrSetConfig(modify, "fast-death-enabled-games", new ArrayList<String>() {{
-        	add("ArenaNameCaseSensetive");
-        }});
+        checkOrSetConfig(modify, "fast-death-enabled-games", Arrays.asList("ArenaNameCaseSensetive", "AnyoneElseGettingHungry")); 
                 
-        checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.bronze", 5);
         checkOrSetConfig(modify, "level.percentage.give-from-killed-player", 33);
         checkOrSetConfig(modify, "level.percentage.keep-from-death", 33);
-        checkOrSetConfig(modify, "level.max-level", 1000);
-        checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.iron", 15);
-        checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.gold", 30);
-        checkOrSetConfig(modify, "level.default.bronze", 3);
-        checkOrSetConfig(modify, "level.default.iron", 10);
-        checkOrSetConfig(modify, "level.default.gold", 20);
-        checkOrSetConfig(modify, "level.default-enabled-games", new ArrayList<String>() {{
-        	add("ArenaNameCaseSensetive");
-        }});
-                
-        checkOrSetConfig(modify, "villager.default.cancel-shop-open", false);
-        checkOrSetConfig(modify, "villager.default.console-commands", new ArrayList<String>());
-        checkOrSetConfig(modify, "villager.default.player-commands", new ArrayList<String>());
-        checkOrSetConfig(modify, "villager.enabled-arenas.ArenaNameCaseSensetive.cancel-shop-open", false);
-        checkOrSetConfig(modify, "villager.enabled-arenas.ArenaNameCaseSensetive.console-commands", new ArrayList<String>() {{
-        	add("say Yes! %player% really did it!");
-        	add("say &cYou can use this to replace default shop with some GUI plugin.");
-        }});
-        checkOrSetConfig(modify, "villager.enabled-arenas.ArenaNameCaseSensetive.player-commands", new ArrayList<String>() {{
-        	add("say Hey guys! It's me, %player%! And I just opened a shop!");
-        }});
-                
+        checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.give-from-killed-player", 100);
+        checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.keep-from-death", 0);
+        checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.spawners.bronze", 5);
+        checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.spawners.iron", 15);
+        checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.spawners.gold", 30);
+        checkOrSetConfig(modify, "level.spawners.bronze", 3);
+        checkOrSetConfig(modify, "level.spawners.iron", 10);
+        checkOrSetConfig(modify, "level.spawners.gold", 20);
+        checkOrSetConfig(modify, "level.enabled-games", Arrays.asList("ArenaNameCaseSensetive", "WeAreDoomed"));
+        checkOrSetConfig(modify, "level.replace-store-with-levels", false);
+
         checkOrSetConfig(modify, "special.remote-tnt.damage-placer", true);
         checkOrSetConfig(modify, "special.remote-tnt.fuse-ticks", 100);
         checkOrSetConfig(modify, "special.remote-tnt.detonator.allow-drop", false);
-        checkOrSetConfig(modify, "special.remote-tnt.detonator.material", "TRIPWIRE_HOOK");
-        checkOrSetConfig(modify, "special.remote-tnt.detonator.name", "&fDetonate all placed TNTs &7(Right-click)");
+        checkOrSetConfig(modify, "special.remote-tnt.detonator.itemstack", new ItemStack(Material.TRIPWIRE_HOOK));
                 
         checkOrSetConfig(modify, "special.trampoline.remove-when-used", true);
         checkOrSetConfig(modify, "special.trampoline.y-check", 0);
@@ -102,12 +88,14 @@ public class Configurator {
         checkOrSetConfig(modify, "messages.placeholders.end-celebration", "&9Game ended!");
         checkOrSetConfig(modify, "messages.placeholders.rebuilding", "&7Rebuilding...");
                 
-        checkOrSetConfig(modify, "messages.level.max-reached", "&cYou can't carry more than %max% levels!");
+        checkOrSetConfig(modify, "messages.level.notenoughlevels", "&cYou don't have enough levels to buy &r%item%&c! Needed: &e%levels%");
+        checkOrSetConfig(modify, "messages.level.nospace", "&cYou don't have enough space in your inventory! Free it up!");
         
         checkOrSetConfig(modify, "messages.commands.reloaded", "[SBWA] &aReloaded!");
+        checkOrSetConfig(modify, "messages.commands.errorreload", "[SBWA] &cThere's a error while reloading. Check em in console.");
         checkOrSetConfig(modify, "messages.commands.unknown", "[SBWA] &cUnknown command or wrong usage!");
         checkOrSetConfig(modify, "messages.commands.noperm", "[SBWA] &cYou don't have permission!");
-        checkOrSetConfig(modify, "messages.commands.wrongshop", "[SBWA] Wrong shop file!");
+        checkOrSetConfig(modify, "messages.commands.nostore", "[SBWA] &cShop file does not exist or contains errors!");
         
         checkOrSetConfig(modify, "version", 1);
 

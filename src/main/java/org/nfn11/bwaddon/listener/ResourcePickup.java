@@ -10,7 +10,6 @@ import org.screamingsandals.bedwars.api.BedwarsAPI;
 
 public class ResourcePickup implements Listener {
 	
-	private int i;
 	org.nfn11.bwaddon.BwAddon plugin;
 	private BedwarsAPI api;
     public ResourcePickup(org.nfn11.bwaddon.BwAddon plugin) {
@@ -28,8 +27,6 @@ public class ResourcePickup implements Listener {
 		ItemStack stack = e.getItem().getItemStack();
 		
 		if (stack == null) return;
-		
-		i = SBWAUtils.toLevel(stack, api.getGameOfPlayer(player));
 		
 		
 		
