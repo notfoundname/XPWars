@@ -54,19 +54,19 @@ public class LevelShop implements Listener {
 
 		ItemStack backItem = Main.getConfigurator().readDefinedItem("shopback", "BARRIER");
 		ItemMeta backItemMeta = backItem.getItemMeta();
-		backItemMeta.setDisplayName(i18n("shop_back", false));
+		backItemMeta.setDisplayName("back");
 		backItem.setItemMeta(backItemMeta);
 		options.setBackItem(backItem);
 
 		ItemStack pageBackItem = Main.getConfigurator().readDefinedItem("pageback", "ARROW");
 		ItemMeta pageBackItemMeta = backItem.getItemMeta();
-		pageBackItemMeta.setDisplayName(i18n("page_back", false));
+		pageBackItemMeta.setDisplayName("previous page");
 		pageBackItem.setItemMeta(pageBackItemMeta);
 		options.setPageBackItem(pageBackItem);
 
 		ItemStack pageForwardItem = Main.getConfigurator().readDefinedItem("pageforward", "ARROW");
 		ItemMeta pageForwardItemMeta = backItem.getItemMeta();
-		pageForwardItemMeta.setDisplayName(i18n("page_forward", false));
+		pageForwardItemMeta.setDisplayName("next page");
 		pageForwardItem.setItemMeta(pageForwardItemMeta);
 		options.setPageForwardItem(pageForwardItem);
 
@@ -83,7 +83,7 @@ public class LevelShop implements Listener {
 		options.setInventoryType(InventoryType.valueOf(Main.getConfigurator().config.getString("shop.inventory-type", "CHEST")));
 		
 		options.setGenericShopPriceTypeRequired(false);
-		options.setPrefix(i18nonly("item_shop_name", "[BW] Shop"));
+		options.setPrefix("[BW] Shop");
 		options.setGenericShop(true);
 		options.setGenericShopPriceTypeRequired(true);
 		options.setAnimationsEnabled(true);
@@ -184,7 +184,7 @@ public class LevelShop implements Listener {
 				shopMap.get("default").openForPlayer(player);
 			}
 		} catch (Throwable ignored) {
-			player.sendMessage(i18nonly("prefix") + " Your shop.yml is invalid! Check it out or contact us on Discord.");
+			player.sendMessage("Your shop.yml is invalid! Check it out or contact us on Discord.");
 		}
 	}
 	
@@ -306,8 +306,8 @@ public class LevelShop implements Listener {
 				format.loadFromDataFolder(Main.getInstance().getDataFolder(), fileName);
 			}
 		} catch (Exception ignored) {
-			Debug.warn("Wrong shop.yml configuration!", true);
-			Debug.warn("Your villagers won't work, check validity of your YAML!", true);
+			Bukkit.getLogger().severe("Wrong shop.yml configuration!");
+			Bukkit.getLogger().severe("Your villagers won't work, check validity of your YAML!");
 		}
 
 		format.generateData();
@@ -405,14 +405,14 @@ public class LevelShop implements Listener {
 			event.buyStack(newItem);
 
 			if (!Main.getConfigurator().config.getBoolean("removePurchaseMessages", false)) {
-				player.sendMessage(i18n("buy_succes").replace("%item%", amount + "x " + getNameOrCustomNameOfItem(newItem))
+				player.sendMessage(("buy_succes").replace("%item%", amount + "x " + getNameOrCustomNameOfItem(newItem))
 						.replace("%material%", price + " " + "Levels"));
 			}
 			Sounds.playSound(player, player.getLocation(),
 				Main.getConfigurator().config.getString("sounds.on_item_buy"), Sounds.ENTITY_ITEM_PICKUP, 1, 1);
 		} else {
 			if (!Main.getConfigurator().config.getBoolean("removePurchaseMessages", false)) {
-				player.sendMessage(i18n("buy_failed").replace("%item%", amount + "x " + getNameOrCustomNameOfItem(newItem))
+				player.sendMessage(("buy_failed").replace("%item%", amount + "x " + getNameOrCustomNameOfItem(newItem))
 						.replace("%material%", price + " " + "Levels"));
 			}
 		}
@@ -503,7 +503,7 @@ public class LevelShop implements Listener {
 				if (sendToAll) {
 					for (Player player1 : game.getTeamOfPlayer(event.getPlayer()).getConnectedPlayers()) {
 						if (!Main.getConfigurator().config.getBoolean("removePurchaseMessages", false)) {
-							player1.sendMessage(i18n("buy_succes").replace("%item%", itemName).replace("%material%",
+							player1.sendMessage(("buy_succes").replace("%item%", itemName).replace("%material%",
 									price + " " + "Levels"));
 						}
 						Sounds.playSound(player1, player1.getLocation(),
@@ -512,7 +512,7 @@ public class LevelShop implements Listener {
 					}
 				} else {
 					if (!Main.getConfigurator().config.getBoolean("removePurchaseMessages", false)) {
-						player.sendMessage(i18n("buy_succes").replace("%item%", itemName).replace("%material%",
+						player.sendMessage(("buy_succes").replace("%item%", itemName).replace("%material%",
 								price + " " + "Levels"));
 					}
 					Sounds.playSound(player, player.getLocation(),
@@ -522,7 +522,7 @@ public class LevelShop implements Listener {
 			}
 		} else {
 			if (!Main.getConfigurator().config.getBoolean("removePurchaseMessages", false)) {
-				player.sendMessage(i18n("buy_failed").replace("%item%", "UPGRADE").replace("%material%",
+				player.sendMessage(("buy_failed").replace("%item%", "UPGRADE").replace("%material%",
 						price + " " + "Levels"));
 			}
 		}

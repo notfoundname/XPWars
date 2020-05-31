@@ -4,9 +4,12 @@ import java.util.Arrays;
 import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.nfn11.bwaddon.BwAddon;
 import org.nfn11.bwaddon.utils.SBWAUtils;
+import org.screamingsandals.bedwars.api.game.GameStore;
 import org.screamingsandals.bedwars.commands.BaseCommand;
+import org.screamingsandals.bedwars.inventories.ShopInventory;
 
 public class SBWACommand extends BaseCommand {
 	public SBWACommand() {
@@ -45,7 +48,10 @@ public class SBWACommand extends BaseCommand {
 		} 
 		if (args.size() == 2 && args.get(0).equalsIgnoreCase("shop")) {
 			if (args.get(1).equalsIgnoreCase("open")) {
-					
+				if (SBWAUtils.getStores().contains(args.get(2))) {
+					ShopInventory shop = new ShopInventory();
+					shop.show((Player) sender, new GameStore(null, args.get(2), true, "Debug", false));
+				}
 			}
 			
 		}

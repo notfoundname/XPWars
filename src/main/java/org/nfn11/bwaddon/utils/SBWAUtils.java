@@ -12,6 +12,12 @@ public class SBWAUtils {
 		
 		for (int i = 0; i < files.length; i++) {
 			if (files[i].isFile()) {
+				if (files[i].getName().equalsIgnoreCase("config.yml")
+						|| files[i].getName().equalsIgnoreCase("record.yml")
+						|| files[i].getName().equalsIgnoreCase("sign.yml")
+						|| files[i].getName().equalsIgnoreCase("stats.yml")) {
+					continue;
+				}
 				list.add(files[i].getName());
 			} else if (files[i].isDirectory()) {
 				continue;
