@@ -1,24 +1,23 @@
-package org.nfn11.bwaddon;
+package nfn11.xpwars;
 
 import java.io.File;
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.screamingsandals.bedwars.Main;
 
 import net.md_5.bungee.api.ChatColor;
 /*
- * bruh
+ * not mine. thanks misat11 & ceph
  */
 public class Configurator {
 
@@ -26,9 +25,9 @@ public class Configurator {
     public FileConfiguration config;
 
     public final File dataFolder;
-    public final BwAddon main;
+    public final XPWars main;
     
-    public Configurator(BwAddon main) {
+    public Configurator(XPWars main) {
     	this.dataFolder = main.getDataFolder();
     	this.main = main;
     }
@@ -55,32 +54,43 @@ public class Configurator {
 		
 		AtomicBoolean modify = new AtomicBoolean(false);
 		
+		ConfigurationSection resources = Main.getConfigurator().config.getConfigurationSection("resources");
 		
         checkOrSetConfig(modify, "fast-death-enabled-games", Arrays.asList("ArenaNameCaseSensetive", "AnyoneElseGettingHungry")); 
                 
         checkOrSetConfig(modify, "level.percentage.give-from-killed-player", 33);
         checkOrSetConfig(modify, "level.percentage.keep-from-death", 33);
-        checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.give-from-killed-player", 100);
-        checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.keep-from-death", 0);
-        checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.spawners.bronze", 5);
-        checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.spawners.iron", 15);
-        checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.spawners.gold", 30);
-        checkOrSetConfig(modify, "level.spawners.bronze", 3);
-        checkOrSetConfig(modify, "level.spawners.iron", 10);
-        checkOrSetConfig(modify, "level.spawners.gold", 20);
-        checkOrSetConfig(modify, "level.enabled-games", Arrays.asList("ArenaNameCaseSensetive", "WeAreDoomed"));
+        checkOrSetConfig(modify, "level.maximum-xp", 1000);
+        checkOrSetConfig(modify, "level.sound.sound", "ENTITY_EXPERIENCE_ORB_PICKUP");
+        checkOrSetConfig(modify, "level.sound.volume", 1);
+        checkOrSetConfig(modify, "level.sound.pitch", 1);
+        
+        checkOrSetConfig(modify, "level.enabled-games", Arrays.asList("Arena", "WeAreDoomed"));
         checkOrSetConfig(modify, "level.replace-store-with-levels", false);
-
-        checkOrSetConfig(modify, "special.remote-tnt.damage-placer", true);
-        checkOrSetConfig(modify, "special.remote-tnt.fuse-ticks", 100);
-        checkOrSetConfig(modify, "special.remote-tnt.detonator.allow-drop", false);
-        checkOrSetConfig(modify, "special.remote-tnt.detonator.itemstack", new ItemStack(Material.TRIPWIRE_HOOK));
+        
+        checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.percentage.give-from-killed-player", 100);
+        checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.percentage.keep-from-death", 0);
+        checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.maximum-xp", 2000);
+        
+        checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.sound.sound", "ENTITY_EXPERIENCE_ORB_PICKUP");
+        checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.sound.volume", 1);
+        checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.sound.pitch", 1);
+        
+		for (String key : resources.getKeys(false)) {
+			checkOrSetConfig(modify, "level.spawners." + key, 3);
+			checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.spawners." + key, 10);
+		}
+        
+        checkOrSetConfig(modify, "specials.remote-tnt.damage-placer", true);
+        checkOrSetConfig(modify, "specials.remote-tnt.fuse-ticks", 100);
+        checkOrSetConfig(modify, "specials.remote-tnt.detonator.allow-drop", false);
+        checkOrSetConfig(modify, "specials.remote-tnt.detonator.itemstack", new ItemStack(Material.TRIPWIRE_HOOK));
                 
-        checkOrSetConfig(modify, "special.trampoline.remove-when-used", true);
-        checkOrSetConfig(modify, "special.trampoline.y-check", 0);
-        checkOrSetConfig(modify, "special.trampoline.y-velocity", 5.0);
+        checkOrSetConfig(modify, "specials.trampoline.remove-when-used", true);
+        checkOrSetConfig(modify, "specials.trampoline.y-check", 0);
+        checkOrSetConfig(modify, "specials.trampoline.y-velocity", 5.0);
                 
-        checkOrSetConfig(modify, "special.throwable-tnt.y-velocity", 5.0);
+        checkOrSetConfig(modify, "specials.throwable-tnt.y-velocity", 5.0);
                 
         checkOrSetConfig(modify, "messages.placeholders.waiting", "&aWaiting...");
         checkOrSetConfig(modify, "messages.placeholders.starting", "&eArena is starting in %time%!");
@@ -90,6 +100,7 @@ public class Configurator {
                 
         checkOrSetConfig(modify, "messages.level.notenoughlevels", "&cYou don't have enough levels to buy &r%item%&c! Needed: &e%levels%");
         checkOrSetConfig(modify, "messages.level.nospace", "&cYou don't have enough space in your inventory! Free it up!");
+        checkOrSetConfig(modify, "messages.level.maxreached", "&cYou can't have more than %max% levels!");
         
         checkOrSetConfig(modify, "messages.commands.reloaded", "[SBWA] &aReloaded!");
         checkOrSetConfig(modify, "messages.commands.errorreload", "[SBWA] &cThere's a error while reloading. Check em in console.");

@@ -1,16 +1,17 @@
-package org.nfn11.bwaddon;
+package nfn11.xpwars;
 
 import java.util.HashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.nfn11.bwaddon.commands.SBWACommand;
-import org.nfn11.bwaddon.inventories.LevelShop;
 import org.screamingsandals.bedwars.commands.BaseCommand;
 import org.screamingsandals.simpleinventories.listeners.InventoryListener;
 
-public class BwAddon extends JavaPlugin {
+import nfn11.xpwars.commands.SBWACommand;
+import nfn11.xpwars.inventories.LevelShop;
+
+public class XPWars extends JavaPlugin {
 	
-	private static BwAddon instance;
+	private static XPWars instance;
 	private Configurator configurator;
 	private HashMap<String, BaseCommand> commands;
 	
@@ -22,7 +23,7 @@ public class BwAddon extends JavaPlugin {
 		configurator.loadDefaults();
 		
 		if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            new org.nfn11.bwaddon.placeholderapi.PlaceholderAPIHook(this).register();
+            new nfn11.xpwars.placeholderapi.PlaceholderAPIHook(this).register();
             Bukkit.getLogger().info("[SBWA] Succesfully registered PlaceholderAPI!");
         }
 		
@@ -37,7 +38,7 @@ public class BwAddon extends JavaPlugin {
         return instance.configurator;
     }
 
-	public static BwAddon getInstance() {
+	public static XPWars getInstance() {
 		return instance;
 	}
 	

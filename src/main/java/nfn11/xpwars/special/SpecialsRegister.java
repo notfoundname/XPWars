@@ -1,7 +1,8 @@
-package org.nfn11.bwaddon.special;
+package nfn11.xpwars.special;
 
 import org.bukkit.plugin.Plugin;
-import org.nfn11.bwaddon.special.listener.*;
+
+import nfn11.xpwars.special.listener.*;
 
 public class SpecialsRegister {
 

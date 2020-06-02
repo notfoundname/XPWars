@@ -1,4 +1,4 @@
-package org.nfn11.bwaddon.utils;
+package nfn11.xpwars.utils;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;

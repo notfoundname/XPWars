@@ -1,4 +1,4 @@
-package org.nfn11.bwaddon.inventories;
+package nfn11.xpwars.inventories;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -8,7 +8,6 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.nfn11.bwaddon.BwAddon;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.events.*;
@@ -32,6 +31,8 @@ import org.screamingsandals.simpleinventories.item.ItemProperty;
 import org.screamingsandals.simpleinventories.item.PlayerItemInfo;
 import org.screamingsandals.simpleinventories.utils.MapReader;
 
+import nfn11.xpwars.XPWars;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,7 +47,7 @@ public class LevelShop implements Listener {
 	private Options options = new Options(Main.getInstance());
 
 	public LevelShop() {
-		Bukkit.getServer().getPluginManager().registerEvents(this, BwAddon.getInstance());
+		Bukkit.getServer().getPluginManager().registerEvents(this, XPWars.getInstance());
 
 		ItemStack backItem = Main.getConfigurator().readDefinedItem("shopback", "BARRIER");
 		ItemMeta backItemMeta = backItem.getItemMeta();
@@ -187,7 +188,7 @@ public class LevelShop implements Listener {
 	@EventHandler
 	public void onShopOpen(BedwarsOpenShopEvent event) {
 		if (Main.getPlayerGameProfile(event.getPlayer()).isSpectator) return;
-		if (BwAddon.getConfigurator().getBoolean("level.replace-store-with-levels", true)) {
+		if (XPWars.getConfigurator().getBoolean("level.replace-store-with-levels", true)) {
 			event.setResult(Result.DISALLOW_THIRD_PARTY_SHOP);
 			this.show(event.getPlayer(), event.getStore());
 		}

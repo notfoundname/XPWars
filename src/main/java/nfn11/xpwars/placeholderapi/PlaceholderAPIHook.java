@@ -1,4 +1,4 @@
-package org.nfn11.bwaddon.placeholderapi;
+package nfn11.xpwars.placeholderapi;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -14,8 +14,8 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 
 public class PlaceholderAPIHook extends PlaceholderExpansion {
 
-	org.nfn11.bwaddon.BwAddon plugin;
-    public PlaceholderAPIHook(org.nfn11.bwaddon.BwAddon plugin) {
+	nfn11.xpwars.XPWars plugin;
+    public PlaceholderAPIHook(nfn11.xpwars.XPWars plugin) {
     	this.plugin = plugin;
     }
     

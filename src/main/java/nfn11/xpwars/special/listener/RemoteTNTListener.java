@@ -1,14 +1,15 @@
-package org.nfn11.bwaddon.special.listener;
+package nfn11.xpwars.special.listener;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
-import org.nfn11.bwaddon.BwAddon;
-import org.nfn11.bwaddon.utils.SpecialItemUtils;
 import org.screamingsandals.bedwars.api.APIUtils;
 import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
 import org.screamingsandals.bedwars.api.events.BedwarsPlayerBuildBlock;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
+
+import nfn11.xpwars.XPWars;
+import nfn11.xpwars.utils.SpecialItemUtils;
 
 public class RemoteTNTListener implements Listener {
 	private static final String REMOTE_TNT_PREFIX = "Module:RemoteTnt:";
@@ -38,14 +39,14 @@ public class RemoteTNTListener implements Listener {
 	private String applyProperty(BedwarsApplyPropertyToBoughtItem event) {
 		return REMOTE_TNT_PREFIX
 			+ SpecialItemUtils.getBooleanFromProperty(
-				    "damage-placer", BwAddon.getConfigurator().config, "special.remote-tnt.damage-placer", event) + ":"
+				    "damage-placer", XPWars.getConfigurator().config, "special.remote-tnt.damage-placer", event) + ":"
 			+ SpecialItemUtils.getIntFromProperty(
-	                "fuse-ticks", BwAddon.getConfigurator().config, "special.remote-tnt.fuse-ticks", event) + ":"
+	                "fuse-ticks", XPWars.getConfigurator().config, "special.remote-tnt.fuse-ticks", event) + ":"
 	        + SpecialItemUtils.getBooleanFromProperty(
-	                "detonator-allow-drop", BwAddon.getConfigurator().config, "special.remote-tnt.detonator-allow-drop", event) + ":"
+	                "detonator-allow-drop", XPWars.getConfigurator().config, "special.remote-tnt.detonator-allow-drop", event) + ":"
 	        + SpecialItemUtils.getBooleanFromProperty(
-	    	        "detonator-material", BwAddon.getConfigurator().config, "special.remote-tnt.detonator-material", event) + ":"
+	    	        "detonator-material", XPWars.getConfigurator().config, "special.remote-tnt.detonator-material", event) + ":"
 	        + SpecialItemUtils.getStringFromProperty(
-	                "detonator-name", BwAddon.getConfigurator().config, "special.remote-tnt.detonator-name", event);
+	                "detonator-name", XPWars.getConfigurator().config, "special.remote-tnt.detonator-name", event);
 	    }
 }
