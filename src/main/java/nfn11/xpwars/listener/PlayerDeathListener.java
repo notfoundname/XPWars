@@ -23,11 +23,27 @@ public class PlayerDeathListener implements Listener {
 		int player_level = player.getLevel();
 		int killer_level = killer.getLevel();
 		
-		int def_keep_from_death_player = XPWars.getConfigurator().getInt("level.percentage.loose-from-death", 0);
+		int def_keep_from_death_player = XPWars.getConfigurator().getInt("level.percentage.keep-from-death", 0);
 		int def_to_killer = XPWars.getConfigurator().getInt("level.percentage.give-from-killed-player", 0);
 		
-		int keep_from_death_player = XPWars.getConfigurator().getInt("level.games." + gamename+ ".percentage.loose-from-death", def_keep_from_death_player);
+		int keep_from_death_player = XPWars.getConfigurator().getInt("level.games." + gamename+ ".percentage.keep-from-death", def_keep_from_death_player);
 		int to_killer = XPWars.getConfigurator().getInt("level.games." + gamename+ "percentage.give-from-killed-player", def_to_killer);
+		
+		if (def_to_killer > 100 || def_to_killer < 0) {
+			def_to_killer = 100;
+		}
+		
+		if (to_killer > 100 || to_killer < 0) {
+			to_killer = 100;
+		}
+		
+		if (def_keep_from_death_player > 100 || def_keep_from_death_player < 0) {
+			def_keep_from_death_player = 0;
+		}
+		
+		if (keep_from_death_player > 100 || keep_from_death_player < 0) {
+			def_keep_from_death_player = 0;
+		}
 		
 		int defmax = XPWars.getConfigurator().getInt("level.maximum-xp", 0);
 		int max = XPWars.getConfigurator().getInt("level.games." + gamename + ".maximum-xp", defmax);
