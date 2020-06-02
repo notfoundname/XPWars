@@ -59,7 +59,7 @@ public class Configurator {
         checkOrSetConfig(modify, "fast-death-enabled-games", Arrays.asList("ArenaNameCaseSensetive", "AnyoneElseGettingHungry")); 
                 
         checkOrSetConfig(modify, "level.percentage.give-from-killed-player", 33);
-        checkOrSetConfig(modify, "level.percentage.keep-from-death", 33);
+        checkOrSetConfig(modify, "level.percentage.loose-from-death", 33);
         checkOrSetConfig(modify, "level.maximum-xp", 1000);
         checkOrSetConfig(modify, "level.sound.sound", "ENTITY_EXPERIENCE_ORB_PICKUP");
         checkOrSetConfig(modify, "level.sound.volume", 1);
@@ -69,7 +69,7 @@ public class Configurator {
         checkOrSetConfig(modify, "level.replace-store-with-levels", false);
         
         checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.percentage.give-from-killed-player", 100);
-        checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.percentage.keep-from-death", 0);
+        checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.percentage.loose-from-death", 0);
         checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.maximum-xp", 2000);
         
         checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.sound.sound", "ENTITY_EXPERIENCE_ORB_PICKUP");
