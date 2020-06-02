@@ -26,7 +26,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 
 	@Override
 	public String getIdentifier() {
-		return "sbwa";
+		return "xpwars";
 	}
 
 	@Override
@@ -232,7 +232,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 		
 		if(parsed.endsWith("_stats_kd")) {
 			parsed = parsed.replace("_stats_loses", "");
-			if(!Main.isPlayerGameProfileRegistered(Bukkit.getPlayer(parsed))) return "Player does not exist";
+			if(!Main.isPlayerGameProfileRegistered(Bukkit.getPlayer(parsed))) return "";
 
 			PlayerStatistic stats = Main.getPlayerStatisticsManager().getStatistic(Bukkit.getPlayer(parsed));
 			return Double.toString(stats.getCurrentKD());
