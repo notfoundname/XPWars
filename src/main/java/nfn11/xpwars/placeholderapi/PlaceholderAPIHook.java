@@ -67,13 +67,20 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 			
 		}
 		
-		if(parsed.endsWith("_world")) {
-			parsed = parsed.replace("_world", "");
+		if(parsed.endsWith("_gameworld")) {
+			parsed = parsed.replace("_gameworld", "");
 			if(!BedwarsAPI.getInstance().isGameWithNameExists(parsed)) return "";
 			
 			org.screamingsandals.bedwars.api.game.Game game = BedwarsAPI.getInstance().getGameByName(parsed);
-        	return Integer.toString(game.countConnectedPlayers());
+        	return game.getGameWorld().getName();
+		}
+		
+		if(parsed.endsWith("_lobbyworld")) {
+			parsed = parsed.replace("_lobbyworld", "");
+			if(!BedwarsAPI.getInstance().isGameWithNameExists(parsed)) return "";
 			
+			org.screamingsandals.bedwars.api.game.Game game = BedwarsAPI.getInstance().getGameByName(parsed);
+        	return game.getLobbyWorld().getName();
 		}
 		
 		if(parsed.endsWith("_state")) {

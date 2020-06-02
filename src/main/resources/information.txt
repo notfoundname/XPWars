@@ -1,0 +1,30 @@
+Available placeholders:
+
+// for arena called ARENANAME (you can change it, it is case sensetive and mustn't have spaces)
+%xpwars_ARENANAME_ingame% How many players are in arena called ARENANAME
+%xpwars_ARENANAME_inlobby% How many players are in lobby of arena ARENANAME
+%xpwars_ARENANAME_inall% How many players are connected to arena ARENANAME
+%xpwars_ARENANAME_gameworld% Name of game world of arena ARENANAME
+%xpwars_ARENANAME_lobbyworld% Name of lobby world of arena ARENANAME
+%xpwars_ARENANAME_state% Current state of arena ARENANAME (output can be changed in config.yml)
+%xpwars_ARENANAME_mxpl% Maximum players for arena ARENANAME
+%xpwars_ARENANAME_mnpl% Minimum players to start countdown for arena ARENANAME
+%xpwars_ARENANAME_tl% Time left on arena ARENANAME
+%xpwars_ARENANAME_tp% Time passed on arena ARENANAME
+
+// current arena of player
+%xpwars_tl%
+%xpwars_tp%
+%xpwars_color%
+
+// statistics of player PLAYER
+%xpwars_PLAYER_stats_kills%
+%xpwars_PLAYER_stats_deaths%
+%xpwars_PLAYER_stats_destroyed_beds%
+%xpwars_PLAYER_stats_loses%
+%xpwars_PLAYER_stats_score%
+%xpwars_PLAYER_stats_wins%
+%xpwars_PLAYER_stats_games%
+%xpwars_PLAYER_stats_kd%
+
+

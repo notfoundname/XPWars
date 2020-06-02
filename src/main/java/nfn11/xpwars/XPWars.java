@@ -8,6 +8,7 @@ import org.screamingsandals.simpleinventories.listeners.InventoryListener;
 
 import nfn11.xpwars.commands.SBWACommand;
 import nfn11.xpwars.inventories.LevelShop;
+import nfn11.xpwars.listener.ResourcePickup;
 
 public class XPWars extends JavaPlugin {
 	
@@ -28,10 +29,11 @@ public class XPWars extends JavaPlugin {
         }
 		
 		InventoryListener.init(this);
-		LevelShop shop = new LevelShop();
+		new LevelShop();
 		
 		commands = new HashMap<>();
 		new SBWACommand();
+		new ResourcePickup();
 	}
 	
 	public static Configurator getConfigurator() {

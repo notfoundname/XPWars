@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.nfn11</groupId>
+  <groupId>nfn11</groupId>
   <artifactId>ScreamingBedwarsAddon</artifactId>
   <version>1.0-SNAPSHOT</version>
   
@@ -75,7 +75,7 @@
     </resources>
 	
     <defaultGoal>clean install</defaultGoal>
-    <finalName>ScreamingBedwarsAddon-${project.version}</finalName>
+    <finalName>XPWars-${project.version}</finalName>
     <plugins>
     
       <plugin>
@@ -91,7 +91,7 @@
               <relocations>
                 <relocation>
                   <pattern>org.screamingsandals.simpleinventories</pattern>
-                  <shadedPattern>${project.groupId}.si</shadedPattern>
+                  <shadedPattern>${project.groupId}.thirdparty.simpleinventories</shadedPattern>
                 </relocation>
               </relocations>
             </configuration>

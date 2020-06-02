@@ -1,6 +1,6 @@
-name: ScreamingBedwarsAddon
+name: XPWars
 version: ${project.version}
-main: org.nfn11.bwaddon.BwAddon
+main: nfn11.xpwars.XPWars
 api-version: 1.13
 depend: [BedWars]
 softdepend: [PlaceholderAPI]

@@ -30,9 +30,8 @@ import org.screamingsandals.simpleinventories.inventory.Options;
 import org.screamingsandals.simpleinventories.item.ItemProperty;
 import org.screamingsandals.simpleinventories.item.PlayerItemInfo;
 import org.screamingsandals.simpleinventories.utils.MapReader;
-
+import misat11.lib.lang.I18n;
 import nfn11.xpwars.XPWars;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
