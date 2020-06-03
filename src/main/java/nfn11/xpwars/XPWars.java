@@ -26,7 +26,7 @@ public class XPWars extends JavaPlugin {
 		
 		if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new nfn11.xpwars.placeholderapi.PlaceholderAPIHook(this).register();
-            Bukkit.getLogger().info("[SBWA] Succesfully registered PlaceholderAPI!");
+            Bukkit.getLogger().info("[XPWars] Succesfully registered PlaceholderAPI!");
         }
 		
 		InventoryListener.init(this);
@@ -47,6 +47,6 @@ public class XPWars extends JavaPlugin {
 	}
 	
 	public static HashMap<String, BaseCommand> getCommands() {
-        return instance.commands;
-    }
+		return instance.commands;
+	}
 }

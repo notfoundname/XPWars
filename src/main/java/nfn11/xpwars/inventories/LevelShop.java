@@ -68,7 +68,7 @@ public class LevelShop implements Listener {
 
 		ItemStack cosmeticItem = Main.getConfigurator().readDefinedItem("shopcosmetic", "AIR");
 		options.setCosmeticItem(cosmeticItem);
-        
+
 		options.setRows(Main.getConfigurator().config.getInt("shop.rows", 4));
 		options.setRender_actual_rows(Main.getConfigurator().config.getInt("shop.render-actual-rows", 6));
 		options.setRender_offset(Main.getConfigurator().config.getInt("shop.render-offset", 9));
@@ -76,14 +76,15 @@ public class LevelShop implements Listener {
 		options.setRender_footer_start(Main.getConfigurator().config.getInt("shop.render-footer-start", 45));
 		options.setItems_on_row(Main.getConfigurator().config.getInt("shop.items-on-row", 9));
 		options.setShowPageNumber(Main.getConfigurator().config.getBoolean("shop.show-page-numbers", true));
-		options.setInventoryType(InventoryType.valueOf(Main.getConfigurator().config.getString("shop.inventory-type", "CHEST")));
-		
+		options.setInventoryType(
+				InventoryType.valueOf(Main.getConfigurator().config.getString("shop.inventory-type", "CHEST")));
+
 		options.setGenericShopPriceTypeRequired(false);
-		options.setPrefix("[BW] Shop");
+		options.setPrefix("[XPWars] Shop");
 		options.setGenericShop(true);
 		options.setGenericShopPriceTypeRequired(true);
 		options.setAnimationsEnabled(true);
-		
+
 		options.registerPlaceholder("team", (key, player, arguments) -> {
 			GamePlayer gPlayer = Main.getPlayerGameProfile(player);
 			CurrentTeam team = gPlayer.getGame().getPlayerTeam(gPlayer);
@@ -168,7 +169,8 @@ public class LevelShop implements Listener {
 				}
 				String name = (parent ? "+" : "-") + file;
 				if (!shopMap.containsKey(name)) {
-					if (Main.getConfigurator().config.getBoolean("turnOnExperimentalGroovyShop", false) && new File(Main.getInstance().getDataFolder(), file + ".groovy").exists()) {
+					if (Main.getConfigurator().config.getBoolean("turnOnExperimentalGroovyShop", false)
+							&& new File(Main.getInstance().getDataFolder(), file + ".groovy").exists()) {
 						loadNewShop(name, file + ".groovy", parent);
 					} else {
 						loadNewShop(name, file + ".yml", parent);
@@ -183,16 +185,17 @@ public class LevelShop implements Listener {
 			player.sendMessage("Your shop.yml is invalid! Check it out or contact us on Discord.");
 		}
 	}
-	
+
 	@EventHandler
 	public void onShopOpen(BedwarsOpenShopEvent event) {
-		if (Main.getPlayerGameProfile(event.getPlayer()).isSpectator) return;
+		if (Main.getPlayerGameProfile(event.getPlayer()).isSpectator)
+			return;
 		if (XPWars.getConfigurator().getBoolean("level.replace-store-with-levels", true)) {
 			event.setResult(Result.DISALLOW_THIRD_PARTY_SHOP);
 			this.show(event.getPlayer(), event.getStore());
 		}
 	}
-	
+
 	@EventHandler
 	public void onGeneratingItem(GenerateItemEvent event) {
 		if (!shopMap.containsValue(event.getFormat())) {
@@ -210,7 +213,7 @@ public class LevelShop implements Listener {
 			enabled = reader.getBoolean("generate-lore", enabled);
 
 			List<String> loreText = reader.getStringList("generated-lore-text",
-				Main.getConfigurator().config.getStringList("lore.text"));
+					Main.getConfigurator().config.getStringList("lore.text"));
 
 			if (enabled) {
 				ItemStack stack = event.getStack();
@@ -234,7 +237,7 @@ public class LevelShop implements Listener {
 					if (property.hasName()) {
 						ItemStack newItem = event.getStack();
 						BedwarsApplyPropertyToDisplayedItem applyEvent = new BedwarsApplyPropertyToDisplayedItem(game,
-							player, newItem, property.getReader(player).convertToMap());
+								player, newItem, property.getReader(player).convertToMap());
 						Main.getInstance().getServer().getPluginManager().callEvent(applyEvent);
 
 						event.setStack(newItem);
@@ -276,9 +279,10 @@ public class LevelShop implements Listener {
 
 	@EventHandler
 	public void onApplyPropertyToBoughtItem(BedwarsApplyPropertyToItem event) {
-		if (!Main.isPlayerInGame(event.getPlayer())) return;
+		if (!Main.isPlayerInGame(event.getPlayer()))
+			return;
 		if (event.getPropertyName().equalsIgnoreCase("applycolorbyteam")
-			|| event.getPropertyName().equalsIgnoreCase("transform::applycolorbyteam")) {
+				|| event.getPropertyName().equalsIgnoreCase("transform::applycolorbyteam")) {
 			Player player = event.getPlayer();
 			CurrentTeam team = (CurrentTeam) event.getGame().getTeamOfPlayer(player);
 
@@ -344,7 +348,7 @@ public class LevelShop implements Listener {
 		ClickType clickType = event.getClickType();
 		MapReader mapReader = event.getItem().getReader();
 		ItemStack newItem = event.getStack();
-		
+
 		int level = player.getLevel();
 		int amount = newItem.getAmount();
 		int price = event.getPrice();
@@ -389,7 +393,7 @@ public class LevelShop implements Listener {
 				for (ItemProperty property : event.getProperties()) {
 					if (property.hasName()) {
 						BedwarsApplyPropertyToBoughtItem applyEvent = new BedwarsApplyPropertyToBoughtItem(game, player,
-							newItem, property.getReader(player).convertToMap());
+								newItem, property.getReader(player).convertToMap());
 						Main.getInstance().getServer().getPluginManager().callEvent(applyEvent);
 
 						newItem = applyEvent.getStack();
@@ -405,7 +409,7 @@ public class LevelShop implements Listener {
 						.replace("%material%", price + " " + "Levels"));
 			}
 			Sounds.playSound(player, player.getLocation(),
-				Main.getConfigurator().config.getString("sounds.on_item_buy"), Sounds.ENTITY_ITEM_PICKUP, 1, 1);
+					Main.getConfigurator().config.getString("sounds.on_item_buy"), Sounds.ENTITY_ITEM_PICKUP, 1, 1);
 		} else {
 			if (!Main.getConfigurator().config.getBoolean("removePurchaseMessages", false)) {
 				player.sendMessage(("buy_failed").replace("%item%", amount + "x " + getNameOrCustomNameOfItem(newItem))
@@ -443,7 +447,7 @@ public class LevelShop implements Listener {
 					// variables
 					Team team = game.getTeamOfPlayer(event.getPlayer());
 					double addLevels = mapEntity.getDouble("add-levels",
-						mapEntity.getDouble("levels", 0) /* Old configuration */);
+							mapEntity.getDouble("levels", 0) /* Old configuration */);
 					/* You shouldn't use it in entities */
 					if (mapEntity.containsKey("shop-name")) {
 						itemName = mapEntity.getString("shop-name");
@@ -477,7 +481,7 @@ public class LevelShop implements Listener {
 
 					if (isUpgrade) {
 						BedwarsUpgradeBoughtEvent bedwarsUpgradeBoughtEvent = new BedwarsUpgradeBoughtEvent(game,
-							upgradeStorage, upgrades, player, addLevels);
+								upgradeStorage, upgrades, player, addLevels);
 						Bukkit.getPluginManager().callEvent(bedwarsUpgradeBoughtEvent);
 
 						if (bedwarsUpgradeBoughtEvent.isCancelled()) {
@@ -490,7 +494,7 @@ public class LevelShop implements Listener {
 
 						for (Upgrade upgrade : upgrades) {
 							BedwarsUpgradeImprovedEvent improvedEvent = new BedwarsUpgradeImprovedEvent(game,
-								upgradeStorage, upgrade, upgrade.getLevel(), upgrade.getLevel() + addLevels);
+									upgradeStorage, upgrade, upgrade.getLevel(), upgrade.getLevel() + addLevels);
 							Bukkit.getPluginManager().callEvent(improvedEvent);
 						}
 					}
@@ -503,8 +507,8 @@ public class LevelShop implements Listener {
 									price + " " + "Levels"));
 						}
 						Sounds.playSound(player1, player1.getLocation(),
-							Main.getConfigurator().config.getString("sounds.on_upgrade_buy"),
-							Sounds.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+								Main.getConfigurator().config.getString("sounds.on_upgrade_buy"),
+								Sounds.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
 					}
 				} else {
 					if (!Main.getConfigurator().config.getBoolean("removePurchaseMessages", false)) {
@@ -512,14 +516,14 @@ public class LevelShop implements Listener {
 								price + " " + "Levels"));
 					}
 					Sounds.playSound(player, player.getLocation(),
-						Main.getConfigurator().config.getString("sounds.on_upgrade_buy"),
-						Sounds.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+							Main.getConfigurator().config.getString("sounds.on_upgrade_buy"),
+							Sounds.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
 				}
 			}
 		} else {
 			if (!Main.getConfigurator().config.getBoolean("removePurchaseMessages", false)) {
-				player.sendMessage(("buy_failed").replace("%item%", "UPGRADE").replace("%material%",
-						price + " " + "Levels"));
+				player.sendMessage(
+						("buy_failed").replace("%item%", "UPGRADE").replace("%material%", Integer.toString(price)));
 			}
 		}
 	}

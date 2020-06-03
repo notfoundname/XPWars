@@ -24,17 +24,20 @@ public class SBWACommand extends BaseCommand {
 		if (args.size() == 1) {
 			if (args.get(0).equalsIgnoreCase("reload")) {
 				if (!sender.hasPermission(ADMIN_PERMISSION)) {
-					sender.sendMessage(XPWars.getConfigurator().getString("messages.commands.noperm", "[SBWA] &cYou don't have permission!"));
+					sender.sendMessage(XPWars.getConfigurator().getString("messages.commands.noperm",
+							"[SBWA] &cYou don't have permission!"));
 				} else {
 					Bukkit.getServer().getPluginManager().disablePlugin(XPWars.getInstance());
 					Bukkit.getServer().getPluginManager().enablePlugin(XPWars.getInstance());
-					sender.sendMessage(XPWars.getConfigurator().getString("messages.commands.reloaded", "[SBWA] &aReloaded!"));
+					sender.sendMessage(
+							XPWars.getConfigurator().getString("messages.commands.reloaded", "[SBWA] &aReloaded!"));
 					return true;
 				}
 			}
-		}
-		else sender.sendMessage(XPWars.getConfigurator().getString("messages.commands.unknown", "[SBWA] &cUnknown command or wrong usage!"));
-		
+		} else
+			sender.sendMessage(XPWars.getConfigurator().getString("messages.commands.unknown",
+					"[SBWA] &cUnknown command or wrong usage!"));
+
 		return true;
 	}
 }
