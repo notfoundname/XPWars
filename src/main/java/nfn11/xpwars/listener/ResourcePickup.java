@@ -44,7 +44,9 @@ public class ResourcePickup implements Listener {
 				float defpitch = XPWars.getConfigurator().getInt("level.sound.pitch", 1);
 				float pitch = XPWars.getConfigurator().getInt("level.games." + gamename + ".sound.pitch",
 						(int) defpitch);
-
+				
+				type.getStack().setAmount(picked.getAmount());
+				
 				if (picked.equals(type.getStack())) {
 
 					if (max != 0 && (level + (XPWars.getConfigurator().config.getInt("resources." + type.getConfigKey())

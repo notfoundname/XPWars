@@ -66,7 +66,7 @@ public class Configurator {
 		checkOrSetConfig(modify, "level.sound.pitch", 1);
 
 		checkOrSetConfig(modify, "level.enabled-games", Arrays.asList("Arena", "WeAreDoomed"));
-		checkOrSetConfig(modify, "level.replace-store-with-levels", false);
+		checkOrSetConfig(modify, "level.store.replace-store-with-levels", false);
 
 		checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.percentage.give-from-killed-player", 100);
 		checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.percentage.keep-from-death", 0);
@@ -83,8 +83,7 @@ public class Configurator {
 
 		checkOrSetConfig(modify, "specials.remote-tnt.damage-placer", true);
 		checkOrSetConfig(modify, "specials.remote-tnt.fuse-ticks", 100);
-		checkOrSetConfig(modify, "specials.remote-tnt.detonator.allow-drop", false);
-		checkOrSetConfig(modify, "specials.remote-tnt.detonator.itemstack", new ItemStack(Material.TRIPWIRE_HOOK));
+		checkOrSetConfig(modify, "specials.remote-tnt.detonator-itemstack", new ItemStack(Material.TRIPWIRE_HOOK));
 
 		checkOrSetConfig(modify, "specials.trampoline.remove-when-used", true);
 		checkOrSetConfig(modify, "specials.trampoline.y-check", 0);

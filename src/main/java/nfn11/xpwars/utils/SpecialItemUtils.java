@@ -41,13 +41,4 @@ public class SpecialItemUtils {
 			return config.getString(fallback);
 		}
 	}
-	
-	public static ItemStack getStackFromProperty(String name, FileConfiguration config, String fallback,
-			BedwarsApplyPropertyToBoughtItem event) {
-		try {
-			return (ItemStack) event.getProperty(name);
-		} catch (NullPointerException e) {
-			return config.getConfigurationSection("").getItemStack(fallback);
-		}
-	}
 }
