@@ -100,8 +100,8 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 			int gameTime = Main.getGame(parsed).getGameTime();
 			int countdown = Main.getGame(parsed).getPauseCountdown();
 
-			if (status == GameStatus.WAITING && BedwarsAPI.getInstance().getGameByName(parsed)
-					.getMinPlayers() >= BedwarsAPI.getInstance().getGameByName(parsed).countConnectedPlayers()) {
+			if (status == GameStatus.WAITING && Main.getGame(parsed)
+					.getMinPlayers() >= Main.getGame(parsed).countConnectedPlayers()) {
 				return XPWars.getConfigurator().getString("messages.placeholders.waiting", "waiting");
 			}
 			if (status == GameStatus.RUNNING) {
@@ -109,8 +109,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 						.replace("%time%", Main.getGame(parsed).getFormattedTimeLeft(gameTime - countdown)
 						.replace("%left%", Main.getGame(parsed).getFormattedTimeLeft()));
 			}
-			if (status == GameStatus.WAITING && BedwarsAPI.getInstance().getGameByName(parsed)
-					.getMinPlayers() <= BedwarsAPI.getInstance().getGameByName(parsed).countConnectedPlayers()) {
+			if (status == GameStatus.WAITING && Main.getGame(parsed).getMinPlayers() <= Main.getGame(parsed).countConnectedPlayers()) {
 				return XPWars.getConfigurator().getString("messages.placeholders.starting", "starting")
 						.replace("%left%", Main.getGame(parsed).getFormattedTimeLeft());
 			}
@@ -120,29 +119,27 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 			if (status == GameStatus.REBUILDING) {
 				return XPWars.getConfigurator().getString("messages.placeholders.rebuilding", "rebuilding");
 			}
-			return "none"; // MAYBE
-
 		}
 
 		if (parsed.endsWith("_mxpl")) {
 			parsed = parsed.replace("_mxpl", "");
-			if (!BedwarsAPI.getInstance().isGameWithNameExists(parsed))
+			if (!Main.isGameExists(parsed))
 				return "";
 
-			return Integer.toString(BedwarsAPI.getInstance().getGameByName(parsed).getMaxPlayers());
+			return Integer.toString(Main.getGame(parsed).getMaxPlayers());
 		}
 
 		if (parsed.endsWith("_mnpl")) {
 			parsed = parsed.replace("_mnpl", "");
-			if (!BedwarsAPI.getInstance().isGameWithNameExists(parsed))
+			if (!Main.isGameExists(parsed))
 				return "";
 
-			return Integer.toString(BedwarsAPI.getInstance().getGameByName(parsed).getMinPlayers());
+			return Integer.toString(Main.getGame(parsed).getMinPlayers());
 		}
 
 		if (parsed.endsWith("_tl")) {
 			parsed = parsed.replace("_tl", "");
-			if (!BedwarsAPI.getInstance().isGameWithNameExists(parsed))
+			if (!Main.isGameExists(parsed))
 				return "";
 
 			return Main.getGame(parsed).getFormattedTimeLeft();
@@ -150,7 +147,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 
 		if (parsed.endsWith("_tp")) {
 			parsed = parsed.replace("_tp", "");
-			if (!BedwarsAPI.getInstance().isGameWithNameExists(parsed))
+			if (!Main.isGameExists(parsed))
 				return "";
 
 			int gameTime = Main.getGame(parsed).getGameTime();
@@ -222,8 +219,6 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 			if (status == GameStatus.REBUILDING) {
 				return XPWars.getConfigurator().getString("messages.placeholders.rebuilding", "rebuilding");
 			}
-			return "none"; // MAYBE
-
 		}
 		
 		if (parsed.endsWith("_stats_kills")) {
