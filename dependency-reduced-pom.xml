@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.nfn11</groupId>
-  <artifactId>ScreamingBedwarsAddon</artifactId>
+  <groupId>nfn11</groupId>
+  <artifactId>XPWars</artifactId>
   <version>1.0-SNAPSHOT</version>
   <build>
     <defaultGoal>clean install</defaultGoal>
@@ -16,10 +16,11 @@
         </includes>
       </resource>
     </resources>
-    <finalName>ScreamingBedwarsAddon-${project.version}</finalName>
+    <finalName>XPWars-${project.version}</finalName>
     <plugins>
       <plugin>
         <artifactId>maven-shade-plugin</artifactId>
+        <version>3.2.0</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -30,7 +31,7 @@
               <relocations>
                 <relocation>
                   <pattern>org.screamingsandals.simpleinventories</pattern>
-                  <shadedPattern>${project.groupId}.si</shadedPattern>
+                  <shadedPattern>${project.groupId}.thirdparty.simpleinventories</shadedPattern>
                 </relocation>
               </relocations>
             </configuration>
