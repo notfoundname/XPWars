@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -15,8 +16,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.lib.debug.Debug;
-
-import net.md_5.bungee.api.ChatColor;
+import org.bukkit.ChatColor;
 
 /*
  * not mine. thanks misat11 & ceph
@@ -53,7 +53,12 @@ public class Configurator {
 		} catch (IOException | InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
-
+		
+		if (config.getInt("version") != 1) {
+			file.renameTo(new File(dataFolder, "config_backup.yml"));
+			Bukkit.getServer().getLogger().info("Your XPWars configuration file was backed up. Please transfer values.");
+			file = new File(dataFolder, "config.yml");
+		}
 		AtomicBoolean modify = new AtomicBoolean(false);
 
 		ConfigurationSection resources = Main.getConfigurator().config.getConfigurationSection("resources");
