@@ -1,7 +1,6 @@
 package nfn11.xpwars.utils;
 
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
 
 public class SpecialItemUtils {

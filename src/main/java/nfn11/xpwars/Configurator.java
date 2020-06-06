@@ -15,7 +15,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.Main;
-import org.screamingsandals.lib.debug.Debug;
 import org.bukkit.ChatColor;
 
 /*
@@ -183,25 +182,5 @@ public class Configurator {
 			}
 			modify.set(true);
 		}
-	}
-
-	public ItemStack readDefinedItem(String item, String def) {
-		ItemStack material = new ItemStack(Material.valueOf(def));
-
-		if (config.isSet("items." + item)) {
-			Object obj = config.get("items." + item);
-			if (obj instanceof ItemStack) {
-				material = (ItemStack) obj;
-			} else {
-				try {
-					material.setType(Material.valueOf((String) obj));
-				} catch (IllegalArgumentException e) {
-					Debug.warn("DEFINED ITEM " + obj + " DOES NOT EXISTS.", true);
-					Debug.warn("Check config variable: items." + item);
-				}
-			}
-		}
-
-		return material;
 	}
 }

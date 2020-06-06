@@ -26,7 +26,7 @@ public class XPWars extends JavaPlugin {
 		
 		if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new nfn11.xpwars.placeholderapi.PlaceholderAPIHook(this).register();
-            Bukkit.getLogger().info("[XPWars] Succesfully registered PlaceholderAPI!");
+            Bukkit.getServer().getLogger().info("Succesfully registered PlaceholderAPI!");
         }
 		
 		InventoryListener.init(this);
