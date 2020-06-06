@@ -11,6 +11,7 @@ import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GamePlayer;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import nfn11.xpwars.XPWars;
 
 public class PlaceholderAPIHook extends PlaceholderExpansion {
 
@@ -101,23 +102,23 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 
 			if (status == GameStatus.WAITING && BedwarsAPI.getInstance().getGameByName(parsed)
 					.getMinPlayers() >= BedwarsAPI.getInstance().getGameByName(parsed).countConnectedPlayers()) {
-				return plugin.getConfig().getString("messages.placeholders.waiting").replace("&", "§");
+				return XPWars.getConfigurator().getString("messages.placeholders.waiting", "waiting");
 			}
 			if (status == GameStatus.RUNNING) {
-				return plugin.getConfig().getString("messages.placeholders.running").replace("&", "§").replace("%time%",
-						Main.getGame(parsed).getFormattedTimeLeft(gameTime - countdown).replace("%left%",
-								Main.getGame(parsed).getFormattedTimeLeft()));
+				return XPWars.getConfigurator().getString("messages.placeholders.running", "running")
+						.replace("%time%", Main.getGame(parsed).getFormattedTimeLeft(gameTime - countdown)
+						.replace("%left%", Main.getGame(parsed).getFormattedTimeLeft()));
 			}
 			if (status == GameStatus.WAITING && BedwarsAPI.getInstance().getGameByName(parsed)
 					.getMinPlayers() <= BedwarsAPI.getInstance().getGameByName(parsed).countConnectedPlayers()) {
-				return plugin.getConfig().getString("messages.placeholders.starting").replace("&", "§")
+				return XPWars.getConfigurator().getString("messages.placeholders.starting", "starting")
 						.replace("%left%", Main.getGame(parsed).getFormattedTimeLeft());
 			}
 			if (status == GameStatus.GAME_END_CELEBRATING) {
-				return plugin.getConfig().getString("messages.placeholders.ended").replace("&", "§");
+				return XPWars.getConfigurator().getString("messages.placeholders.ended", "ended");
 			}
 			if (status == GameStatus.REBUILDING) {
-				return plugin.getConfig().getString("messages.placeholders.rebuilding").replace("&", "§");
+				return XPWars.getConfigurator().getString("messages.placeholders.rebuilding", "rebuilding");
 			}
 			return "none"; // MAYBE
 
@@ -191,7 +192,40 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 
 			return Main.getPlayerGameProfile(player).getGame().getFormattedTimeLeft(gameTime - countdown);
 		}
+		
+		if (parsed.equals("state")) {
+			if (!Main.isPlayerInGame(player))
+				return "";
+			
+			Game game = Main.getPlayerGameProfile(player).getGame();
+			GameStatus status = game.getStatus();
 
+			int gameTime = game.getGameTime();
+			int countdown = game.getPauseCountdown();
+
+			if (status == GameStatus.WAITING && game.getMinPlayers() >= game.countConnectedPlayers()) {
+				return XPWars.getConfigurator().getString("messages.placeholders.waiting", "waiting");
+			}
+			if (status == GameStatus.RUNNING) {
+				return XPWars.getConfigurator().getString("messages.placeholders.running", "running")
+						.replace("%time%", game.getFormattedTimeLeft(gameTime - countdown)
+						.replace("%left%", game.getFormattedTimeLeft()));
+			}
+			if (status == GameStatus.WAITING && BedwarsAPI.getInstance().getGameByName(parsed)
+					.getMinPlayers() <= BedwarsAPI.getInstance().getGameByName(parsed).countConnectedPlayers()) {
+				return XPWars.getConfigurator().getString("messages.placeholders.starting", "starting")
+						.replace("%left%", Main.getGame(parsed).getFormattedTimeLeft());
+			}
+			if (status == GameStatus.GAME_END_CELEBRATING) {
+				return XPWars.getConfigurator().getString("messages.placeholders.ended", "ended");
+			}
+			if (status == GameStatus.REBUILDING) {
+				return XPWars.getConfigurator().getString("messages.placeholders.rebuilding", "rebuilding");
+			}
+			return "none"; // MAYBE
+
+		}
+		
 		if (parsed.endsWith("_stats_kills")) {
 			parsed = parsed.replace("_stats_kills", "");
 			if (!Main.isPlayerGameProfileRegistered(Bukkit.getPlayer(parsed)))

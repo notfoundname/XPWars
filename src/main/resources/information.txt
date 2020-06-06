@@ -16,6 +16,7 @@ Available placeholders:
 %xpwars_tl%
 %xpwars_tp%
 %xpwars_color%
+%xpwars_state%
 
 // statistics of player PLAYER
 %xpwars_PLAYER_stats_kills%
