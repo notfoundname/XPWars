@@ -10,6 +10,7 @@ import nfn11.xpwars.commands.SBWACommand;
 import nfn11.xpwars.inventories.LevelShop;
 import nfn11.xpwars.listener.PlayerDeathListener;
 import nfn11.xpwars.listener.ResourcePickup;
+import nfn11.xpwars.special.listener.RegisterSpecialListeners;
 
 public class XPWars extends JavaPlugin {
 	
@@ -36,6 +37,7 @@ public class XPWars extends JavaPlugin {
 		new SBWACommand();
 		new ResourcePickup();
 		new PlayerDeathListener();
+		new RegisterSpecialListeners();
 	}
 	
 	public static Configurator getConfigurator() {

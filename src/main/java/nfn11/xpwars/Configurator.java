@@ -85,7 +85,6 @@ public class Configurator {
 			checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.spawners." + key, 10);
 		}
 
-		checkOrSetConfig(modify, "specials.remote-tnt.damage-placer", true);
 		checkOrSetConfig(modify, "specials.remote-tnt.fuse-ticks", 100);
 		checkOrSetConfig(modify, "specials.remote-tnt.detonator-itemstack", new ItemStack(Material.TRIPWIRE_HOOK));
 
