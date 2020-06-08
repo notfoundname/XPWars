@@ -190,10 +190,10 @@ public class LevelShop implements Listener {
 	public void onShopOpen(BedwarsOpenShopEvent event) {
 		if (Main.getPlayerGameProfile(event.getPlayer()).isSpectator)
 			return;
-		if (XPWars.getConfigurator().getBoolean("level.replace-store-with-levels", true)) {
+		if (XPWars.getConfigurator().getBoolean("level.enable", true)) {
 			event.setResult(Result.DISALLOW_THIRD_PARTY_SHOP);
 			this.show(event.getPlayer(), event.getStore());
-		}
+		} else return;
 	}
 
 	@EventHandler
@@ -405,7 +405,7 @@ public class LevelShop implements Listener {
 			event.buyStack(newItem);
 
 			if (!Main.getConfigurator().config.getBoolean("removePurchaseMessages", false)) {
-				player.sendMessage(("buy_succes").replace("%item%", amount + "x " + getNameOrCustomNameOfItem(newItem))
+				player.sendMessage(("buy_success").replace("%item%", amount + "x " + getNameOrCustomNameOfItem(newItem))
 						.replace("%material%", price + " " + "Levels"));
 			}
 			Sounds.playSound(player, player.getLocation(),

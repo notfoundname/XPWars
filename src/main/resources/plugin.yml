@@ -4,4 +4,4 @@ main: nfn11.xpwars.XPWars
 api-version: 1.13
 depend: [BedWars]
 softdepend: [PlaceholderAPI]
-author: notfoundname11
+author: notfoundname11, ConnorLinfoot (ActionBarAPI), ScreamingSandals (SimpleInventories)

@@ -21,7 +21,6 @@ public class PlayerDeathListener implements Listener {
 		String gamename = event.getGame().getName();
 
 		int player_level = player.getLevel();
-		int killer_level = killer.getLevel();
 
 		int def_keep_from_death_player = XPWars.getConfigurator().getInt("level.percentage.keep-from-death", 0);
 		int def_to_killer = XPWars.getConfigurator().getInt("level.percentage.give-from-killed-player", 0);
@@ -51,6 +50,7 @@ public class PlayerDeathListener implements Listener {
 		int max = XPWars.getConfigurator().getInt("level.games." + gamename + ".maximum-xp", defmax);
 
 		if (killer != null) {
+			int killer_level = killer.getLevel();
 			if (max != 0 && (killer_level + (player_level / 100) * to_killer) > max) {
 				killer.setLevel(max);
 			} else

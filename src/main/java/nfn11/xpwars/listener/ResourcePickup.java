@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
 
+import nfn11.thirdparty.connorlinfoot.actionbarapi.ActionBarAPI;
 import nfn11.xpwars.XPWars;
 
 public class ResourcePickup implements Listener {
@@ -20,6 +21,9 @@ public class ResourcePickup implements Listener {
 
 	@EventHandler
 	public void onPickup(EntityPickupItemEvent event) {
+		if (!XPWars.getConfigurator().config.getBoolean("level.enable"))
+			return;
+
 		if (event.getEntity() instanceof Player) {
 
 			Player player = (Player) event.getEntity();
@@ -29,39 +33,43 @@ public class ResourcePickup implements Listener {
 			ItemStack picked = event.getItem().getItemStack();
 
 			for (ItemSpawnerType type : Main.getInstance().getItemSpawnerTypes()) {
-				String defsound = XPWars.getConfigurator().getString("level.sound.sound",
+
+				String defsound = XPWars.getConfigurator().config.getString("level.sound.sound",
 						"ENTITY_EXPERIENCE_ORB_PICKUP");
-				String sound = XPWars.getConfigurator().getString("level.games." + gamename + ".sound.sound", defsound);
+				String sound = XPWars.getConfigurator().config
+						.getString("level.per-arena-settings." + gamename + ".sound.sound", defsound);
 
 				int level = player.getLevel();
-				int defmax = XPWars.getConfigurator().getInt("level.maximum-xp", 0);
-				int max = XPWars.getConfigurator().getInt("level.games." + gamename + ".maximum-xp", defmax);
+				int defmax = XPWars.getConfigurator().config.getInt("level.maximum-xp", 0);
+				int max = XPWars.getConfigurator().config.getInt("level.per-arena-settings." + gamename + ".maximum-xp",
+						defmax);
 
-				float defvolume = XPWars.getConfigurator().getInt("level.sound.volume", 1);
-				float volume = XPWars.getConfigurator().getInt("level.games." + gamename + ".sound.volume",
-						(int) defvolume);
+				int defres = XPWars.getConfigurator().config.getInt("level.spawners." + type.getConfigKey(), 0);
+				int res = XPWars.getConfigurator()
+						.getInt("level.per-arena-settings." + gamename + ".spawners." + type.getConfigKey(), defres);
 
-				float defpitch = XPWars.getConfigurator().getInt("level.sound.pitch", 1);
-				float pitch = XPWars.getConfigurator().getInt("level.games." + gamename + ".sound.pitch",
-						(int) defpitch);
-				
-				type.getStack().setAmount(picked.getAmount());
-				
-				if (picked.equals(type.getStack())) {
+				float defvolume = XPWars.getConfigurator().config.getInt("level.sound.volume", 1);
+				float volume = XPWars.getConfigurator().config
+						.getInt("level.per-arena-settings." + gamename + ".sound.volume", (int) defvolume);
 
-					if (max != 0 && (level + (XPWars.getConfigurator().config.getInt("resources." + type.getConfigKey())
-							* picked.getAmount())) > max) {
+				float defpitch = XPWars.getConfigurator().config.getInt("level.sound.pitch", 1);
+				float pitch = XPWars.getConfigurator().config
+						.getInt("level.per-arena-settings." + gamename + ".sound.pitch", (int) defpitch);
 
-						event.setCancelled(true);
-						player.sendMessage(XPWars.getConfigurator()
-								.getString("messages.level.maxreached", "&cYou can't have more than %max% levels!")
-								.replace("%max%", Integer.toString(max)));
+				if (picked.isSimilar(type.getStack())) {
+					event.setCancelled(true);
+					if (max != 0 && (level + (res * picked.getAmount())) > max) {
+
+						ActionBarAPI.sendActionBar(player,
+								XPWars.getConfigurator().config
+										.getString("messages.level.maxreached",
+												"&cYou can't have more than %max% levels!")
+										.replace("%max%", Integer.toString(max)));
 						return;
 					}
 
 					event.getItem().remove();
-					player.setLevel(level + (XPWars.getConfigurator().config.getInt("resources." + type.getConfigKey())
-							* picked.getAmount()));
+					player.setLevel(level + (res * picked.getAmount()));
 
 					player.playSound(player.getLocation(), Sound.valueOf(sound), volume, pitch);
 				}

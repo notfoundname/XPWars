@@ -25,18 +25,30 @@ public class SBWACommand extends BaseCommand {
 			if (args.get(0).equalsIgnoreCase("reload")) {
 				if (!sender.hasPermission(ADMIN_PERMISSION)) {
 					sender.sendMessage(XPWars.getConfigurator().getString("messages.commands.noperm",
-							"[SBWA] &cYou don't have permission!"));
+							"[XPWars] &cYou don't have permission!"));
 				} else {
 					Bukkit.getServer().getPluginManager().disablePlugin(XPWars.getInstance());
 					Bukkit.getServer().getPluginManager().enablePlugin(XPWars.getInstance());
 					sender.sendMessage(
-							XPWars.getConfigurator().getString("messages.commands.reloaded", "[SBWA] &aReloaded!"));
+							XPWars.getConfigurator().getString("messages.commands.reloaded", "[XPWars] &aReloaded!"));
 					return true;
+				}
+			}
+			if (args.get(0).equalsIgnoreCase("help")) {
+				if (!sender.hasPermission(ADMIN_PERMISSION)) {
+					sender.sendMessage(XPWars.getConfigurator().getString("messages.commands.noperm",
+							"[XPWars] &cYou don't have permission!"));
+				} else {
+					sender.sendMessage("[XPWars] - Version " + Bukkit.getServer().getPluginManager().getPlugin("XPWars").getDescription().getVersion());
+					sender.sendMessage("Available commands:");
+					sender.sendMessage("/bw xpwars reload - Reload the addon");
+					sender.sendMessage("/bw xpwars help - Show this");
+					sender.sendMessage("/bw xpwars level disable <arena> - Disable level system in arena");
 				}
 			}
 		} else
 			sender.sendMessage(XPWars.getConfigurator().getString("messages.commands.unknown",
-					"[SBWA] &cUnknown command or wrong usage!"));
+					"[XPWars] &cUnknown command or wrong usage!"));
 
 		return true;
 	}

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -24,10 +25,10 @@ import nfn11.xpwars.special.RemoteTNT;
 import nfn11.xpwars.utils.SpecialItemUtils;
 
 public class RemoteTNTListener implements Listener {
-	
+
 	private static final String REMOTE_TNT_PREFIX = "Module:RemoteTnt:";
 	final List<Location> blocks = new ArrayList<Location>();
-	
+
 	@EventHandler
 	public void onRemoteTntBuy(BedwarsApplyPropertyToBoughtItem event) {
 		if (event.getPropertyName().equalsIgnoreCase("remotetnt")) {
@@ -39,30 +40,31 @@ public class RemoteTNTListener implements Listener {
 	@EventHandler
 	public void onTntPlace(BedwarsPlayerBuildBlock event) {
 		Player player = event.getPlayer();
-		
+
 		if (event.isCancelled())
 			return;
-		
+
 		ItemStack tnt = event.getItemInHand();
 		String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(tnt, REMOTE_TNT_PREFIX);
 		if (unhidden != null) {
 			int fuse_ticks = Integer.parseInt(unhidden.split(":")[2]);
-			
+
 			new RemoteTNT(event.getGame(), player, event.getTeam());
 			ItemStack detonator = detonator();
-			
+
 			Block block = event.getBlock();
 			block.setMetadata("owner", new FixedMetadataValue(XPWars.getInstance(), player.getUniqueId().toString()));
 			block.setMetadata("ticks", new FixedMetadataValue(XPWars.getInstance(), fuse_ticks));
 			blocks.add(block.getLocation());
-			
+
 			if (!player.getInventory().contains(detonator)) {
 				player.getInventory().addItem(detonator);
 			}
-			
-		} else return;
+
+		} else
+			return;
 	}
-	
+
 	@EventHandler
 	public void onDetonatorUsage(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
@@ -74,29 +76,35 @@ public class RemoteTNTListener implements Listener {
 				for (Location location : blocks) {
 					event.setCancelled(true);
 					int ticks = location.getBlock().getMetadata("ticks").get(0).asInt();
-					String owner = location.getBlock().getMetadata("owner").get(0).asString();
 					location.getBlock().setType(Material.AIR);
 					TNTPrimed tnt = (TNTPrimed) location.getWorld().spawn(location.add(0.5, 0.0, 0.5), TNTPrimed.class);
+					for (Player players : Main.getPlayerGameProfile(player).getGame().getConnectedPlayers()) {
+						if (ticks >= 30) {
+							players.playSound(tnt.getLocation(), Sound.ENTITY_TNT_PRIMED, 1.0F, 1.0F);
+						}
+					}
 					Main.registerGameEntity(tnt, Main.getPlayerGameProfile(player).getGame());
 					tnt.setFuseTicks(ticks);
+					tnt.setMetadata(player.getUniqueId().toString(),
+							new FixedMetadataValue(XPWars.getInstance(), null));
 					location.getBlock().setType(Material.AIR);
 					player.getInventory().remove(detonator);
 				}
 			}
-		} else return;
+		} else
+			return;
 	}
-	
+
 	@EventHandler
-	public void onDamage (EntityDamageByEntityEvent event) {
-		Entity entity = event.getEntity();
-		Entity damager = event.getDamager();
+	public void onDamage(EntityDamageByEntityEvent event) {
 		boolean enabled = Main.getConfigurator().config.getBoolean("tnt.dont-damage-placer");
-		if (entity instanceof Player) {
-			Player player = (Player) entity;
-			if (!Main.isPlayerInGame(player)) return;
-			
-			if (damager instanceof TNTPrimed 
-					&& damager.getMetadata("owner").get(0).asString().equals(entity.getUniqueId().toString())) {
+		if (event.getEntity() instanceof Player) {
+			Player player = (Player) event.getEntity();
+			if (!Main.isPlayerInGame(player))
+				return;
+
+			if (event.getDamager() instanceof TNTPrimed
+					&& event.getDamager().hasMetadata(player.getUniqueId().toString())) {
 				if (enabled) {
 					event.setCancelled(true);
 				} else
@@ -104,12 +112,13 @@ public class RemoteTNTListener implements Listener {
 			}
 		}
 	}
+
 	private String applyProperty(BedwarsApplyPropertyToBoughtItem event) {
 		return REMOTE_TNT_PREFIX + SpecialItemUtils.getIntFromProperty("fuse-ticks", XPWars.getConfigurator().config,
 				"specials.remote-tnt.fuse-ticks", event);
 	}
-	
+
 	private ItemStack detonator() {
-		return XPWars.getConfigurator().config.getConfigurationSection("specials.remote-tnt").getItemStack("detonator-itemstack");
+		return XPWars.getConfigurator().config.getItemStack("specials.remote-tnt.detonator-itemstack");
 	}
 }

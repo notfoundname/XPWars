@@ -1,11 +1,9 @@
 package nfn11.xpwars;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.List;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -52,38 +50,38 @@ public class Configurator {
 		} catch (IOException | InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
-		
-		if (config.getInt("version") != 1) {
-			file.renameTo(new File(dataFolder, "config_backup.yml"));
-			Bukkit.getServer().getLogger().info("Your XPWars configuration file was backed up. Please transfer values.");
-			file = new File(dataFolder, "config.yml");
-		}
+
 		AtomicBoolean modify = new AtomicBoolean(false);
 
 		ConfigurationSection resources = Main.getConfigurator().config.getConfigurationSection("resources");
-
+		
+		checkOrSetConfig(modify, "level.enable", true);
 		checkOrSetConfig(modify, "level.percentage.give-from-killed-player", 33);
 		checkOrSetConfig(modify, "level.percentage.keep-from-death", 33);
 		checkOrSetConfig(modify, "level.maximum-xp", 1000);
 		checkOrSetConfig(modify, "level.sound.sound", "ENTITY_EXPERIENCE_ORB_PICKUP");
 		checkOrSetConfig(modify, "level.sound.volume", 1);
 		checkOrSetConfig(modify, "level.sound.pitch", 1);
-
-		checkOrSetConfig(modify, "level.enabled-games", Arrays.asList("Arena", "WeAreDoomed"));
-		checkOrSetConfig(modify, "level.store.replace-store-with-levels", false);
-
-		checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.percentage.give-from-killed-player", 100);
-		checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.percentage.keep-from-death", 0);
-		checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.maximum-xp", 2000);
-
-		checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.sound.sound", "ENTITY_EXPERIENCE_ORB_PICKUP");
-		checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.sound.volume", 1);
-		checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.sound.pitch", 1);
-
-		for (String key : resources.getKeys(false)) {
-			checkOrSetConfig(modify, "level.spawners." + key, 3);
-			checkOrSetConfig(modify, "level.games.ArenaNameCaseSensetive.spawners." + key, 10);
-		}
+		
+		checkOrSetConfig(modify, "level.per-arena-settings", new HashMap<String, HashMap<String, Object>>() {{
+			put("ArenaNameCaseSensetive", new HashMap<String, Object>() {{
+				put("percentage.give-from-killed-player", 100);
+				put("percentage.keep-from-death", 0);
+				put("maximum-xp", 0);
+				put("sound.sound", "ENTITY_EXPERIENCE_ORB_PICKUP");
+				put("sound.volume", 1);
+				put("sound.pitch", 2);
+				for (String key : resources.getKeys(false)) {
+					put("spawners." + key, 10);
+				}
+			}});
+		}});
+		
+		checkOrSetConfig(modify, "level.spawners", new HashMap<String, Object>() {{
+			for (String key : resources.getKeys(false)) {
+				put(key, 3);
+			}
+		}});
 
 		checkOrSetConfig(modify, "specials.remote-tnt.fuse-ticks", 100);
 		checkOrSetConfig(modify, "specials.remote-tnt.detonator-itemstack", new ItemStack(Material.TRIPWIRE_HOOK));
@@ -115,6 +113,13 @@ public class Configurator {
 				"[XPWars] &cShop file does not exist or contains errors!");
 
 		checkOrSetConfig(modify, "version", 1);
+
+		if (config.getInt("version") != 1) {
+			file.renameTo(new File(dataFolder, "config_backup.yml"));
+			Bukkit.getServer().getLogger()
+					.info("[XPWars] Your XPWars configuration file was backed up. Please transfer values.");
+			loadDefaults();
+		}
 
 		if (modify.get()) {
 			try {
@@ -152,20 +157,6 @@ public class Configurator {
 			return defaultInt;
 		}
 		return config.getInt(string);
-	}
-
-	public List<String> getStringList(String string) {
-		if (config.getConfigurationSection("").getStringList(string).size() == 0) {
-			for (String l : config.getConfigurationSection("").getStringList(string)) {
-				ChatColor.translateAlternateColorCodes('&', l);
-			}
-		}
-		return config.getConfigurationSection("").getStringList(string);
-
-	}
-
-	public Set<String> getStringKeys(String string) {
-		return config.getConfigurationSection(string).getKeys(true);
 	}
 
 	private void checkOrSetConfig(AtomicBoolean modify, String path, Object value) {
