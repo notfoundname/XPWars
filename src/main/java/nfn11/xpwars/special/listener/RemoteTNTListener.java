@@ -95,24 +95,6 @@ public class RemoteTNTListener implements Listener {
 			return;
 	}
 
-	@EventHandler
-	public void onDamage(EntityDamageByEntityEvent event) {
-		boolean enabled = Main.getConfigurator().config.getBoolean("tnt.dont-damage-placer");
-		if (event.getEntity() instanceof Player) {
-			Player player = (Player) event.getEntity();
-			if (!Main.isPlayerInGame(player))
-				return;
-
-			if (event.getDamager() instanceof TNTPrimed
-					&& event.getDamager().hasMetadata(player.getUniqueId().toString())) {
-				if (enabled) {
-					event.setCancelled(true);
-				} else
-					event.setCancelled(false);
-			}
-		}
-	}
-
 	private String applyProperty(BedwarsApplyPropertyToBoughtItem event) {
 		return REMOTE_TNT_PREFIX + SpecialItemUtils.getIntFromProperty("fuse-ticks", XPWars.getConfigurator().config,
 				"specials.remote-tnt.fuse-ticks", event);

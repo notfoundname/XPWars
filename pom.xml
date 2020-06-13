@@ -46,13 +46,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.screamingsandals.simpleinventories</groupId>
-			<artifactId>SimpleInventories-Core</artifactId>
-			<version>1.0.4-SNAPSHOT</version>
-			<scope>compile</scope>
-		</dependency>
-
-		<dependency>
 			<groupId>org.screamingsandals.bedwars</groupId>
 			<artifactId>BedWars-API</artifactId>
 			<version>0.2.11-SNAPSHOT</version>
@@ -75,29 +68,6 @@
 		<defaultGoal>clean install</defaultGoal>
 		<finalName>XPWars-${project.version}</finalName>
 		<plugins>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<version>3.2.0</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>shade</goal>
-						</goals>
-						<configuration>
-							<relocations>
-								<relocation>
-									<pattern>org.screamingsandals.simpleinventories</pattern>
-									<shadedPattern>${project.groupId}.thirdparty.simpleinventories</shadedPattern>
-								</relocation>
-							</relocations>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>

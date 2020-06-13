@@ -4,13 +4,12 @@ import java.util.HashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.commands.BaseCommand;
-import org.screamingsandals.simpleinventories.listeners.InventoryListener;
+import org.screamingsandals.bedwars.lib.sgui.listeners.InventoryListener;
 
 import nfn11.thirdparty.connorlinfoot.actionbarapi.ActionBarAPI;
 import nfn11.xpwars.commands.SBWACommand;
 import nfn11.xpwars.inventories.LevelShop;
-import nfn11.xpwars.listener.PlayerDeathListener;
-import nfn11.xpwars.listener.ResourcePickup;
+import nfn11.xpwars.listener.XPWarsPlayerListener;
 import nfn11.xpwars.special.listener.RegisterSpecialListeners;
 
 public class XPWars extends JavaPlugin {
@@ -33,13 +32,11 @@ public class XPWars extends JavaPlugin {
 
 		InventoryListener.init(this);
 		new LevelShop();
-
-		commands = new HashMap<>();
 		new SBWACommand();
-		new ResourcePickup();
-		new PlayerDeathListener();
+		new XPWarsPlayerListener();
 		new RegisterSpecialListeners();
 		new ActionBarAPI();
+		commands = new HashMap<>();
 	}
 
 	public static Configurator getConfigurator() {

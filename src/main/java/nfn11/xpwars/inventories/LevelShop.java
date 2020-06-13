@@ -4,14 +4,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.events.*;
-import org.screamingsandals.bedwars.api.events.BedwarsOpenShopEvent.Result;
 import org.screamingsandals.bedwars.api.game.GameStore;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
 import org.screamingsandals.bedwars.api.upgrades.Upgrade;
@@ -22,14 +20,14 @@ import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GamePlayer;
 import org.screamingsandals.bedwars.utils.Debugger;
 import org.screamingsandals.bedwars.utils.Sounds;
-import org.screamingsandals.simpleinventories.SimpleInventories;
-import org.screamingsandals.simpleinventories.events.GenerateItemEvent;
-import org.screamingsandals.simpleinventories.events.PreActionEvent;
-import org.screamingsandals.simpleinventories.events.ShopTransactionEvent;
-import org.screamingsandals.simpleinventories.inventory.Options;
-import org.screamingsandals.simpleinventories.item.ItemProperty;
-import org.screamingsandals.simpleinventories.item.PlayerItemInfo;
-import org.screamingsandals.simpleinventories.utils.MapReader;
+import org.screamingsandals.bedwars.lib.sgui.SimpleInventories;
+import org.screamingsandals.bedwars.lib.sgui.events.GenerateItemEvent;
+import org.screamingsandals.bedwars.lib.sgui.events.PreActionEvent;
+import org.screamingsandals.bedwars.lib.sgui.events.ShopTransactionEvent;
+import org.screamingsandals.bedwars.lib.sgui.inventory.Options;
+import org.screamingsandals.bedwars.lib.sgui.item.ItemProperty;
+import org.screamingsandals.bedwars.lib.sgui.item.PlayerItemInfo;
+import org.screamingsandals.bedwars.lib.sgui.utils.MapReader;
 import nfn11.xpwars.XPWars;
 
 import java.io.File;
@@ -37,6 +35,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
+import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
 
 public class LevelShop implements Listener {
 	/*
@@ -50,19 +51,19 @@ public class LevelShop implements Listener {
 
 		ItemStack backItem = Main.getConfigurator().readDefinedItem("shopback", "BARRIER");
 		ItemMeta backItemMeta = backItem.getItemMeta();
-		backItemMeta.setDisplayName("back");
+		backItemMeta.setDisplayName(i18n("shop_back", false));
 		backItem.setItemMeta(backItemMeta);
 		options.setBackItem(backItem);
 
 		ItemStack pageBackItem = Main.getConfigurator().readDefinedItem("pageback", "ARROW");
 		ItemMeta pageBackItemMeta = backItem.getItemMeta();
-		pageBackItemMeta.setDisplayName("previous page");
+		pageBackItemMeta.setDisplayName(i18n("page_back", false));
 		pageBackItem.setItemMeta(pageBackItemMeta);
 		options.setPageBackItem(pageBackItem);
 
 		ItemStack pageForwardItem = Main.getConfigurator().readDefinedItem("pageforward", "ARROW");
 		ItemMeta pageForwardItemMeta = backItem.getItemMeta();
-		pageForwardItemMeta.setDisplayName("next page");
+		pageForwardItemMeta.setDisplayName(i18n("page_forward", false));
 		pageForwardItem.setItemMeta(pageForwardItemMeta);
 		options.setPageForwardItem(pageForwardItem);
 
@@ -80,7 +81,7 @@ public class LevelShop implements Listener {
 				InventoryType.valueOf(Main.getConfigurator().config.getString("shop.inventory-type", "CHEST")));
 
 		options.setGenericShopPriceTypeRequired(false);
-		options.setPrefix("[XPWars] Shop");
+		options.setPrefix(i18nonly("item_shop_name", "[BW] Shop"));
 		options.setGenericShop(true);
 		options.setGenericShopPriceTypeRequired(true);
 		options.setAnimationsEnabled(true);
@@ -184,16 +185,6 @@ public class LevelShop implements Listener {
 		} catch (Throwable ignored) {
 			player.sendMessage("Your shop.yml is invalid! Check it out or contact us on Discord.");
 		}
-	}
-
-	@EventHandler
-	public void onShopOpen(BedwarsOpenShopEvent event) {
-		if (Main.getPlayerGameProfile(event.getPlayer()).isSpectator)
-			return;
-		if (XPWars.getConfigurator().getBoolean("level.enable", true)) {
-			event.setResult(Result.DISALLOW_THIRD_PARTY_SHOP);
-			this.show(event.getPlayer(), event.getStore());
-		} else return;
 	}
 
 	@EventHandler
@@ -345,14 +336,12 @@ public class LevelShop implements Listener {
 	private void handleBuy(ShopTransactionEvent event) {
 		Player player = event.getPlayer();
 		Game game = Main.getPlayerGameProfile(event.getPlayer()).getGame();
-		ClickType clickType = event.getClickType();
 		MapReader mapReader = event.getItem().getReader();
 		ItemStack newItem = event.getStack();
 
 		int level = player.getLevel();
 		int amount = newItem.getAmount();
 		int price = event.getPrice();
-		int inInventory = 0;
 
 		if (mapReader.containsKey("currency-changer")) {
 			String changeItemToName = mapReader.getString("currency-changer");
@@ -367,25 +356,6 @@ public class LevelShop implements Listener {
 			}
 
 			newItem = changeItemType.getStack();
-		}
-
-		if (clickType.isShiftClick()) {
-			double priceOfOne = (double) price / amount;
-			double maxStackSize;
-			int finalStackSize;
-
-			if (Main.getConfigurator().config.getBoolean("sell-max-64-per-click-in-shop")) {
-				maxStackSize = Math.min(inInventory / priceOfOne, 64);
-			} else {
-				maxStackSize = inInventory / priceOfOne;
-			}
-
-			finalStackSize = (int) maxStackSize;
-			if (finalStackSize > amount) {
-				price = (int) (priceOfOne * finalStackSize);
-				newItem.setAmount(finalStackSize);
-				amount = finalStackSize;
-			}
 		}
 
 		if (level >= price) {
@@ -405,15 +375,17 @@ public class LevelShop implements Listener {
 			event.buyStack(newItem);
 
 			if (!Main.getConfigurator().config.getBoolean("removePurchaseMessages", false)) {
-				player.sendMessage(("buy_success").replace("%item%", amount + "x " + getNameOrCustomNameOfItem(newItem))
-						.replace("%material%", price + " " + "Levels"));
+				player.sendMessage(
+						i18n("buy_success").replace("%item%", amount + "x " + getNameOrCustomNameOfItem(newItem))
+								.replace("%material%", price + " " + "Levels"));
 			}
 			Sounds.playSound(player, player.getLocation(),
 					Main.getConfigurator().config.getString("sounds.on_item_buy"), Sounds.ENTITY_ITEM_PICKUP, 1, 1);
 		} else {
 			if (!Main.getConfigurator().config.getBoolean("removePurchaseMessages", false)) {
-				player.sendMessage(("buy_failed").replace("%item%", amount + "x " + getNameOrCustomNameOfItem(newItem))
-						.replace("%material%", price + " " + "Levels"));
+				player.sendMessage(
+						i18n("buy_failed").replace("%item%", amount + "x " + getNameOrCustomNameOfItem(newItem))
+								.replace("%material%", price + " " + "Levels"));
 			}
 		}
 	}
@@ -503,7 +475,7 @@ public class LevelShop implements Listener {
 				if (sendToAll) {
 					for (Player player1 : game.getTeamOfPlayer(event.getPlayer()).getConnectedPlayers()) {
 						if (!Main.getConfigurator().config.getBoolean("removePurchaseMessages", false)) {
-							player1.sendMessage(("buy_succes").replace("%item%", itemName).replace("%material%",
+							player1.sendMessage(i18n("buy_succes").replace("%item%", itemName).replace("%material%",
 									price + " " + "Levels"));
 						}
 						Sounds.playSound(player1, player1.getLocation(),
@@ -512,7 +484,7 @@ public class LevelShop implements Listener {
 					}
 				} else {
 					if (!Main.getConfigurator().config.getBoolean("removePurchaseMessages", false)) {
-						player.sendMessage(("buy_succes").replace("%item%", itemName).replace("%material%",
+						player.sendMessage(i18n("buy_succes").replace("%item%", itemName).replace("%material%",
 								price + " " + "Levels"));
 					}
 					Sounds.playSound(player, player.getLocation(),
@@ -523,7 +495,7 @@ public class LevelShop implements Listener {
 		} else {
 			if (!Main.getConfigurator().config.getBoolean("removePurchaseMessages", false)) {
 				player.sendMessage(
-						("buy_failed").replace("%item%", "UPGRADE").replace("%material%", Integer.toString(price)));
+						i18n("buy_failed").replace("%item%", "UPGRADE").replace("%material%", Integer.toString(price)));
 			}
 		}
 	}
