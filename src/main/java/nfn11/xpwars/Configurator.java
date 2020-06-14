@@ -109,8 +109,7 @@ public class Configurator {
 				"[XPWars] &cThere's a error while reloading. Check em in console.");
 		checkOrSetConfig(modify, "messages.commands.unknown", "[XPWars] &cUnknown command or wrong usage!");
 		checkOrSetConfig(modify, "messages.commands.noperm", "[XPWars] &cYou don't have permission!");
-		checkOrSetConfig(modify, "messages.commands.nostore",
-				"[XPWars] &cShop file does not exist or contains errors!");
+		checkOrSetConfig(modify, "messages.commands.nostore", "[XPWars] &cInvalid shop file : %file%!");
 
 		checkOrSetConfig(modify, "version", 1);
 

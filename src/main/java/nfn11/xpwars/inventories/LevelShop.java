@@ -1,6 +1,7 @@
 package nfn11.xpwars.inventories;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -199,42 +200,64 @@ public class LevelShop implements Listener {
 		MapReader reader = item.getReader();
 		if (reader.containsKey("price")) {
 			int price = reader.getInt("price");
-
-			boolean enabled = Main.getConfigurator().config.getBoolean("lore.generate-automatically", true);
-			enabled = reader.getBoolean("generate-lore", enabled);
-
-			List<String> loreText = reader.getStringList("generated-lore-text",
-					Main.getConfigurator().config.getStringList("lore.text"));
-
-			if (enabled) {
-				ItemStack stack = event.getStack();
-				ItemMeta stackMeta = stack.getItemMeta();
-				List<String> lore = new ArrayList<>();
-				if (stackMeta.hasLore()) {
-					lore = stackMeta.getLore();
+			ItemStack stack = event.getStack();
+			
+			if (!Main.isPlayerInGame(event.getPlayer())) {
+				ItemMeta meta = stack.getItemMeta();
+				List<String> newlore = new ArrayList<>();
+				List<String> lore = meta.getLore();
+				newlore = lore;
+				newlore.add(" ");
+				newlore.add(ChatColor.RESET + "Price: " + price + (reader.containsKey("price-type") ? reader.getString("price-type") : "Levels"));
+				newlore.add("  ");
+				newlore.add(ChatColor.RESET + "Properties: ");
+				if (item.hasProperties()) {
+					for(ItemProperty property : item.getProperties()) {
+						if (property.hasName()) {
+							newlore.add(property.getPropertyName());
+						}
+					}
 				}
-				for (String s : loreText) {
-					s = s.replaceAll("%price%", Integer.toString(price));
-					s = s.replaceAll("%resource%", "Level");
-					s = s.replaceAll("%amount%", Integer.toString(stack.getAmount()));
-					lore.add(s);
-				}
-				stackMeta.setLore(lore);
-				stack.setItemMeta(stackMeta);
-				event.setStack(stack);
-			}
-			if (item.hasProperties()) {
-				for (ItemProperty property : item.getProperties()) {
-					if (property.hasName()) {
-						ItemStack newItem = event.getStack();
-						BedwarsApplyPropertyToDisplayedItem applyEvent = new BedwarsApplyPropertyToDisplayedItem(game,
-								player, newItem, property.getReader(player).convertToMap());
-						Main.getInstance().getServer().getPluginManager().callEvent(applyEvent);
+				meta.setLore(newlore);
+				stack.setItemMeta(meta);
+			} else {
+				boolean enabled = Main.getConfigurator().config.getBoolean("lore.generate-automatically", true);
+				enabled = reader.getBoolean("generate-lore", enabled);
 
-						event.setStack(newItem);
+				List<String> loreText = reader.getStringList("generated-lore-text",
+						Main.getConfigurator().config.getStringList("lore.text"));
+
+				if (enabled) {
+					
+					ItemMeta stackMeta = stack.getItemMeta();
+					List<String> lore = new ArrayList<>();
+					if (stackMeta.hasLore()) {
+						lore = stackMeta.getLore();
+					}
+					for (String s : loreText) {
+						s = s.replaceAll("%price%", Integer.toString(price));
+						s = s.replaceAll("%resource%", reader.containsKey("price-type") ? reader.getString("price-type") : "Level");
+						s = s.replaceAll("%amount%", Integer.toString(stack.getAmount()));
+						lore.add(s);
+					}
+					stackMeta.setLore(lore);
+					stack.setItemMeta(stackMeta);
+					event.setStack(stack);
+				}
+				if (item.hasProperties()) {
+					for (ItemProperty property : item.getProperties()) {
+						if (property.hasName()) {
+							ItemStack newItem = event.getStack();
+							BedwarsApplyPropertyToDisplayedItem applyEvent = new BedwarsApplyPropertyToDisplayedItem(game,
+									player, newItem, property.getReader(player).convertToMap());
+							Main.getInstance().getServer().getPluginManager().callEvent(applyEvent);
+
+							event.setStack(newItem);
+						}
 					}
 				}
 			}
+			
 		}
 
 	}
@@ -243,10 +266,6 @@ public class LevelShop implements Listener {
 	public void onPreAction(PreActionEvent event) {
 		if (!shopMap.containsValue(event.getFormat()) || event.isCancelled()) {
 			return;
-		}
-
-		if (!Main.isPlayerInGame(event.getPlayer())) {
-			event.setCancelled(true);
 		}
 
 		if (Main.getPlayerGameProfile(event.getPlayer()).isSpectator) {
@@ -261,10 +280,12 @@ public class LevelShop implements Listener {
 		}
 
 		MapReader reader = event.getItem().getReader();
-		if (reader.containsKey("upgrade")) {
-			handleUpgrade(event);
-		} else {
-			handleBuy(event);
+		if (Main.isPlayerInGame(event.getPlayer())) {
+			if (reader.containsKey("upgrade")) {
+				handleUpgrade(event);
+			} else {
+				handleBuy(event);
+			}
 		}
 	}
 

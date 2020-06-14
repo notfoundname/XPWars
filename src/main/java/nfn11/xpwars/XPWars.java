@@ -2,10 +2,12 @@ package nfn11.xpwars;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.commands.BaseCommand;
@@ -42,6 +44,9 @@ public class XPWars extends JavaPlugin {
 		new RegisterSpecialListeners();
 		new ActionBarAPI();
 		commands = new HashMap<>();
+
+		Bukkit.getServer().getLogger().info("[XPWars] " + ChatColor.GREEN + "Loaded XPWars "
+				+ Bukkit.getServer().getPluginManager().getPlugin("XPWars").getDescription().getVersion() + "!");
 	}
 
 	public static Configurator getConfigurator() {
@@ -55,20 +60,17 @@ public class XPWars extends JavaPlugin {
 	public static HashMap<String, BaseCommand> getCommands() {
 		return instance.commands;
 	}
-	
-	public static List<String> getShopFileNames() {
-        List<String> list = new ArrayList<>();
-        File[] files = Main.getInstance().getDataFolder().listFiles();
 
-        for (int i = 0; i < files.length; i++) {
-        	if (files[i].getName().equals("config.yml")
-        			|| files[i].getName().equals("record.yml")
-        			|| files[i].getName().equals("sign.yml")) continue;
-        	if (files[i].isFile()) {
-        		list.add(files[i].getName());
-        	}
-        }
-        
-        return list;
-    }
+	public static List<String> getShopFileNames() {
+		List<String> list = new ArrayList<>();
+		List<String> non_allowed = Arrays.asList("config.yml", "sign.yml", "record.yml");
+		File[] files = Main.getInstance().getDataFolder().listFiles();
+
+		for (File file : files) {
+			if (file.isFile() && !non_allowed.contains(file.getName())) {
+				list.add(file.getName());
+			}
+		}
+		return list;
+	}
 }
