@@ -54,7 +54,7 @@ public class Configurator {
 		AtomicBoolean modify = new AtomicBoolean(false);
 
 		ConfigurationSection resources = Main.getConfigurator().config.getConfigurationSection("resources");
-		
+
 		checkOrSetConfig(modify, "level.enable", true);
 		checkOrSetConfig(modify, "level.percentage.give-from-killed-player", 33);
 		checkOrSetConfig(modify, "level.percentage.keep-from-death", 33);
@@ -62,7 +62,7 @@ public class Configurator {
 		checkOrSetConfig(modify, "level.sound.sound", "ENTITY_EXPERIENCE_ORB_PICKUP");
 		checkOrSetConfig(modify, "level.sound.volume", 1);
 		checkOrSetConfig(modify, "level.sound.pitch", 1);
-		
+
 		checkOrSetConfig(modify, "level.per-arena-settings", new HashMap<String, HashMap<String, Object>>() {{
 			put("ArenaNameCaseSensetive", new HashMap<String, Object>() {{
 				put("percentage.give-from-killed-player", 100);
@@ -71,12 +71,12 @@ public class Configurator {
 				put("sound.sound", "ENTITY_EXPERIENCE_ORB_PICKUP");
 				put("sound.volume", 1);
 				put("sound.pitch", 2);
-				for (String key : resources.getKeys(false)) {
+			    for (String key : resources.getKeys(false)) {
 					put("spawners." + key, 10);
 				}
 			}});
 		}});
-		
+
 		checkOrSetConfig(modify, "level.spawners", new HashMap<String, Object>() {{
 			for (String key : resources.getKeys(false)) {
 				put(key, 3);
@@ -139,24 +139,16 @@ public class Configurator {
 	}
 
 	public String getString(String string, String defaultString) {
-		if (config.getConfigurationSection(string) == null) {
-			return ChatColor.translateAlternateColorCodes('&', defaultString);
-		}
-		return ChatColor.translateAlternateColorCodes('&', config.getString(string));
+		return ChatColor.translateAlternateColorCodes('&',
+				XPWars.getConfigurator().config.getString(string, defaultString));
 	}
 
 	public boolean getBoolean(String string, boolean defaultBoolean) {
-		if (config.getConfigurationSection(string) == null) {
-			return defaultBoolean;
-		}
-		return config.getBoolean(string);
+		return XPWars.getConfigurator().config.getBoolean(string, defaultBoolean);
 	}
 
 	public int getInt(String string, int defaultInt) {
-		if (config.getConfigurationSection(string) == null) {
-			return defaultInt;
-		}
-		return config.getInt(string);
+		return XPWars.getConfigurator().config.getInt(string, defaultInt);
 	}
 
 	private void checkOrSetConfig(AtomicBoolean modify, String path, Object value) {
