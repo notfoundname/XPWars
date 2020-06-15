@@ -84,14 +84,16 @@ public class Configurator {
 		}});
 
 		checkOrSetConfig(modify, "specials.remote-tnt.fuse-ticks", 100);
+		checkOrSetConfig(modify, "specials.remote-tnt.damage-owner", false);
 		checkOrSetConfig(modify, "specials.remote-tnt.detonator-itemstack", new ItemStack(Material.TRIPWIRE_HOOK));
-
+		/*
 		checkOrSetConfig(modify, "specials.trampoline.remove-when-used", true);
 		checkOrSetConfig(modify, "specials.trampoline.y-check", 0);
 		checkOrSetConfig(modify, "specials.trampoline.y-velocity", 5.0);
 
 		checkOrSetConfig(modify, "specials.throwable-tnt.y-velocity", 5.0);
-
+		checkOrSetConfig(modify, "specials.throwable-tnt.damage-owner", false);
+		 */
 		checkOrSetConfig(modify, "messages.placeholders.waiting", "&aWaiting...");
 		checkOrSetConfig(modify, "messages.placeholders.starting", "&eArena is starting in %time%!");
 		checkOrSetConfig(modify, "messages.placeholders.running", "&cRunning! Time left: %time%");
@@ -100,8 +102,6 @@ public class Configurator {
 
 		checkOrSetConfig(modify, "messages.level.notenoughlevels",
 				"&cYou don't have enough levels to buy &r%item%&c! Needed: &e%levels%");
-		checkOrSetConfig(modify, "messages.level.nospace",
-				"&cYou don't have enough space in your inventory! Free it up!");
 		checkOrSetConfig(modify, "messages.level.maxreached", "&cYou can't have more than %max% levels!");
 
 		checkOrSetConfig(modify, "messages.commands.reloaded", "[XPWars] &aReloaded!");

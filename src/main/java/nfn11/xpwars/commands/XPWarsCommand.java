@@ -56,6 +56,7 @@ public class XPWarsCommand extends BaseCommand {
 					sender.sendMessage("/bw xpwars help - Show this");
 					sender.sendMessage("/bw xpwars open <store name> - Open shop");
 				}
+				return true;
 			}
 		}
 		if (args.size() == 2) {

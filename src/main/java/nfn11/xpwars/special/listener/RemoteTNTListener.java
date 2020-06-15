@@ -85,7 +85,9 @@ public class RemoteTNTListener implements Listener {
 					}
 					Main.registerGameEntity(tnt, Main.getPlayerGameProfile(player).getGame());
 					tnt.setFuseTicks(ticks);
-					tnt.setMetadata(player.getUniqueId().toString(),
+					tnt.setMetadata(
+							XPWars.getConfigurator().config.getBoolean("specials.remote-tnt.damage-owner") ? ""
+									: player.getUniqueId().toString(),
 							new FixedMetadataValue(XPWars.getInstance(), null));
 					location.getBlock().setType(Material.AIR);
 					player.getInventory().remove(detonator);

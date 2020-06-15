@@ -206,11 +206,15 @@ public class LevelShop implements Listener {
 				ItemMeta meta = stack.getItemMeta();
 				List<String> newlore = new ArrayList<>();
 				List<String> lore = meta.getLore();
-				newlore = lore;
+				if (meta.hasLore()) {
+					for (String s : lore) {
+						newlore.add(s);
+					}
+				}
 				newlore.add(" ");
-				newlore.add(ChatColor.RESET + "Price: " + price + (reader.containsKey("price-type") ? reader.getString("price-type") : "Levels"));
-				newlore.add("  ");
-				newlore.add(ChatColor.RESET + "Properties: ");
+				newlore.add(ChatColor.RESET + "Price: " + price + " " + (reader.containsKey("price-type") ? reader.getString("price-type") : "Levels"));
+				newlore.add(" ");
+				newlore.add(ChatColor.RESET + "Properties: " + (item.hasProperties() ? " " : "none"));
 				if (item.hasProperties()) {
 					for(ItemProperty property : item.getProperties()) {
 						if (property.hasName()) {
