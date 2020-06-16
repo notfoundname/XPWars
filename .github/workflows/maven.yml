@@ -20,8 +20,12 @@ jobs:
         java-version: 1.8
     - name: Maven build
       run: mvn -B package --file pom.xml
+    - name: Generate build number
+      uses: einaregilsson/build-number@v2
+      with:
+        token: ${{secrets.github_token}}
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2
       with:
-        name: "XPWars-$GITHUB_RUN_NUMBER"
+        name: "XPWars-$BUILD_NUMBER"
         path: "./target/XPWars-*.jar"
