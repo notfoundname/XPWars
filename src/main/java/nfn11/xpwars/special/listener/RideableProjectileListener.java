@@ -1,6 +1,5 @@
 package nfn11.xpwars.special.listener;
 
-import org.bukkit.Material;
 import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,20 +12,20 @@ import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.game.GamePlayer;
+import nfn11.xpwars.special.RideableProjectile;
 
-import nfn11.xpwars.special.RideableEnderPearl;
-
-public class RideableEnderPearlListener implements Listener {
-	private static final String RIDEABLE_ENDER_PEARL_PREFIX = "Module:RideableEnderPearl:";
+public class RideableProjectileListener implements Listener {
+	private static final String RIDEABLE_PROJECTILE_PREFIX = "Module:RideableProjectile:";
 
 	@EventHandler
 	public void onTrackerRegistered(BedwarsApplyPropertyToBoughtItem event) {
-		if (event.getPropertyName().equalsIgnoreCase("RideableEnderPearl")) {
+		if (event.getPropertyName().equalsIgnoreCase("RideableProjectile")) {
 			ItemStack stack = event.getStack();
-			APIUtils.hashIntoInvisibleString(stack, RIDEABLE_ENDER_PEARL_PREFIX);
+			APIUtils.hashIntoInvisibleString(stack, RIDEABLE_PROJECTILE_PREFIX);
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onThrowPearl(ProjectileLaunchEvent event) {
 		if (event.getEntity().getShooter() instanceof Player) {
@@ -35,16 +34,17 @@ public class RideableEnderPearlListener implements Listener {
 				return;
 			GamePlayer gamePlayer = Main.getPlayerGameProfile(player);
 			Game game = gamePlayer.getGame();
-			ItemStack stack = player.getItemInHand();
+			ItemStack stack = player.getInventory().getItemInHand();
 			if (stack == null)
 				return;
 			if (game.getStatus() == GameStatus.RUNNING && !gamePlayer.isSpectator) {
-				String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack, RIDEABLE_ENDER_PEARL_PREFIX);
+				String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack, RIDEABLE_PROJECTILE_PREFIX);
 				if (unhidden != null) {
-					if (event.getEntity() instanceof EnderPearl) {
-						new RideableEnderPearl(game, player, game.getTeamOfPlayer(player));
-						event.getEntity().addPassenger(player);
+					new RideableProjectile(game, player, game.getTeamOfPlayer(player));
+					if (player.isInsideVehicle()) {
+						player.getVehicle().remove();
 					}
+					event.getEntity().addPassenger(player);
 				}
 			}
 		}
