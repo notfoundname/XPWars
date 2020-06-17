@@ -3,11 +3,9 @@ package nfn11.xpwars.listener;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.Main;
@@ -15,13 +13,13 @@ import org.screamingsandals.bedwars.api.events.BedwarsOpenShopEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsPlayerKilledEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsOpenShopEvent.Result;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
-
 import nfn11.thirdparty.connorlinfoot.actionbarapi.ActionBarAPI;
 import nfn11.xpwars.XPWars;
 import nfn11.xpwars.inventories.LevelShop;
 
 public class XPWarsPlayerListener implements Listener {
 	LevelShop xp;
+
 	public XPWarsPlayerListener() {
 		Bukkit.getServer().getPluginManager().registerEvents(this, XPWars.getInstance());
 	}
@@ -29,7 +27,7 @@ public class XPWarsPlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onDeath(BedwarsPlayerKilledEvent event) {
 		Player player = event.getPlayer();
-		
+
 		String gamename = event.getGame().getName();
 
 		int player_level = player.getLevel();
@@ -60,7 +58,7 @@ public class XPWarsPlayerListener implements Listener {
 
 		int defmax = XPWars.getConfigurator().getInt("level.maximum-xp", 0);
 		int max = XPWars.getConfigurator().getInt("level.games." + gamename + ".maximum-xp", defmax);
-		
+
 		if (event.getKiller() != null) {
 			Player killer = event.getKiller();
 			int killer_level = killer.getLevel();
@@ -75,7 +73,7 @@ public class XPWarsPlayerListener implements Listener {
 		} else
 			player.setLevel((player_level / 100) * keep_from_death_player);
 	}
-	
+
 	@EventHandler
 	public void onShopOpen(BedwarsOpenShopEvent event) {
 		if (Main.getPlayerGameProfile(event.getPlayer()).isSpectator)
@@ -83,10 +81,10 @@ public class XPWarsPlayerListener implements Listener {
 		if (XPWars.getConfigurator().config.getBoolean("level.enable", true)) {
 			event.setResult(Result.DISALLOW_THIRD_PARTY_SHOP);
 			xp.show(event.getPlayer(), event.getStore());
-		}
-		else return;
+		} else
+			return;
 	}
-	
+
 	@EventHandler
 	public void onPickup(EntityPickupItemEvent event) {
 		if (!XPWars.getConfigurator().config.getBoolean("level.enable"))
