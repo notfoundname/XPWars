@@ -20,6 +20,8 @@ import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.APIUtils;
 import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
 import org.screamingsandals.bedwars.api.events.BedwarsPlayerBuildBlock;
+import org.screamingsandals.bedwars.lib.sgui.utils.StackParser;
+
 import nfn11.xpwars.XPWars;
 import nfn11.xpwars.special.RemoteTNT;
 import nfn11.xpwars.utils.SpecialItemUtils;
@@ -103,6 +105,6 @@ public class RemoteTNTListener implements Listener {
 	}
 
 	private ItemStack detonator() {
-		return XPWars.getConfigurator().config.getItemStack("specials.remote-tnt.detonator-itemstack");
+		return StackParser.parse(XPWars.getConfigurator().config.getItemStack("specials.remote-tnt.detonator-itemstack"));
 	}
 }
