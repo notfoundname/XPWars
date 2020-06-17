@@ -7,8 +7,11 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.game.GameStore;
 import org.screamingsandals.bedwars.commands.BaseCommand;
+import org.screamingsandals.bedwars.inventories.ShopInventory;
+
 import nfn11.xpwars.XPWars;
 import nfn11.xpwars.inventories.LevelShop;
 
@@ -64,29 +67,43 @@ public class XPWarsCommand extends BaseCommand {
 				return true;
 			}
 		}
-		if (args.size() == 3) {
+		if (args.size() >= 2 && args.size() >= 3) {
 			if (args.get(0).equalsIgnoreCase("open")) {
 				if (XPWars.getShopFileNames().contains(args.get(1))) {
+
 					GameStore store = new GameStore(null, args.get(1), false, i18nonly("item_shop_name", "[BW] Shop"),
 							false);
-					LevelShop shop = new LevelShop();
-					if (sender instanceof Player && args.get(2).isEmpty()) {
-						shop.show((Player) sender, store);
+
+					Player player = null;
+					if (!args.get(2).isEmpty()) {
+						player = Bukkit.getPlayer(args.get(2));
 					} else {
-						if (Bukkit.getPlayer(args.get(2)).isOnline()) {
-							shop.show(Bukkit.getPlayer(args.get(2)), store);
+						if (sender instanceof Player) {
+							player = (Player) sender;
 						}
 					}
-					
+					if (player == null) {
+						sender.sendMessage("player does not exist");
+						return true;
+					}
+					if (XPWars.getConfigurator().getBoolean("level.enable", true) || !Main.isPlayerInGame(player)) {
+						LevelShop shop = new LevelShop();
+						shop.show(player, store);
+					} else {
+						if (!Main.getPlayerGameProfile(player).isSpectator) {
+							ShopInventory shop = new ShopInventory();
+							shop.show(player, store);
+						}
+					}
 				} else
 					sender.sendMessage(XPWars.getConfigurator()
 							.getString("messages.commands.nostore", "[XPWars] &cInvalid shop file: %file%!")
 							.replace("%file%", args.get(1)));
+				return true;
 			}
 		} else
 			sender.sendMessage(XPWars.getConfigurator().getString("messages.commands.unknown",
 					"[XPWars] &cUnknown command or wrong usage!"));
-
 		return true;
 	}
 }
