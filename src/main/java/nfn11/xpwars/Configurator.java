@@ -110,6 +110,7 @@ public class Configurator {
 		checkOrSetConfig(modify, "messages.commands.unknown", "[XPWars] &cUnknown command or wrong usage!");
 		checkOrSetConfig(modify, "messages.commands.noperm", "[XPWars] &cYou don't have permission!");
 		checkOrSetConfig(modify, "messages.commands.nostore", "[XPWars] &cInvalid shop file : %file%!");
+		checkOrSetConfig(modify, "messages.commands.noplayer", "[XPWars] &c%player% is not online!");
 
 		checkOrSetConfig(modify, "version", 1);
 

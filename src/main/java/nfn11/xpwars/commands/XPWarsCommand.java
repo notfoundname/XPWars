@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.game.GameStore;
 import org.screamingsandals.bedwars.commands.BaseCommand;
 import org.screamingsandals.bedwars.inventories.ShopInventory;
@@ -67,30 +68,33 @@ public class XPWarsCommand extends BaseCommand {
 				return true;
 			}
 		}
-		if (args.size() >= 2 && args.size() >= 3) {
+		if (args.size() == 2 || args.size() == 3) {
 			if (args.get(0).equalsIgnoreCase("open")) {
 				if (XPWars.getShopFileNames().contains(args.get(1))) {
 
-					GameStore store = new GameStore(null, args.get(1), false, i18nonly("item_shop_name", "[BW] Shop"),
-							false);
-
 					Player player = null;
-					if (!args.get(2).isEmpty()) {
+
+					if (args.size() == 3) {
 						player = Bukkit.getPlayer(args.get(2));
-					} else {
+					} else if (args.size() == 2){
 						if (sender instanceof Player) {
 							player = (Player) sender;
 						}
 					}
 					if (player == null) {
-						sender.sendMessage("player does not exist");
+						sender.sendMessage(XPWars.getConfigurator()
+								.getString("messages.commands.noplayer", "[XPWars] &c%player% is not online!")
+								.replace("%player%", args.size() == 3 ? args.get(2) : "Player"));
 						return true;
 					}
+					GameStore store = new GameStore(null, args.get(1), false, i18nonly("item_shop_name", "[BW] Shop"),
+							false);
 					if (XPWars.getConfigurator().getBoolean("level.enable", true) || !Main.isPlayerInGame(player)) {
 						LevelShop shop = new LevelShop();
 						shop.show(player, store);
 					} else {
-						if (!Main.getPlayerGameProfile(player).isSpectator) {
+						if (!Main.getPlayerGameProfile(player).isSpectator
+								|| Main.getPlayerGameProfile(player).getGame().getStatus() == GameStatus.RUNNING) {
 							ShopInventory shop = new ShopInventory();
 							shop.show(player, store);
 						}

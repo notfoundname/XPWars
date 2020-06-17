@@ -95,6 +95,7 @@ public class XPWars extends JavaPlugin implements Listener {
 		msg = ChatColor.translateAlternateColorCodes('&', msg);
 		Bukkit.getServer().getLogger().info(msg);
 	}
+	
 	public static List<String> getOnlinePlayers() {
 		List<String> list = new ArrayList<>();
 		
