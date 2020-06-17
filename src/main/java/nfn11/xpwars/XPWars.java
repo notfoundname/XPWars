@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginEnableEvent;
@@ -93,5 +94,13 @@ public class XPWars extends JavaPlugin implements Listener {
 	private void log(String msg) {
 		msg = ChatColor.translateAlternateColorCodes('&', msg);
 		Bukkit.getServer().getLogger().info(msg);
+	}
+	public static List<String> getOnlinePlayers() {
+		List<String> list = new ArrayList<>();
+		
+		for (Player p : Bukkit.getServer().getOnlinePlayers()) {
+			list.add(p.getName());
+		}
+		return list;
 	}
 }

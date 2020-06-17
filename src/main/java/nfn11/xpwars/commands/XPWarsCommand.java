@@ -27,6 +27,11 @@ public class XPWarsCommand extends BaseCommand {
 				completion.addAll(XPWars.getShopFileNames());
 			}
 		}
+		if (args.size() == 3) {
+			if (args.get(0).equalsIgnoreCase("open")) {
+				completion.addAll(XPWars.getOnlinePlayers());
+			}
+		}
 	}
 
 	@Override
@@ -54,21 +59,28 @@ public class XPWarsCommand extends BaseCommand {
 					sender.sendMessage("Available commands:");
 					sender.sendMessage("/bw xpwars reload - Reload the addon");
 					sender.sendMessage("/bw xpwars help - Show this");
-					sender.sendMessage("/bw xpwars open <store name> - Open shop");
+					sender.sendMessage("/bw xpwars open <store name> [player] - Open shop");
 				}
 				return true;
 			}
 		}
-		if (args.size() == 2) {
+		if (args.size() == 3) {
 			if (args.get(0).equalsIgnoreCase("open")) {
 				if (XPWars.getShopFileNames().contains(args.get(1))) {
 					GameStore store = new GameStore(null, args.get(1), false, i18nonly("item_shop_name", "[BW] Shop"),
 							false);
 					LevelShop shop = new LevelShop();
-					shop.show((Player) sender, store);
+					if (sender instanceof Player && args.get(2).isEmpty()) {
+						shop.show((Player) sender, store);
+					} else {
+						if (Bukkit.getPlayer(args.get(2)).isOnline()) {
+							shop.show(Bukkit.getPlayer(args.get(2)), store);
+						}
+					}
+					
 				} else
 					sender.sendMessage(XPWars.getConfigurator()
-							.getString("messages.commands.nostore", "[XPWars] &cInvalid shop file : %file%!")
+							.getString("messages.commands.nostore", "[XPWars] &cInvalid shop file: %file%!")
 							.replace("%file%", args.get(1)));
 			}
 		} else
