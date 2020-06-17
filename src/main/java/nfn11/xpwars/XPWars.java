@@ -19,6 +19,7 @@ import org.screamingsandals.bedwars.lib.sgui.listeners.InventoryListener;
 
 import nfn11.thirdparty.connorlinfoot.actionbarapi.ActionBarAPI;
 import nfn11.xpwars.commands.XPWarsCommand;
+import nfn11.xpwars.inventories.AvailableGamesInv;
 import nfn11.xpwars.inventories.LevelShop;
 import nfn11.xpwars.listener.XPWarsPlayerListener;
 import nfn11.xpwars.special.listener.RegisterSpecialListeners;
@@ -39,6 +40,7 @@ public class XPWars extends JavaPlugin implements Listener {
 		InventoryListener.init(this);
 		Bukkit.getPluginManager().registerEvents(this, this);
 		new LevelShop();
+		new AvailableGamesInv();
 		new XPWarsPlayerListener();
 		new RegisterSpecialListeners();
 		new ActionBarAPI();
@@ -55,6 +57,7 @@ public class XPWars extends JavaPlugin implements Listener {
 				+ Bukkit.getServer().getPluginManager().getPlugin("XPWars").getDescription().getVersion() + "&a!");
 		log("[XPWars] &aXPWars addon by &enotfoundname11");
 		log("[XPWars] &9https://github.com/notfoundname/XPWars");
+		log("[XPWars] &eType &6/bw xpwars help &eto show available commands.");
 	}
 	
 	@EventHandler

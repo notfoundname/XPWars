@@ -5,6 +5,7 @@ import static org.screamingsandals.bedwars.lib.lang.I.i18nonly;
 import java.util.Arrays;
 import java.util.List;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
@@ -24,11 +25,14 @@ public class XPWarsCommand extends BaseCommand {
 	@Override
 	public void completeTab(List<String> completion, CommandSender sender, List<String> args) {
 		if (args.size() == 1) {
-			completion.addAll(Arrays.asList("reload", "open", "help"));
+			completion.addAll(Arrays.asList("help", "reload", "open", "games"));
 		}
 		if (args.size() == 2) {
 			if (args.get(0).equalsIgnoreCase("open")) {
 				completion.addAll(XPWars.getShopFileNames());
+			}
+			if (args.get(0).equalsIgnoreCase("help")) {
+				completion.addAll(Arrays.asList("reload", "open", "games", "lvl"));
 			}
 		}
 		if (args.size() == 3) {
@@ -58,12 +62,14 @@ public class XPWarsCommand extends BaseCommand {
 					sender.sendMessage(XPWars.getConfigurator().getString("messages.commands.noperm",
 							"[XPWars] &cYou don't have permission!"));
 				} else {
-					sender.sendMessage("[XPWars] - Version "
+					sender.sendMessage(ChatColor.RED + "[XPWars] Version "
 							+ Bukkit.getServer().getPluginManager().getPlugin("XPWars").getDescription().getVersion());
 					sender.sendMessage("Available commands:");
-					sender.sendMessage("/bw xpwars reload - Reload the addon");
-					sender.sendMessage("/bw xpwars help - Show this");
-					sender.sendMessage("/bw xpwars open <store name> [player] - Open shop");
+					sender.sendMessage(ChatColor.GRAY + "/bw xpwars reload - Reload the addon");
+					sender.sendMessage(ChatColor.GRAY + "/bw xpwars help [reload, open, games, lvl] - Show help");
+					sender.sendMessage(ChatColor.GRAY + "/bw xpwars open <store name> [player] - Open shop");
+					sender.sendMessage(ChatColor.GRAY + "/bw xpwars games - Show available in fancy GUI");
+					sender.sendMessage(" ");
 				}
 				return true;
 			}
