@@ -24,6 +24,9 @@ public class XPWarsCommand extends BaseCommand {
 
 	@Override
 	public void completeTab(List<String> completion, CommandSender sender, List<String> args) {
+		if (sender.hasPermission(ADMIN_PERMISSION) || sender.isOp()) {
+			return;
+		}
 		if (args.size() == 1) {
 			completion.addAll(Arrays.asList("help", "reload", "open", "games"));
 		}
@@ -44,36 +47,33 @@ public class XPWarsCommand extends BaseCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, List<String> args) throws IndexOutOfBoundsException {
+		if (!sender.hasPermission(ADMIN_PERMISSION)) {
+			sender.sendMessage(XPWars.getConfigurator().getString("messages.commands.noperm",
+					"[XPWars] &cYou don't have permission!"));
+			return true;
+		}
 		if (args.size() == 1) {
 			if (args.get(0).equalsIgnoreCase("reload")) {
-				if (!sender.hasPermission(ADMIN_PERMISSION)) {
-					sender.sendMessage(XPWars.getConfigurator().getString("messages.commands.noperm",
-							"[XPWars] &cYou don't have permission!"));
-				} else {
-					Bukkit.getServer().getPluginManager().disablePlugin(XPWars.getInstance());
-					Bukkit.getServer().getPluginManager().enablePlugin(XPWars.getInstance());
-					sender.sendMessage(
-							XPWars.getConfigurator().getString("messages.commands.reloaded", "[XPWars] &aReloaded!"));
-					return true;
-				}
-			}
-			if (args.get(0).equalsIgnoreCase("help")) {
-				if (!sender.hasPermission(ADMIN_PERMISSION)) {
-					sender.sendMessage(XPWars.getConfigurator().getString("messages.commands.noperm",
-							"[XPWars] &cYou don't have permission!"));
-				} else {
-					sender.sendMessage(ChatColor.RED + "[XPWars] Version "
-							+ Bukkit.getServer().getPluginManager().getPlugin("XPWars").getDescription().getVersion());
-					sender.sendMessage("Available commands:");
-					sender.sendMessage(ChatColor.GRAY + "/bw xpwars reload - Reload the addon");
-					sender.sendMessage(ChatColor.GRAY + "/bw xpwars help [reload, open, games, lvl] - Show help");
-					sender.sendMessage(ChatColor.GRAY + "/bw xpwars open <store name> [player] - Open shop");
-					sender.sendMessage(ChatColor.GRAY + "/bw xpwars games - Show available in fancy GUI");
-					sender.sendMessage(" ");
-				}
+				Bukkit.getServer().getPluginManager().disablePlugin(XPWars.getInstance());
+				Bukkit.getServer().getPluginManager().enablePlugin(XPWars.getInstance());
+				sender.sendMessage(
+						XPWars.getConfigurator().getString("messages.commands.reloaded", "[XPWars] &aReloaded!"));
 				return true;
 			}
 		}
+		if (args.get(0).equalsIgnoreCase("help")) {
+			sender.sendMessage(ChatColor.RED + "[XPWars] Version "
+					+ Bukkit.getServer().getPluginManager().getPlugin("XPWars").getDescription().getVersion());
+			sender.sendMessage("Available commands:");
+			sender.sendMessage(ChatColor.GRAY + "/bw xpwars reload - Reload the addon");
+			sender.sendMessage(ChatColor.GRAY + "/bw xpwars help [reload, open, games, lvl] - Show help");
+			sender.sendMessage(ChatColor.GRAY + "/bw xpwars open <store name> [player] - Open shop");
+			sender.sendMessage(ChatColor.GRAY + "/bw xpwars games - Show available in fancy GUI");
+			sender.sendMessage(" ");
+
+			return true;
+		}
+
 		if (args.size() == 2 || args.size() == 3) {
 			if (args.get(0).equalsIgnoreCase("open")) {
 				if (XPWars.getShopFileNames().contains(args.get(1))) {
@@ -82,7 +82,7 @@ public class XPWarsCommand extends BaseCommand {
 
 					if (args.size() == 3) {
 						player = Bukkit.getPlayer(args.get(2));
-					} else if (args.size() == 2){
+					} else if (args.size() == 2) {
 						if (sender instanceof Player) {
 							player = (Player) sender;
 						}
@@ -105,6 +105,7 @@ public class XPWarsCommand extends BaseCommand {
 							shop.show(player, store);
 						}
 					}
+					return true;
 				} else
 					sender.sendMessage(XPWars.getConfigurator()
 							.getString("messages.commands.nostore", "[XPWars] &cInvalid shop file: %file%!")

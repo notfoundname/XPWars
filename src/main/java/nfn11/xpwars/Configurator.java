@@ -2,7 +2,9 @@ package nfn11.xpwars;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.bukkit.Bukkit;
@@ -99,7 +101,14 @@ public class Configurator {
 		checkOrSetConfig(modify, "messages.placeholders.running", "&cRunning! Time left: %time%");
 		checkOrSetConfig(modify, "messages.placeholders.end-celebration", "&9Game ended!");
 		checkOrSetConfig(modify, "messages.placeholders.rebuilding", "&7Rebuilding...");
-
+		
+		checkOrSetConfig(modify, "messages.gamesinv.header", "&rGames [&e%free%&7/&6%total%&r]");
+		checkOrSetConfig(modify, "messages.gamesinv.item.lore", new ArrayList<String>() {{
+			add("%status%");
+			add("&e%fpl%&7/&6%mxpl%");
+			add("INFO: Status placeholder is getting states from messages.placeholders");
+		}});
+		
 		checkOrSetConfig(modify, "messages.level.notenoughlevels",
 				"&cYou don't have enough levels to buy &r%item%&c! Needed: &e%levels%");
 		checkOrSetConfig(modify, "messages.level.maxreached", "&cYou can't have more than %max% levels!");
@@ -141,6 +150,15 @@ public class Configurator {
 	public String getString(String string, String defaultString) {
 		return ChatColor.translateAlternateColorCodes('&',
 				XPWars.getConfigurator().config.getString(string, defaultString));
+	}
+	
+	public List<String> getStringList(String string) {
+		List<String> list = new ArrayList<>();
+		for (String s : XPWars.getConfigurator().config.getStringList(string)) {
+			s = ChatColor.translateAlternateColorCodes('&', s);
+			list.add(s);
+		}
+		return list;
 	}
 
 	public boolean getBoolean(String string, boolean defaultBoolean) {
