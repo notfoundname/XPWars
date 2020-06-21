@@ -1,6 +1,5 @@
 package nfn11.xpwars.special.listener;
 
-import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

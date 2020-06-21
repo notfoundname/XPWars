@@ -9,10 +9,16 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.api.Team;
+import org.screamingsandals.bedwars.api.events.BedwarsGameTickEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsOpenShopEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsPlayerKilledEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsOpenShopEvent.Result;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
+import org.screamingsandals.bedwars.game.CurrentTeam;
+import org.screamingsandals.bedwars.game.GamePlayer;
+import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
+
 import nfn11.thirdparty.connorlinfoot.actionbarapi.ActionBarAPI;
 import nfn11.xpwars.XPWars;
 import nfn11.xpwars.inventories.LevelShop;
@@ -72,6 +78,7 @@ public class XPWarsPlayerListener implements Listener {
 			player.setLevel(max);
 		} else
 			player.setLevel((player_level / 100) * keep_from_death_player);
+		PlayerUtils.respawn(XPWars.getInstance(), player, 0);
 	}
 
 	@EventHandler
@@ -140,6 +147,19 @@ public class XPWarsPlayerListener implements Listener {
 					player.playSound(player.getLocation(), Sound.valueOf(sound), volume, pitch);
 				}
 			}
+		}
+	}
+
+	@EventHandler
+	public void onGameTick(BedwarsGameTickEvent event) {
+		for (Player player : event.getGame().getConnectedPlayers()) {
+			GamePlayer gp = Main.getPlayerGameProfile(player);
+			CurrentTeam team = gp.getGame().getPlayerTeam(gp);
+			ActionBarAPI.sendActionBar(player,
+					"Team: %team% [%players%/%maxplayers%]"
+							.replace("%players%", Integer.toString(team.countConnectedPlayers()))
+							.replace("%team%", team.teamInfo.color.chatColor + team.getName())
+							.replace("%maxplayers%", Integer.toString(team.getMaxPlayers())));
 		}
 	}
 }

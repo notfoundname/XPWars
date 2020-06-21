@@ -14,8 +14,11 @@ import org.screamingsandals.bedwars.api.game.GameStore;
 import org.screamingsandals.bedwars.commands.BaseCommand;
 import org.screamingsandals.bedwars.inventories.ShopInventory;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import nfn11.xpwars.XPWars;
 import nfn11.xpwars.inventories.LevelShop;
+import nfn11.xpwars.placeholderapi.PlaceholderAPIHook;
+import nfn11.xpwars.utils.XPWarsUtils;
 
 public class XPWarsCommand extends BaseCommand {
 	public XPWarsCommand() {
@@ -24,23 +27,25 @@ public class XPWarsCommand extends BaseCommand {
 
 	@Override
 	public void completeTab(List<String> completion, CommandSender sender, List<String> args) {
-		if (sender.hasPermission(ADMIN_PERMISSION) || sender.isOp()) {
-			return;
-		}
 		if (args.size() == 1) {
-			completion.addAll(Arrays.asList("help", "reload", "open", "games"));
+			if (sender.hasPermission(ADMIN_PERMISSION) || sender.isOp()) {
+				completion.addAll(Arrays.asList("help", "reload", "open"));
+			}
 		}
 		if (args.size() == 2) {
-			if (args.get(0).equalsIgnoreCase("open")) {
-				completion.addAll(XPWars.getShopFileNames());
+			if (!sender.hasPermission(ADMIN_PERMISSION) || !sender.isOp()) {
+				return;
 			}
-			if (args.get(0).equalsIgnoreCase("help")) {
-				completion.addAll(Arrays.asList("reload", "open", "games", "lvl"));
+			if (args.get(0).equalsIgnoreCase("open")) {
+				completion.addAll(XPWarsUtils.getShopFileNames());
 			}
 		}
 		if (args.size() == 3) {
+			if (!sender.hasPermission(ADMIN_PERMISSION) || !sender.isOp()) {
+				return;
+			}
 			if (args.get(0).equalsIgnoreCase("open")) {
-				completion.addAll(XPWars.getOnlinePlayers());
+				completion.addAll(XPWarsUtils.getOnlinePlayers());
 			}
 		}
 	}
@@ -54,29 +59,31 @@ public class XPWarsCommand extends BaseCommand {
 		}
 		if (args.size() == 1) {
 			if (args.get(0).equalsIgnoreCase("reload")) {
+				if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+					PlaceholderAPI.unregisterExpansion(new PlaceholderAPIHook());
+				}
 				Bukkit.getServer().getPluginManager().disablePlugin(XPWars.getInstance());
 				Bukkit.getServer().getPluginManager().enablePlugin(XPWars.getInstance());
 				sender.sendMessage(
 						XPWars.getConfigurator().getString("messages.commands.reloaded", "[XPWars] &aReloaded!"));
 				return true;
 			}
-		}
-		if (args.get(0).equalsIgnoreCase("help")) {
-			sender.sendMessage(ChatColor.RED + "[XPWars] Version "
-					+ Bukkit.getServer().getPluginManager().getPlugin("XPWars").getDescription().getVersion());
-			sender.sendMessage("Available commands:");
-			sender.sendMessage(ChatColor.GRAY + "/bw xpwars reload - Reload the addon");
-			sender.sendMessage(ChatColor.GRAY + "/bw xpwars help [reload, open, games, lvl] - Show help");
-			sender.sendMessage(ChatColor.GRAY + "/bw xpwars open <store name> [player] - Open shop");
-			sender.sendMessage(ChatColor.GRAY + "/bw xpwars games - Show available in fancy GUI");
-			sender.sendMessage(" ");
+			if (args.get(0).equalsIgnoreCase("help")) {
+				sender.sendMessage(ChatColor.RED + "[XPWars] Version "
+						+ Bukkit.getServer().getPluginManager().getPlugin("XPWars").getDescription().getVersion());
+				sender.sendMessage("Available commands:");
+				sender.sendMessage(ChatColor.GRAY + "/bw xpwars reload - Reload the addon");
+				sender.sendMessage(ChatColor.GRAY + "/bw xpwars help [reload, open, games, lvl] - Show help");
+				sender.sendMessage(ChatColor.GRAY + "/bw xpwars open <store name> [player] - Open shop");
+				sender.sendMessage(ChatColor.GRAY + "/bw xpwars games - Show available in fancy GUI");
+				sender.sendMessage(" ");
 
-			return true;
+				return true;
+			}
 		}
-
 		if (args.size() == 2 || args.size() == 3) {
 			if (args.get(0).equalsIgnoreCase("open")) {
-				if (XPWars.getShopFileNames().contains(args.get(1))) {
+				if (XPWarsUtils.getShopFileNames().contains(args.get(1))) {
 
 					Player player = null;
 
@@ -89,8 +96,8 @@ public class XPWarsCommand extends BaseCommand {
 					}
 					if (player == null) {
 						sender.sendMessage(XPWars.getConfigurator()
-								.getString("messages.commands.noplayer", "[XPWars] &c%player% is not online!")
-								.replace("%player%", args.size() == 3 ? args.get(2) : "Player"));
+								.getString("messages.commands.noplayer", "[XPWars] &c%player% is not a valid player!")
+								.replace("%player%", args.size() == 3 ? args.get(2) : "Console"));
 						return true;
 					}
 					GameStore store = new GameStore(null, args.get(1), false, i18nonly("item_shop_name", "[BW] Shop"),

@@ -10,15 +10,19 @@ import org.screamingsandals.bedwars.api.statistics.PlayerStatistic;
 import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GamePlayer;
+
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import nfn11.xpwars.XPWars;
+import nfn11.xpwars.utils.XPWarsUtils;
 
 public class PlaceholderAPIHook extends PlaceholderExpansion {
 
-	nfn11.xpwars.XPWars plugin;
-
-	public PlaceholderAPIHook(nfn11.xpwars.XPWars plugin) {
-		this.plugin = plugin;
+	public PlaceholderAPIHook() {
+		if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+			PlaceholderAPI.registerPlaceholderHook(this.getIdentifier(), this);
+			XPWarsUtils.xpwarsLog("&aSuccesfully registered PlaceholderAPI!");
+		}
 	}
 
 	@Override

@@ -103,9 +103,10 @@ public class Configurator {
 		checkOrSetConfig(modify, "messages.placeholders.rebuilding", "&7Rebuilding...");
 		
 		checkOrSetConfig(modify, "messages.gamesinv.header", "&rGames [&e%free%&7/&6%total%&r]");
+		checkOrSetConfig(modify, "messages.gamesinv.item.name", "&r%arena%");
 		checkOrSetConfig(modify, "messages.gamesinv.item.lore", new ArrayList<String>() {{
 			add("%status%");
-			add("&e%fpl%&7/&6%mxpl%");
+			add("&e%fplayers%&7/&6%maxplayers%");
 			add("INFO: Status placeholder is getting states from messages.placeholders");
 		}});
 		
