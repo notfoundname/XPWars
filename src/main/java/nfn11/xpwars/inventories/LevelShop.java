@@ -40,7 +40,7 @@ import java.util.Map;
 
 import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
 import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
-
+@SuppressWarnings("deprecation")
 public class LevelShop implements Listener {
 	/*
 	 * Well, just original shop with some changed things.
