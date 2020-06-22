@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -363,10 +364,12 @@ public class LevelShop implements Listener {
 		Game game = Main.getPlayerGameProfile(event.getPlayer()).getGame();
 		MapReader mapReader = event.getItem().getReader();
 		ItemStack newItem = event.getStack();
-
+		ClickType clickType = event.getClickType();
+		
 		int level = player.getLevel();
 		int amount = newItem.getAmount();
 		int price = event.getPrice();
+		int inInventory = 0;
 
 		if (mapReader.containsKey("currency-changer")) {
 			String changeItemToName = mapReader.getString("currency-changer");
@@ -382,7 +385,31 @@ public class LevelShop implements Listener {
 
 			newItem = changeItemType.getStack();
 		}
+		
+		if (clickType.isShiftClick()) {
+			double priceOfOne = (double) price / amount;
+			double maxStackSize;
+			int finalStackSize;
 
+			for (ItemStack itemStack : event.getPlayer().getInventory().getStorageContents()) {
+				if (itemStack != null) {
+					inInventory = inInventory + itemStack.getAmount();
+				}
+			}
+			if (Main.getConfigurator().config.getBoolean("sell-max-64-per-click-in-shop")) {
+				maxStackSize = Math.min(inInventory / priceOfOne, 64);
+			} else {
+				maxStackSize = inInventory / priceOfOne;
+			}
+
+			finalStackSize = (int) maxStackSize;
+			if (finalStackSize > amount) {
+				price = (int) (priceOfOne * finalStackSize);
+				newItem.setAmount(finalStackSize);
+				amount = finalStackSize;
+			}
+		}
+		
 		if (level >= price) {
 			if (event.hasProperties()) {
 				for (ItemProperty property : event.getProperties()) {

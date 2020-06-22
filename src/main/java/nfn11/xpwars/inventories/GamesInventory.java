@@ -38,7 +38,7 @@ public class GamesInventory implements Listener {
 		options.setPrefix(
 				XPWars.getConfigurator().getString("messages.gamesinv.header", "&rGames [&e%free%&7/&6%total%&r]"));
 		options.setShowPageNumber(Main.getConfigurator().config.getBoolean("shop.show-page-numbers", true));
-		
+
 		ItemStack backItem = Main.getConfigurator().readDefinedItem("shopback", "BARRIER");
 		ItemMeta backItemMeta = backItem.getItemMeta();
 		backItemMeta.setDisplayName(i18n("shop_back", false));
@@ -59,7 +59,7 @@ public class GamesInventory implements Listener {
 
 		ItemStack cosmeticItem = Main.getConfigurator().readDefinedItem("shopcosmetic", "AIR");
 		options.setCosmeticItem(cosmeticItem);
-		
+
 		options.setRender_header_start(0);
 		options.setRender_offset(9);
 		int gameCount = BedwarsAPI.getInstance().getGames().size();
@@ -72,52 +72,53 @@ public class GamesInventory implements Listener {
 	}
 
 	public void destroy() {
-        openedForPlayers.clear();
-        HandlerList.unregisterAll(this);
-    }
+		openedForPlayers.clear();
+		HandlerList.unregisterAll(this);
+	}
 
-    public void openForPlayer(Player player) {
-        createData();
-        menu.openForPlayer(player);
-        openedForPlayers.add(player);
-    }
-    
-    private String gameStateColor(org.screamingsandals.bedwars.api.game.Game game) {
-    	if (game.getStatus() == GameStatus.WAITING) {
-    		return "§a";
-    	}
-    	if (game.getStatus() == GameStatus.RUNNING) {
-    		return "§c";
-    	}
-    	if (game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
-    		return "§a";
-    	}
-    	if (game.getStatus() == GameStatus.REBUILDING) {
-    		return "§8";
-    	}
-    	if (game.getStatus() == GameStatus.DISABLED) {
-    		return "§7";
-    	}
-    	return "";
-    }
-    private void createData() {
-    	SimpleInventories menu = new SimpleInventories(options);
-        FormatBuilder builder = new FormatBuilder();
-        
-        ItemStack stack = new ItemStack(Material.WHITE_TERRACOTTA);
-        
-        for (org.screamingsandals.bedwars.api.game.Game game : BedwarsAPI.getInstance().getGames()) {
+	public void openForPlayer(Player player) {
+		createData();
+		menu.openForPlayer(player);
+		openedForPlayers.add(player);
+	}
 
-            ItemMeta meta = stack.getItemMeta();
-            
-            meta.setDisplayName(gameStateColor(game) + "%gameName% §f[§e%players%§7/§6%maxPlayers%§f]"
-                    .replace("%gameName%", game.getName())
-                    .replace("%players%", String.valueOf(game.countConnectedPlayers()))
-                    .replace("%maxPlayers%", String.valueOf(game.getMaxPlayers())));
-            meta.setLore(formatLore(game));
-            stack.setItemMeta(meta);
-            
-            switch (game.getStatus()) {
+	private String gameStateColor(org.screamingsandals.bedwars.api.game.Game game) {
+		if (game.getStatus() == GameStatus.WAITING) {
+			return "ï¿½a";
+		}
+		if (game.getStatus() == GameStatus.RUNNING) {
+			return "ï¿½c";
+		}
+		if (game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
+			return "ï¿½a";
+		}
+		if (game.getStatus() == GameStatus.REBUILDING) {
+			return "ï¿½8";
+		}
+		if (game.getStatus() == GameStatus.DISABLED) {
+			return "ï¿½7";
+		}
+		return "";
+	}
+
+	private void createData() {
+		SimpleInventories menu = new SimpleInventories(options);
+		FormatBuilder builder = new FormatBuilder();
+
+		ItemStack stack = new ItemStack(Material.WHITE_TERRACOTTA);
+
+		for (org.screamingsandals.bedwars.api.game.Game game : BedwarsAPI.getInstance().getGames()) {
+
+			ItemMeta meta = stack.getItemMeta();
+
+			meta.setDisplayName(gameStateColor(game)
+					+ "%gameName% ï¿½f[ï¿½e%players%ï¿½7/ï¿½6%maxPlayers%ï¿½f]".replace("%gameName%", game.getName())
+							.replace("%players%", String.valueOf(game.countConnectedPlayers()))
+							.replace("%maxPlayers%", String.valueOf(game.getMaxPlayers())));
+			meta.setLore(formatLore(game));
+			stack.setItemMeta(meta);
+
+			switch (game.getStatus()) {
 			case DISABLED:
 				stack.setType(Material.CYAN_TERRACOTTA);
 				break;
@@ -135,72 +136,72 @@ public class GamesInventory implements Listener {
 				break;
 			default:
 				break;
-            }
-            
-            builder.add(stack).set("game", game);
-        }
+			}
 
-        menu.load(builder);
-        menu.generateData();
+			builder.add(stack).set("game", game);
+		}
 
-        this.menu = menu;
-    }
+		menu.load(builder);
+		menu.generateData();
 
-    private List<String> formatLore(org.screamingsandals.bedwars.api.game.Game game) {
-        List<String> loreList = new ArrayList<>();
-        GameStatus status = game.getStatus();
-        
-        switch (status) {
+		this.menu = menu;
+	}
+
+	private List<String> formatLore(org.screamingsandals.bedwars.api.game.Game game) {
+		List<String> loreList = new ArrayList<>();
+		GameStatus status = game.getStatus();
+
+		switch (status) {
 		case DISABLED:
-			loreList.add(ChatColor.RED + "§7Game is disabled!");
+			loreList.add(ChatColor.RED + "ï¿½7Game is disabled!");
 			break;
 		case GAME_END_CELEBRATING:
-			loreList.add(ChatColor.YELLOW + "§eGame just ended!");
+			loreList.add(ChatColor.YELLOW + "ï¿½eGame just ended!");
 			break;
 		case REBUILDING:
-			loreList.add(ChatColor.DARK_AQUA + "§7Game is rebuilding!");
+			loreList.add(ChatColor.DARK_AQUA + "ï¿½7Game is rebuilding!");
 			break;
 		case RUNNING:
-			loreList.add(ChatColor.RED + "§cGame is running!");
+			loreList.add(ChatColor.RED + "ï¿½cGame is running!");
 			break;
 		case WAITING:
-			loreList.add(ChatColor.GREEN + "§aGame is available!");
+			loreList.add(ChatColor.GREEN + "ï¿½aGame is available!");
 			break;
 		default:
 			break;
-        
-        }
-        return loreList;
-    }
 
-    private void repaint() {
-        for (Player player : openedForPlayers) {
-            GuiHolder guiHolder = menu.getCurrentGuiHolder(player);
-            if (guiHolder == null) {
-                return;
-            }
+		}
+		return loreList;
+	}
 
-            createData();
-            guiHolder.setFormat(menu);
-            guiHolder.repaint();
-        }
-    }
+	private void repaint() {
+		for (Player player : openedForPlayers) {
+			GuiHolder guiHolder = menu.getCurrentGuiHolder(player);
+			if (guiHolder == null) {
+				return;
+			}
 
-    @EventHandler
-    public void onPostAction(PostActionEvent event) {
-        if (event.getFormat() != menu) {
-            return;
-        }
+			createData();
+			guiHolder.setFormat(menu);
+			guiHolder.repaint();
+		}
+	}
 
-        Player player = event.getPlayer();
-        MapReader reader = event.getItem().getReader();
-        if (reader.containsKey("game")) {
-            Game game = (Game) reader.get("game");
-            Main.getGame(game.getName()).joinToGame(player);
-            player.closeInventory();
+	@EventHandler
+	public void onPostAction(PostActionEvent event) {
+		if (event.getFormat() != menu) {
+			return;
+		}
 
-            repaint();
-            openedForPlayers.remove(player);
-        }
-    }
+		Player player = event.getPlayer();
+		MapReader reader = event.getItem().getReader();
+		if (reader.containsKey("game")) {
+			Game game = (Game) reader.get("game");
+			Main.getGame(game.getName()).joinToGame(player);
+			player.closeInventory();
+
+			repaint();
+			openedForPlayers.remove(player);
+		}
+	}
 }
