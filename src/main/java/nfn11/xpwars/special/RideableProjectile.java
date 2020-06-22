@@ -6,13 +6,9 @@ import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.special.SpecialItem;
 
 public class RideableProjectile extends SpecialItem implements nfn11.xpwars.special.api.RideableProjectile {
-	private Game game;
-    private Player player;
     
 	public RideableProjectile(Game game, Player player, Team team) {
 		super(game, player, team);
-		this.game = game;
-		this.player = player;
 	}
 
 }
