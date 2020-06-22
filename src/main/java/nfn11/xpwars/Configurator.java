@@ -92,10 +92,10 @@ public class Configurator {
 		checkOrSetConfig(modify, "specials.trampoline.remove-when-used", true);
 		checkOrSetConfig(modify, "specials.trampoline.y-check", 0);
 		checkOrSetConfig(modify, "specials.trampoline.y-velocity", 5.0);
-
-		checkOrSetConfig(modify, "specials.throwable-tnt.y-velocity", 5.0);
-		checkOrSetConfig(modify, "specials.throwable-tnt.damage-owner", false);
-		 */
+		*/
+		checkOrSetConfig(modify, "specials.throwable-tnt.velocity", 5.0);
+		checkOrSetConfig(modify, "specials.throwable-tnt.fuse-ticks", 5.0);
+		
 		checkOrSetConfig(modify, "messages.placeholders.waiting", "&aWaiting...");
 		checkOrSetConfig(modify, "messages.placeholders.starting", "&eArena is starting in %time%!");
 		checkOrSetConfig(modify, "messages.placeholders.running", "&cRunning! Time left: %time%");
