@@ -84,19 +84,19 @@ public class GamesInventory implements Listener {
 
 	private String gameStateColor(org.screamingsandals.bedwars.api.game.Game game) {
 		if (game.getStatus() == GameStatus.WAITING) {
-			return "�a";
+			return "§a";
 		}
 		if (game.getStatus() == GameStatus.RUNNING) {
-			return "�c";
+			return "§c";
 		}
 		if (game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
-			return "�a";
+			return "§a";
 		}
 		if (game.getStatus() == GameStatus.REBUILDING) {
-			return "�8";
+			return "§8";
 		}
 		if (game.getStatus() == GameStatus.DISABLED) {
-			return "�7";
+			return "§7";
 		}
 		return "";
 	}
@@ -112,7 +112,7 @@ public class GamesInventory implements Listener {
 			ItemMeta meta = stack.getItemMeta();
 
 			meta.setDisplayName(gameStateColor(game)
-					+ "%gameName% �f[�e%players%�7/�6%maxPlayers%�f]".replace("%gameName%", game.getName())
+					+ "%gameName% §f[§e%players%§7/§6%maxPlayers%§f]".replace("%gameName%", game.getName())
 							.replace("%players%", String.valueOf(game.countConnectedPlayers()))
 							.replace("%maxPlayers%", String.valueOf(game.getMaxPlayers())));
 			meta.setLore(formatLore(game));
@@ -153,19 +153,19 @@ public class GamesInventory implements Listener {
 
 		switch (status) {
 		case DISABLED:
-			loreList.add(ChatColor.RED + "�7Game is disabled!");
+			loreList.add(ChatColor.RED + "§7Game is disabled!");
 			break;
 		case GAME_END_CELEBRATING:
-			loreList.add(ChatColor.YELLOW + "�eGame just ended!");
+			loreList.add(ChatColor.YELLOW + "§eGame just ended!");
 			break;
 		case REBUILDING:
-			loreList.add(ChatColor.DARK_AQUA + "�7Game is rebuilding!");
+			loreList.add(ChatColor.DARK_AQUA + "§7Game is rebuilding!");
 			break;
 		case RUNNING:
-			loreList.add(ChatColor.RED + "�cGame is running!");
+			loreList.add(ChatColor.RED + "§cGame is running!");
 			break;
 		case WAITING:
-			loreList.add(ChatColor.GREEN + "�aGame is available!");
+			loreList.add(ChatColor.GREEN + "§aGame is available!");
 			break;
 		default:
 			break;
