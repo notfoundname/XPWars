@@ -14,6 +14,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.screamingsandals.bedwars.Main;
 import org.bukkit.ChatColor;
 
@@ -86,15 +87,18 @@ public class Configurator {
 		}});
 
 		checkOrSetConfig(modify, "specials.remote-tnt.fuse-ticks", 100);
-		checkOrSetConfig(modify, "specials.remote-tnt.damage-owner", false);
-		checkOrSetConfig(modify, "specials.remote-tnt.detonator-itemstack", new ItemStack(Material.TRIPWIRE_HOOK));
+		checkOrSetConfig(modify, "specials.remote-tnt.detonator-itemstack", new ItemStack(Material.TRIPWIRE_HOOK) {{
+			ItemMeta meta = getItemMeta();
+			meta.setDisplayName("&rDetonator");
+			setItemMeta(meta);
+		}});
 		/*
 		checkOrSetConfig(modify, "specials.trampoline.remove-when-used", true);
 		checkOrSetConfig(modify, "specials.trampoline.y-check", 0);
-		checkOrSetConfig(modify, "specials.trampoline.y-velocity", 5.0);
+		checkOrSetConfig(modify, "specials.trampoline.velocity", 5.0);
 		*/
 		checkOrSetConfig(modify, "specials.throwable-tnt.velocity", 5.0);
-		checkOrSetConfig(modify, "specials.throwable-tnt.fuse-ticks", 5.0);
+		checkOrSetConfig(modify, "specials.throwable-tnt.fuse-ticks", 5);
 		
 		checkOrSetConfig(modify, "messages.placeholders.waiting", "&aWaiting...");
 		checkOrSetConfig(modify, "messages.placeholders.starting", "&eArena is starting in %time%!");

@@ -41,6 +41,7 @@ public class RideableProjectileListener implements Listener {
 				if (unhidden != null) {
 					new RideableProjectile(game, player, game.getTeamOfPlayer(player));
 					if (player.isInsideVehicle()) {
+						player.getVehicle().setPassenger(null);
 						player.getVehicle().remove();
 					}
 					event.getEntity().addPassenger(player);
