@@ -19,8 +19,11 @@ import org.screamingsandals.bedwars.api.BedwarsAPI;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.lib.sgui.SimpleInventories;
+import org.screamingsandals.bedwars.api.events.BedwarsGameTickEvent;
 import org.screamingsandals.bedwars.lib.sgui.builder.FormatBuilder;
 import org.screamingsandals.bedwars.lib.sgui.events.PostActionEvent;
+import org.screamingsandals.bedwars.lib.sgui.events.CloseInventoryEvent;
+import org.screamingsandals.bedwars.lib.sgui.events.OpenInventoryEvent;
 import org.screamingsandals.bedwars.lib.sgui.inventory.GuiHolder;
 import org.screamingsandals.bedwars.lib.sgui.inventory.Options;
 import org.screamingsandals.bedwars.lib.sgui.utils.MapReader;
@@ -36,7 +39,9 @@ public class GamesInventory implements Listener {
 		Bukkit.getServer().getPluginManager().registerEvents(this, XPWars.getInstance());
 		options = new Options(XPWars.getInstance());
 		options.setPrefix(
-				XPWars.getConfigurator().getString("messages.gamesinv.header", "&rGames [&e%free%&7/&6%total%&r]"));
+				XPWars.getConfigurator().getString("messages.gamesinv.header", "&rGames [&e%free%&7/&6%total%&r]")
+						.replace("%free%", Integer.toString(free()))
+						.replace("%total%", Integer.toString(Main.getGameNames().size())));
 		options.setShowPageNumber(Main.getConfigurator().config.getBoolean("shop.show-page-numbers", true));
 
 		ItemStack backItem = Main.getConfigurator().readDefinedItem("shopback", "BARRIER");
@@ -62,12 +67,8 @@ public class GamesInventory implements Listener {
 
 		options.setRender_header_start(0);
 		options.setRender_offset(9);
-		int gameCount = BedwarsAPI.getInstance().getGames().size();
-		if (gameCount <= 9) {
-			options.setRender_actual_rows(1);
-		} else if (gameCount <= 18) {
-			options.setRender_actual_rows(2);
-		}
+		options.setRender_actual_rows(6);
+
 		createData();
 	}
 
@@ -111,10 +112,8 @@ public class GamesInventory implements Listener {
 
 			ItemMeta meta = stack.getItemMeta();
 
-			meta.setDisplayName(gameStateColor(game)
-					+ "%gameName% §f[§e%players%§7/§6%maxPlayers%§f]".replace("%gameName%", game.getName())
-							.replace("%players%", String.valueOf(game.countConnectedPlayers()))
-							.replace("%maxPlayers%", String.valueOf(game.getMaxPlayers())));
+			meta.setDisplayName(gameStateColor(game) + XPWars.getConfigurator()
+					.getString("messages.gamesinv.item.name", game.getName()).replace("%arena%", game.getName()));
 			meta.setLore(formatLore(game));
 			stack.setItemMeta(meta);
 
@@ -148,30 +147,52 @@ public class GamesInventory implements Listener {
 	}
 
 	private List<String> formatLore(org.screamingsandals.bedwars.api.game.Game game) {
-		List<String> loreList = new ArrayList<>();
+		List<String> loreList = XPWars.getConfigurator().getStringList("messages.gamesinv.item.lore");
+		List<String> newLore = new ArrayList<>();
 		GameStatus status = game.getStatus();
 
-		switch (status) {
-		case DISABLED:
-			loreList.add(ChatColor.RED + "§7Game is disabled!");
-			break;
-		case GAME_END_CELEBRATING:
-			loreList.add(ChatColor.YELLOW + "§eGame just ended!");
-			break;
-		case REBUILDING:
-			loreList.add(ChatColor.DARK_AQUA + "§7Game is rebuilding!");
-			break;
-		case RUNNING:
-			loreList.add(ChatColor.RED + "§cGame is running!");
-			break;
-		case WAITING:
-			loreList.add(ChatColor.GREEN + "§aGame is available!");
-			break;
-		default:
-			break;
-
+		for (String string : loreList) {
+			string = string.replaceAll("%players%", Integer.toString(game.countConnectedPlayers()));
+			string = string.replaceAll("%maxplayers%", Integer.toString(game.getMaxPlayers()));
+			switch (status) {
+			case DISABLED:
+				string = string.replaceAll("%status%", "disabled");
+				break;
+			case GAME_END_CELEBRATING:
+				string = string.replaceAll("%status%",
+						XPWars.getConfigurator().getString("messages.placeholders.end-celebration", "ended"));
+				break;
+			case REBUILDING:
+				string = string.replaceAll("%status%",
+						XPWars.getConfigurator().getString("messages.placeholders.rebuilding", "rebuilding"));
+				break;
+			case RUNNING:
+				string = string.replaceAll("%status%",
+						XPWars.getConfigurator().getString("messages.placeholders.running", "running"));
+				break;
+			case WAITING:
+				if (game.countConnectedPlayers() >= game.getMinPlayers()) {
+					string = string.replaceAll("%status%",
+							XPWars.getConfigurator().getString("messages.placeholders.starting", "waiting"));
+				} else
+					string = string.replaceAll("%status%",
+							XPWars.getConfigurator().getString("messages.placeholders.waiting", "waiting"));
+				break;
+			default:
+				break;
+			}
+			newLore.add(string);
 		}
-		return loreList;
+		return newLore;
+	}
+
+	private int free() {
+		int i = 0;
+		for (org.screamingsandals.bedwars.api.game.Game game : Main.getInstance().getGames()) {
+			if (game.getStatus() == GameStatus.WAITING)
+				i++;
+		}
+		return i;
 	}
 
 	private void repaint() {
@@ -203,5 +224,10 @@ public class GamesInventory implements Listener {
 			repaint();
 			openedForPlayers.remove(player);
 		}
+	}
+
+	@EventHandler
+	public void onTick(BedwarsGameTickEvent event) {
+		repaint();
 	}
 }

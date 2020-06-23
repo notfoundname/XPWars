@@ -14,6 +14,7 @@ import org.screamingsandals.bedwars.api.events.BedwarsGameTickEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsOpenShopEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsPlayerKilledEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsOpenShopEvent.Result;
+import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
 import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.GamePlayer;
@@ -152,9 +153,13 @@ public class XPWarsPlayerListener implements Listener {
 
 	@EventHandler
 	public void onGameTick(BedwarsGameTickEvent event) {
+		if (event.getGame() == null)
+			return;
 		for (Player player : event.getGame().getConnectedPlayers()) {
 			GamePlayer gp = Main.getPlayerGameProfile(player);
 			CurrentTeam team = gp.getGame().getPlayerTeam(gp);
+			if (team == null || gp.getGame().getStatus() == GameStatus.WAITING)
+				return;
 			ActionBarAPI.sendActionBar(player,
 					"Team: %team% [%players%/%maxplayers%]"
 							.replace("%players%", Integer.toString(team.countConnectedPlayers()))

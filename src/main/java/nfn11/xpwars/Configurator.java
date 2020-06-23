@@ -106,21 +106,19 @@ public class Configurator {
 		checkOrSetConfig(modify, "messages.gamesinv.item.name", "&r%arena%");
 		checkOrSetConfig(modify, "messages.gamesinv.item.lore", new ArrayList<String>() {{
 			add("%status%");
-			add("&e%fplayers%&7/&6%maxplayers%");
+			add("&e%players%&7/&6%maxplayers%");
 			add("INFO: Status placeholder is getting states from messages.placeholders");
 		}});
 		
-		checkOrSetConfig(modify, "messages.level.notenoughlevels",
-				"&cYou don't have enough levels to buy &r%item%&c! Needed: &e%levels%");
 		checkOrSetConfig(modify, "messages.level.maxreached", "&cYou can't have more than %max% levels!");
 
 		checkOrSetConfig(modify, "messages.commands.reloaded", "[XPWars] &aReloaded!");
 		checkOrSetConfig(modify, "messages.commands.errorreload",
-				"[XPWars] &cThere's a error while reloading. Check em in console.");
+				"[XPWars] &cThere's a error while reloading. Check it in console.");
 		checkOrSetConfig(modify, "messages.commands.unknown", "[XPWars] &cUnknown command or wrong usage!");
 		checkOrSetConfig(modify, "messages.commands.noperm", "[XPWars] &cYou don't have permission!");
-		checkOrSetConfig(modify, "messages.commands.nostore", "[XPWars] &cInvalid shop file : %file%!");
-		checkOrSetConfig(modify, "messages.commands.noplayer", "[XPWars] &c%player% is not online!");
+		checkOrSetConfig(modify, "messages.commands.nostore", "[XPWars] &cInvalid shop file: %file%!");
+		checkOrSetConfig(modify, "messages.commands.noplayer", "[XPWars] &c%player% is not valid!");
 
 		checkOrSetConfig(modify, "version", 1);
 
