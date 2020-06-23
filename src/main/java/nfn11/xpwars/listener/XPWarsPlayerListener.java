@@ -31,6 +31,7 @@ public class XPWarsPlayerListener implements Listener {
 		Bukkit.getServer().getPluginManager().registerEvents(this, XPWars.getInstance());
 	}
 
+	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onDeath(BedwarsPlayerKilledEvent event) {
 		Player player = event.getPlayer();
@@ -79,6 +80,7 @@ public class XPWarsPlayerListener implements Listener {
 			player.setLevel(max);
 		} else
 			player.setLevel((player_level / 100) * keep_from_death_player);
+		player.setHealth(player.getMaxHealth());
 		PlayerUtils.respawn(XPWars.getInstance(), player, 0);
 	}
 

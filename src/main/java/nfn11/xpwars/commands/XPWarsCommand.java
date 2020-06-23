@@ -69,14 +69,13 @@ public class XPWarsCommand extends BaseCommand {
 				return true;
 			}
 			if (args.get(0).equalsIgnoreCase("help")) {
-				sender.sendMessage(ChatColor.RED + "[XPWars] Version "
+				sender.sendMessage(ChatColor.GREEN + "[XPWars] Version "
 						+ Bukkit.getServer().getPluginManager().getPlugin("XPWars").getDescription().getVersion());
 				sender.sendMessage("Available commands:");
 				sender.sendMessage(ChatColor.GRAY + "/bw xpwars reload - Reload the addon");
 				sender.sendMessage(ChatColor.GRAY + "/bw xpwars help [reload, open, games, lvl] - Show help");
 				sender.sendMessage(ChatColor.GRAY + "/bw xpwars open <store name> [player] - Open shop");
 				sender.sendMessage(ChatColor.GRAY + "/bw xpwars games - Show available in fancy GUI");
-				sender.sendMessage(" ");
 
 				return true;
 			}
@@ -107,7 +106,7 @@ public class XPWarsCommand extends BaseCommand {
 						shop.show(player, store);
 					} else {
 						if (!Main.getPlayerGameProfile(player).isSpectator
-								|| Main.getPlayerGameProfile(player).getGame().getStatus() == GameStatus.RUNNING) {
+								&& Main.getPlayerGameProfile(player).getGame().getStatus() == GameStatus.RUNNING) {
 							ShopInventory shop = new ShopInventory();
 							shop.show(player, store);
 						}
