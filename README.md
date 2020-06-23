@@ -1,2 +1,2 @@
 # XPWars
-Addon for ScreamingBedwars that makes level system (instead of default items, Cytooxien and some other servers) and adds some stuff like trampoline, remote TNT, throwable TNT and alot of placeholders.
+Addon for ScreamingBedwars, evevething is on [Spigot](https://www.spigotmc.org/resources/addon-xpwars.76895/) and [Wiki](https://github.com/notfoundname/XPWars/wiki/)
