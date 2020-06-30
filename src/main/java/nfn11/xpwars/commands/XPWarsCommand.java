@@ -100,7 +100,7 @@ public class XPWarsCommand extends BaseCommand {
 						return true;
 					}
 					GameStore store = new GameStore(null, args.get(1), false, i18nonly("item_shop_name", "[BW] Shop"),
-							false);
+							false, false);
 					if (XPWars.getConfigurator().getBoolean("level.enable", true) || !Main.isPlayerInGame(player)) {
 						LevelShop shop = new LevelShop();
 						shop.show(player, store);

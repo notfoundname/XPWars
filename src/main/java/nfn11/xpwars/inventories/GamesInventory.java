@@ -145,7 +145,30 @@ public class GamesInventory implements Listener {
 
 		this.menu = menu;
 	}
-
+	
+	private void setType(ItemStack stack, Game game) {
+		
+		switch (game.getStatus()) {
+		case DISABLED:
+			stack.setType(Material.CYAN_TERRACOTTA);
+			break;
+		case GAME_END_CELEBRATING:
+			stack.setType(Material.CYAN_TERRACOTTA);
+			break;
+		case REBUILDING:
+			stack.setType(Material.LIGHT_BLUE_TERRACOTTA);
+			break;
+		case RUNNING:
+			stack.setType(Material.RED_TERRACOTTA);
+			break;
+		case WAITING:
+			stack.setType(Material.LIME_TERRACOTTA);
+			break;
+		default:
+			break;
+		}
+	}
+	
 	private List<String> formatLore(org.screamingsandals.bedwars.api.game.Game game) {
 		List<String> loreList = XPWars.getConfigurator().getStringList("messages.gamesinv.item.lore");
 		List<String> newLore = new ArrayList<>();

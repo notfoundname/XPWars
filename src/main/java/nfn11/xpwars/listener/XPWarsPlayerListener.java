@@ -9,7 +9,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.Main;
-import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.events.BedwarsGameTickEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsOpenShopEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsPlayerKilledEvent;
@@ -88,7 +87,7 @@ public class XPWarsPlayerListener implements Listener {
 	public void onShopOpen(BedwarsOpenShopEvent event) {
 		if (Main.getPlayerGameProfile(event.getPlayer()).isSpectator)
 			return;
-		if (XPWars.getConfigurator().config.getBoolean("level.enable", true)) {
+		if (XPWars.getConfigurator().config.getBoolean("features.level-system", false)) {
 			event.setResult(Result.DISALLOW_THIRD_PARTY_SHOP);
 			xp.show(event.getPlayer(), event.getStore());
 		} else
@@ -97,7 +96,7 @@ public class XPWarsPlayerListener implements Listener {
 
 	@EventHandler
 	public void onPickup(EntityPickupItemEvent event) {
-		if (!XPWars.getConfigurator().config.getBoolean("level.enable"))
+		if (!XPWars.getConfigurator().config.getBoolean("features.level-system"))
 			return;
 
 		if (event.getEntity() instanceof Player) {

@@ -8,6 +8,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import me.clip.placeholderapi.PlaceholderAPI;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
@@ -34,6 +36,10 @@ public class ActionBarAPI implements Listener {
 			return;
 		}
 		message = ChatColor.translateAlternateColorCodes('&', message);
+		
+		if (XPWars.getInstance().getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
+			message = PlaceholderAPI.setPlaceholders(player, message);
+		}
 
 		// Call the event, if cancelled don't send Action Bar
 		ActionBarMessageEvent actionBarMessageEvent = new ActionBarMessageEvent(player, message);
@@ -119,16 +125,6 @@ public class ActionBarAPI implements Listener {
 					sendActionBar(player, message);
 				}
 			}.runTaskLater(plugin, (long) duration);
-		}
-	}
-
-	public static void sendActionBarToAllPlayers(String message) {
-		sendActionBarToAllPlayers(message, -1);
-	}
-
-	public static void sendActionBarToAllPlayers(String message, int duration) {
-		for (Player p : Bukkit.getOnlinePlayers()) {
-			sendActionBar(p, message, duration);
 		}
 	}
 }
