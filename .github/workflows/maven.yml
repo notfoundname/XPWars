@@ -22,5 +22,5 @@ jobs:
       env:
         BUILD_NUMBER: ${{ github.run_number }}
       with:
-        name: "XPWars-${{ github.run_number }}"
+        name: "XPWars-$BUILD_NUMBER"
         path: "./target/XPWars-*.jar"
