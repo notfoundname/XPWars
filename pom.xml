@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>nfn11</groupId>
 	<artifactId>XPWars</artifactId>
-	<version>${{ github.run_number }}</version>
+	<version>1</version>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -71,7 +71,7 @@
 		</resources>
 
 		<defaultGoal>clean install</defaultGoal>
-		<finalName>XPWars-${project.version}</finalName>
+		<finalName>XPWars-${{ github.run_number }}</finalName>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
