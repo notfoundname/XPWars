@@ -20,4 +20,4 @@ jobs:
     - run: mvn -B package --file pom.xml
     - uses: kittaakos/upload-artifact-as-is@v0
       with:
-       path: "./target/XPWars-*.jar"
+       path: "target/XPWars-*.jar"
