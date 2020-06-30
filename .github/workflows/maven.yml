@@ -19,6 +19,7 @@ jobs:
         java-version: 1.8
     - run: mvn -B package --file pom.xml
     - uses: actions/upload-artifact@v2
+      env:
+        BUILD_NUMBER: ${{ github.run_number }}
       with:
-        name: "XPWars-${{ github.run_number }}"
         path: "./target/XPWars-*.jar"
