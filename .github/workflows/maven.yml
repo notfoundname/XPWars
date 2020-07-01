@@ -1,14 +1,9 @@
-# This workflow will build a Java project with Maven
-# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
-
 name: Builds
-
 on:
   push:
     branches: [master]
   pull_request:
     branches: [master]
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -19,6 +14,6 @@ jobs:
         java-version: 1.8
     - run: mvn -B package --file pom.xml
     - run: 'mv target/XPWars-1.1.jar target/XPWars-1.1-${{ github.run_number }}.jar'
-    - uses: kittaakos/upload-artifact-as-is@v0
+    - uses: actions/upload-artifact@v2.0.1
       with:
        path: "target/XPWars-1.1-${{ github.run_number }}.jar"
