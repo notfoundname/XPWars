@@ -27,6 +27,7 @@ import org.screamingsandals.bedwars.lib.sgui.events.OpenInventoryEvent;
 import org.screamingsandals.bedwars.lib.sgui.inventory.GuiHolder;
 import org.screamingsandals.bedwars.lib.sgui.inventory.Options;
 import org.screamingsandals.bedwars.lib.sgui.utils.MapReader;
+import org.screamingsandals.bedwars.lib.sgui.utils.StackParser;
 
 import nfn11.xpwars.XPWars;
 
@@ -83,60 +84,13 @@ public class GamesInventory implements Listener {
 		openedForPlayers.add(player);
 	}
 
-	private String gameStateColor(org.screamingsandals.bedwars.api.game.Game game) {
-		if (game.getStatus() == GameStatus.WAITING) {
-			return "§a";
-		}
-		if (game.getStatus() == GameStatus.RUNNING) {
-			return "§c";
-		}
-		if (game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
-			return "§a";
-		}
-		if (game.getStatus() == GameStatus.REBUILDING) {
-			return "§8";
-		}
-		if (game.getStatus() == GameStatus.DISABLED) {
-			return "§7";
-		}
-		return "";
-	}
-
 	private void createData() {
 		SimpleInventories menu = new SimpleInventories(options);
 		FormatBuilder builder = new FormatBuilder();
-
-		ItemStack stack = new ItemStack(Material.WHITE_TERRACOTTA);
+		ItemStack stack = new ItemStack(Material.AIR);
 
 		for (org.screamingsandals.bedwars.api.game.Game game : BedwarsAPI.getInstance().getGames()) {
-
-			ItemMeta meta = stack.getItemMeta();
-
-			meta.setDisplayName(gameStateColor(game) + XPWars.getConfigurator()
-					.getString("messages.gamesinv.item.name", game.getName()).replace("%arena%", game.getName()));
-			meta.setLore(formatLore(game));
-			stack.setItemMeta(meta);
-
-			switch (game.getStatus()) {
-			case DISABLED:
-				stack.setType(Material.CYAN_TERRACOTTA);
-				break;
-			case GAME_END_CELEBRATING:
-				stack.setType(Material.CYAN_TERRACOTTA);
-				break;
-			case REBUILDING:
-				stack.setType(Material.LIGHT_BLUE_TERRACOTTA);
-				break;
-			case RUNNING:
-				stack.setType(Material.RED_TERRACOTTA);
-				break;
-			case WAITING:
-				stack.setType(Material.LIME_TERRACOTTA);
-				break;
-			default:
-				break;
-			}
-
+			stack = formatItem(stack, game);
 			builder.add(stack).set("game", game);
 		}
 
@@ -145,68 +99,61 @@ public class GamesInventory implements Listener {
 
 		this.menu = menu;
 	}
-	
-	private void setType(ItemStack stack, Game game) {
-		
-		switch (game.getStatus()) {
-		case DISABLED:
-			stack.setType(Material.CYAN_TERRACOTTA);
-			break;
-		case GAME_END_CELEBRATING:
-			stack.setType(Material.CYAN_TERRACOTTA);
-			break;
-		case REBUILDING:
-			stack.setType(Material.LIGHT_BLUE_TERRACOTTA);
-			break;
-		case RUNNING:
-			stack.setType(Material.RED_TERRACOTTA);
-			break;
-		case WAITING:
-			stack.setType(Material.LIME_TERRACOTTA);
-			break;
-		default:
-			break;
-		}
-	}
-	
-	private List<String> formatLore(org.screamingsandals.bedwars.api.game.Game game) {
-		List<String> loreList = XPWars.getConfigurator().getStringList("messages.gamesinv.item.lore");
+
+	private ItemStack formatItem(ItemStack stack, org.screamingsandals.bedwars.api.game.Game game) {
+		ItemMeta meta = stack.getItemMeta();
+		List<String> lore = meta.getLore();
+		String name = meta.getDisplayName();
+
 		List<String> newLore = new ArrayList<>();
+
 		GameStatus status = game.getStatus();
 
-		for (String string : loreList) {
-			string = string.replaceAll("%players%", Integer.toString(game.countConnectedPlayers()));
-			string = string.replaceAll("%maxplayers%", Integer.toString(game.getMaxPlayers()));
+		meta.setDisplayName(ChatColor.translateAlternateColorCodes('&',
+				name.replace("%arena%", game.getName()).replace("%mxpl%", Integer.toString(game.getMaxPlayers())
+						.replace("%pl%", Integer.toString(game.countConnectedPlayers())))));
+
+		for (String string : lore) {
+
 			switch (status) {
 			case DISABLED:
-				string = string.replaceAll("%status%", "disabled");
+				stack = StackParser.parse(
+						XPWars.getConfigurator().config.getConfigurationSection("games-gui.item.stack.disabled"));
 				break;
 			case GAME_END_CELEBRATING:
-				string = string.replaceAll("%status%",
-						XPWars.getConfigurator().getString("messages.placeholders.end-celebration", "ended"));
+				stack = StackParser
+						.parse(XPWars.getConfigurator().config.getConfigurationSection("games-gui.item.stack.ended"));
 				break;
 			case REBUILDING:
-				string = string.replaceAll("%status%",
-						XPWars.getConfigurator().getString("messages.placeholders.rebuilding", "rebuilding"));
+				stack = StackParser.parse(
+						XPWars.getConfigurator().config.getConfigurationSection("games-gui.item.stack.rebuilding"));
 				break;
 			case RUNNING:
-				string = string.replaceAll("%status%",
-						XPWars.getConfigurator().getString("messages.placeholders.running", "running"));
+				stack = StackParser
+						.parse(XPWars.getConfigurator().config.getConfigurationSection("games-gui.item.stack.running"));
 				break;
 			case WAITING:
 				if (game.countConnectedPlayers() >= game.getMinPlayers()) {
-					string = string.replaceAll("%status%",
-							XPWars.getConfigurator().getString("messages.placeholders.starting", "waiting"));
+					stack = StackParser.parse(
+							XPWars.getConfigurator().config.getConfigurationSection("games-gui.item.stack.starting"));
 				} else
-					string = string.replaceAll("%status%",
-							XPWars.getConfigurator().getString("messages.placeholders.waiting", "waiting"));
+					stack = StackParser.parse(
+							XPWars.getConfigurator().config.getConfigurationSection("games-gui.item.stack.waiting"));
 				break;
 			default:
 				break;
 			}
+
+			string = string.replaceAll("%pl%", Integer.toString(game.countConnectedPlayers()));
+			string = string.replaceAll("%mxpl%", Integer.toString(game.getMaxPlayers()));
+			string = string.replaceAll("%tl%", Main.getGame(game.getName()).getFormattedTimeLeft());
+			string = string.replaceAll("%tp%", Main.getGame(game.getName())
+					.getFormattedTimeLeft(game.getGameTime() - Main.getGame(game.getName()).getPauseCountdown()));
 			newLore.add(string);
 		}
-		return newLore;
+		meta.setLore(newLore);
+		stack.setItemMeta(meta);
+		return stack;
 	}
 
 	private int free() {

@@ -19,7 +19,8 @@ import nfn11.xpwars.utils.XPWarsUtils;
 public class PlaceholderAPIHook extends PlaceholderExpansion {
 
 	public PlaceholderAPIHook() {
-		if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+		if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null
+				&& XPWars.getConfigurator().getBoolean("features.placeholder-api", true)) {
 			PlaceholderAPI.registerPlaceholderHook(this.getIdentifier(), this);
 			XPWarsUtils.xpwarsLog("&aSuccesfully registered PlaceholderAPI!");
 		}
@@ -106,21 +107,21 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 			int countdown = game.getPauseCountdown();
 
 			if (status == GameStatus.WAITING && game.getMinPlayers() >= game.countConnectedPlayers()) {
-				return XPWars.getConfigurator().getString("messages.placeholders.waiting", "waiting");
+				return XPWars.getConfigurator().getString("placeholders.waiting", "waiting");
 			}
 			if (status == GameStatus.RUNNING) {
-				return XPWars.getConfigurator().getString("messages.placeholders.running", "running").replace("%time%",
+				return XPWars.getConfigurator().getString("placeholders.running", "running").replace("%time%",
 						game.getFormattedTimeLeft(gameTime - countdown).replace("%left%", game.getFormattedTimeLeft()));
 			}
 			if (status == GameStatus.WAITING && game.getMinPlayers() <= game.countConnectedPlayers()) {
-				return XPWars.getConfigurator().getString("messages.placeholders.starting", "starting")
+				return XPWars.getConfigurator().getString("placeholders.starting", "starting")
 						.replace("%left%", game.getFormattedTimeLeft());
 			}
 			if (status == GameStatus.GAME_END_CELEBRATING) {
-				return XPWars.getConfigurator().getString("messages.placeholders.ended", "ended");
+				return XPWars.getConfigurator().getString("placeholders.ended", "ended");
 			}
 			if (status == GameStatus.REBUILDING) {
-				return XPWars.getConfigurator().getString("messages.placeholders.rebuilding", "rebuilding");
+				return XPWars.getConfigurator().getString("placeholders.rebuilding", "rebuilding");
 			}
 		}
 
@@ -205,22 +206,22 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 			int countdown = game.getPauseCountdown();
 
 			if (status == GameStatus.WAITING && game.getMinPlayers() >= game.countConnectedPlayers()) {
-				return XPWars.getConfigurator().getString("messages.placeholders.waiting", "waiting");
+				return XPWars.getConfigurator().getString("placeholders.waiting", "waiting");
 			}
 			if (status == GameStatus.RUNNING) {
-				return XPWars.getConfigurator().getString("messages.placeholders.running", "running").replace("%time%",
+				return XPWars.getConfigurator().getString("placeholders.running", "running").replace("%time%",
 						game.getFormattedTimeLeft(gameTime - countdown).replace("%left%", game.getFormattedTimeLeft()));
 			}
 			if (status == GameStatus.WAITING
 					&& Main.getGame(parsed).getMinPlayers() <= Main.getGame(parsed).countConnectedPlayers()) {
-				return XPWars.getConfigurator().getString("messages.placeholders.starting", "starting")
+				return XPWars.getConfigurator().getString("placeholders.starting", "starting")
 						.replace("%left%", Main.getGame(parsed).getFormattedTimeLeft());
 			}
 			if (status == GameStatus.GAME_END_CELEBRATING) {
-				return XPWars.getConfigurator().getString("messages.placeholders.ended", "ended");
+				return XPWars.getConfigurator().getString("placeholders.ended", "ended");
 			}
 			if (status == GameStatus.REBUILDING) {
-				return XPWars.getConfigurator().getString("messages.placeholders.rebuilding", "rebuilding");
+				return XPWars.getConfigurator().getString("placeholders.rebuilding", "rebuilding");
 			}
 		}
 

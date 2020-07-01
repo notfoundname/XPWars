@@ -35,13 +35,16 @@ public class XPWars extends JavaPlugin implements Listener {
 		InventoryListener.init(this);
 		Bukkit.getPluginManager().registerEvents(this, this);
 		new XPWarsUtils();
+		if (getConfigurator().config.getBoolean("")) {
+			
+		}
 		new LevelShop();
-		//new GamesInventory();
+		new GamesInventory();
 		new XPWarsPlayerListener();
 		new RegisterSpecialListeners();
 		new ActionBarAPI();
 		new XPWarsCommand();
-		//new GamesCommand();
+		new GamesCommand();
 		new PlaceholderAPIHook();
 		
 		commands = new HashMap<>();

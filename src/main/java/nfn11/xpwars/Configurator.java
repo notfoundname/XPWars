@@ -72,6 +72,7 @@ public class Configurator {
 		checkOrSetConfig(modify, "features.games-gui", false);
 		checkOrSetConfig(modify, "features.action-bar-messages", false);
 		checkOrSetConfig(modify, "features.placeholder-api", false);
+		checkOrSetConfig(modify, "features.permission-to-join-game", false);
 		
 		if (config.getBoolean("features.action-bar-message")) {
 			checkOrSetConfig(modify, "action-bar-messages.in-lobby", "You selected team: %team%");
@@ -120,26 +121,16 @@ public class Configurator {
 				ItemMeta meta = getItemMeta();
 				meta.setDisplayName("&a%arena%");
 				List<String> newlore = new ArrayList<>();
-				newlore.add("%status");
-				newlore.add("&e%players%&7/&6%maxplayers%");
+				newlore.add("waiting");
+				newlore.add("&e%pl%&7/&6%mxpl%");
 				meta.setLore(newlore);
 				setItemMeta(meta);
 			}});
-			checkOrSetConfig(modify, "games-gui.item.type.starting", "YELLOW_WOOL");
-			checkOrSetConfig(modify, "games-gui.item.type.running", "RED_WOOL");
-			checkOrSetConfig(modify, "games-gui.item.type.ended", "BLUE_WOOL");
-			checkOrSetConfig(modify, "games-gui.item.type.rebuilding", "BLACK_WOOL");
-			
-			checkOrSetConfig(modify, "games-gui.item.lore", new ArrayList<String>() {{
-				add("%status%");
-				add("&e%players%&7/&6%maxplayers%");
-			}});
-			
-			checkOrSetConfig(modify, "games-gui.messages.status.waiting", "Waiting");
-			checkOrSetConfig(modify, "games-gui.messages.status.starting", "Starting");
-			checkOrSetConfig(modify, "games-gui.messages.status.running", "Running");
-			checkOrSetConfig(modify, "games-gui.messages.status.ended", "Ended");
-			checkOrSetConfig(modify, "games-gui.messages.status.rebuilding", "Rebuilding");
+			checkOrSetConfig(modify, "games-gui.item.stack.starting", "YELLOW_WOOL;1;&e%arena%;Starting in %tl%");
+			checkOrSetConfig(modify, "games-gui.item.stack.running", "RED_WOOL;1;&c%arena%;Running :) Time left: %tl%");
+			checkOrSetConfig(modify, "games-gui.item.stack.ended", "BLUE_WOOL;1;&9%arena%;Ended");
+			checkOrSetConfig(modify, "games-gui.item.stack.rebuilding", "GRAY_WOOL;1;&7%arena%;rebuilding");
+			checkOrSetConfig(modify, "games-gui.item.stack.disabled", "BLACK_WOOL;1;&0%arena%;disabled");
 		}
 
 		checkOrSetConfig(modify, "specials.remote-tnt.fuse-ticks", 100);
