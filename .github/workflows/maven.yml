@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - run: mkdir -p target/
     - uses: actions/setup-java@v1.3.0
       with:
         java-version: 1.8
