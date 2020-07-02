@@ -117,15 +117,7 @@ public class Configurator {
 			
 			checkOrSetConfig(modify, "games-gui.header", "&rGames [&e%free%&7/&6%total%&r]");
 			
-			checkOrSetConfig(modify, "games-gui.item.stack.waiting", new ItemStack(Material.GREEN_WOOL) {{
-				ItemMeta meta = getItemMeta();
-				meta.setDisplayName("&a%arena%");
-				List<String> newlore = new ArrayList<>();
-				newlore.add("waiting");
-				newlore.add("&e%pl%&7/&6%mxpl%");
-				meta.setLore(newlore);
-				setItemMeta(meta);
-			}});
+			checkOrSetConfig(modify, "games-gui.item.stack.waiting", "GREEN_WOOL;1;&a%arena%;Waiting);
 			checkOrSetConfig(modify, "games-gui.item.stack.starting", "YELLOW_WOOL;1;&e%arena%;Starting in %tl%");
 			checkOrSetConfig(modify, "games-gui.item.stack.running", "RED_WOOL;1;&c%arena%;Running :) Time left: %tl%");
 			checkOrSetConfig(modify, "games-gui.item.stack.ended", "BLUE_WOOL;1;&9%arena%;Ended");
