@@ -117,7 +117,7 @@ public class Configurator {
 			
 			checkOrSetConfig(modify, "games-gui.header", "&rGames [&e%free%&7/&6%total%&r]");
 			
-			checkOrSetConfig(modify, "games-gui.item.stack.waiting", "GREEN_WOOL;1;&a%arena%;Waiting);
+			checkOrSetConfig(modify, "games-gui.item.stack.waiting", "GREEN_WOOL;1;&a%arena%;Waiting");
 			checkOrSetConfig(modify, "games-gui.item.stack.starting", "YELLOW_WOOL;1;&e%arena%;Starting in %tl%");
 			checkOrSetConfig(modify, "games-gui.item.stack.running", "RED_WOOL;1;&c%arena%;Running :) Time left: %tl%");
 			checkOrSetConfig(modify, "games-gui.item.stack.ended", "BLUE_WOOL;1;&9%arena%;Ended");
