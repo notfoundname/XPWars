@@ -104,27 +104,27 @@ public class GamesInventory implements Listener {
 		switch (game.getStatus()) {
 		case DISABLED:
 			stack = StackParser
-					.parse(XPWars.getConfigurator().config.getConfigurationSection("games-gui.item.stack.disabled"));
+					.parse(XPWars.getConfigurator().config.get("games-gui.item.stack.disabled"));
 			break;
 		case GAME_END_CELEBRATING:
 			stack = StackParser
-					.parse(XPWars.getConfigurator().config.getConfigurationSection("games-gui.item.stack.ended"));
+					.parse(XPWars.getConfigurator().config.get("games-gui.item.stack.ended"));
 			break;
 		case REBUILDING:
 			stack = StackParser
-					.parse(XPWars.getConfigurator().config.getConfigurationSection("games-gui.item.stack.rebuilding"));
+					.parse(XPWars.getConfigurator().config.get("games-gui.item.stack.rebuilding"));
 			break;
 		case RUNNING:
 			stack = StackParser
-					.parse(XPWars.getConfigurator().config.getConfigurationSection("games-gui.item.stack.running"));
+					.parse(XPWars.getConfigurator().get("games-gui.item.stack.running"));
 			break;
 		case WAITING:
 			if (game.countConnectedPlayers() >= game.getMinPlayers()) {
 				stack = StackParser.parse(
-						XPWars.getConfigurator().config.getConfigurationSection("games-gui.item.stack.starting"));
+						XPWars.getConfigurator().config.get("games-gui.item.stack.starting"));
 			} else
 				stack = StackParser
-						.parse(XPWars.getConfigurator().config.getConfigurationSection("games-gui.item.stack.waiting"));
+						.parse(XPWars.getConfigurator().config.get("games-gui.item.stack.waiting"));
 			break;
 		default:
 			break;
