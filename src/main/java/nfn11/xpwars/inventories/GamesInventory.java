@@ -128,7 +128,7 @@ public class GamesInventory implements Listener {
 		default:
 			break;
 		}
-		if (stack == null) return;
+		if (stack == null) return new ItemStack(Material.AIR);
 
 		ItemMeta meta = stack.getItemMeta();
 		List<String> lore = meta.getLore();
