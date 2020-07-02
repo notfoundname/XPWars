@@ -105,6 +105,6 @@ public class RemoteTNTListener implements Listener {
 	}
 
 	private ItemStack detonator() {
-		return StackParser.parse(XPWars.getConfigurator().config.getItemStack("specials.remote-tnt.detonator-itemstack"));
+		return StackParser.parse(XPWars.getConfigurator().config.get("specials.remote-tnt.detonator-itemstack"));
 	}
 }
