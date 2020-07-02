@@ -116,7 +116,7 @@ public class GamesInventory implements Listener {
 			break;
 		case RUNNING:
 			stack = StackParser
-					.parse(XPWars.getConfigurator().get("games-gui.item.stack.running"));
+					.parse(XPWars.getConfigurator().config.get("games-gui.item.stack.running"));
 			break;
 		case WAITING:
 			if (game.countConnectedPlayers() >= game.getMinPlayers()) {
