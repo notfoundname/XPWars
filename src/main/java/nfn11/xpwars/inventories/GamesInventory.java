@@ -87,11 +87,9 @@ public class GamesInventory implements Listener {
 	private void createData() {
 		SimpleInventories menu = new SimpleInventories(options);
 		FormatBuilder builder = new FormatBuilder();
-		ItemStack stack = new ItemStack(Material.AIR);
 
 		for (org.screamingsandals.bedwars.api.game.Game game : BedwarsAPI.getInstance().getGames()) {
-			stack = formatItem(stack, game);
-			builder.add(stack).set("game", game);
+			builder.add(formatItem(game)).set("game", game);
 		}
 
 		menu.load(builder);
@@ -100,7 +98,8 @@ public class GamesInventory implements Listener {
 		this.menu = menu;
 	}
 
-	private ItemStack formatItem(ItemStack stack, org.screamingsandals.bedwars.api.game.Game game) {
+	private ItemStack formatItem(org.screamingsandals.bedwars.api.game.Game game) {
+                ItemStack stack = null;
 		switch (game.getStatus()) {
 		case DISABLED:
 			stack = StackParser
@@ -129,7 +128,8 @@ public class GamesInventory implements Listener {
 		default:
 			break;
 		}
-		
+		if (stack == null) return;
+
 		ItemMeta meta = stack.getItemMeta();
 		List<String> lore = meta.getLore();
 		String name = meta.getDisplayName();
