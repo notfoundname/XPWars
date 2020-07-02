@@ -15,7 +15,7 @@ public class GamesCommand extends BaseCommand {
 
 	@Override
 	public void completeTab(List<String> completion, CommandSender sender, List<String> args) {
-		if (sender.isOp() || sender.hasPermission(ADMIN_PERMISSION) || !sender
+		if (!sender.isOp() || !sender.hasPermission(ADMIN_PERMISSION) || !sender
 				.hasPermission(XPWars.getConfigurator().getString("games-gui.permission", "xpwars.gamesgui"))) {
 			return;
 		}
@@ -23,7 +23,7 @@ public class GamesCommand extends BaseCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, List<String> args) {
-		if (sender.isOp() || sender.hasPermission(ADMIN_PERMISSION) || !sender
+		if (!sender.isOp() || !sender.hasPermission(ADMIN_PERMISSION) || !sender
 				.hasPermission(XPWars.getConfigurator().getString("games-gui.permission", "xpwars.gamesgui"))) {
 			return true;
 		}
