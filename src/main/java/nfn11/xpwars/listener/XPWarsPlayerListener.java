@@ -21,6 +21,7 @@ import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
 
 import nfn11.thirdparty.connorlinfoot.actionbarapi.ActionBarAPI;
 import nfn11.xpwars.XPWars;
+import nfn11.xpwars.inventories.GamesInventory;
 import nfn11.xpwars.inventories.LevelShop;
 
 public class XPWarsPlayerListener implements Listener {
@@ -35,7 +36,7 @@ public class XPWarsPlayerListener implements Listener {
 	public void onDeath(BedwarsPlayerKilledEvent event) {
 		Player player = event.getPlayer();
 
-		if (XPWars.getConfigurator().config.getBoolean("features.level-system", false)) {
+		if (XPWars.getConfigurator().config.getBoolean("features.level-system")) {
 			String gamename = event.getGame().getName();
 
 			int player_level = player.getLevel();
@@ -89,7 +90,7 @@ public class XPWarsPlayerListener implements Listener {
 	public void onShopOpen(BedwarsOpenShopEvent event) {
 		if (Main.getPlayerGameProfile(event.getPlayer()).isSpectator)
 			return;
-		if (XPWars.getConfigurator().config.getBoolean("features.level-system", false)) {
+		if (XPWars.getConfigurator().config.getBoolean("features.level-system")) {
 			event.setResult(Result.DISALLOW_THIRD_PARTY_SHOP);
 			xp.show(event.getPlayer(), event.getStore());
 		} else
@@ -158,16 +159,25 @@ public class XPWarsPlayerListener implements Listener {
 	public void onGameTick(BedwarsGameTickEvent event) {
 		if (event.getGame() == null)
 			return;
-		for (Player player : event.getGame().getConnectedPlayers()) {
-			GamePlayer gp = Main.getPlayerGameProfile(player);
-			CurrentTeam team = gp.getGame().getPlayerTeam(gp);
-			if (team == null || gp.getGame().getStatus() == GameStatus.WAITING)
-				return;
-			ActionBarAPI.sendActionBar(player,
-					"Team: %team% [%players%/%maxplayers%]"
-							.replace("%players%", Integer.toString(team.countConnectedPlayers()))
-							.replace("%team%", team.teamInfo.color.chatColor + team.getName())
-							.replace("%maxplayers%", Integer.toString(team.getMaxPlayers())));
+		if (XPWars.getConfigurator().config.getBoolean("features.games-gui")) {
+			new GamesInventory().repaint();
+		}
+		if (XPWars.getConfigurator().config.getBoolean("features.action-bar-messages")) {
+			for (Player player : event.getGame().getConnectedPlayers()) {
+				GamePlayer gp = Main.getPlayerGameProfile(player);
+				CurrentTeam team = gp.getGame().getPlayerTeam(gp);
+				if (team == null || gp.isSpectator) {
+					ActionBarAPI.sendActionBar(player,
+							XPWars.getConfigurator().config.getString("action-bar-messages.in-game-spectator"));
+					return;
+				}
+				if (gp.getGame().getStatus() == GameStatus.WAITING)
+					ActionBarAPI.sendActionBar(player,
+							XPWars.getConfigurator().config.getString("action-bar-messages.in-lobby")
+									.replace("%pl_t%", Integer.toString(team.countConnectedPlayers()))
+									.replace("%team%", team.teamInfo.color.chatColor + team.getName())
+									.replace("%mxpl_t%", Integer.toString(team.getMaxPlayers())));
+			}
 		}
 	}
 }

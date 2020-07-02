@@ -101,49 +101,44 @@ public class GamesInventory implements Listener {
 	}
 
 	private ItemStack formatItem(ItemStack stack, org.screamingsandals.bedwars.api.game.Game game) {
+		switch (game.getStatus()) {
+		case DISABLED:
+			stack = StackParser
+					.parse(XPWars.getConfigurator().config.getConfigurationSection("games-gui.item.stack.disabled"));
+			break;
+		case GAME_END_CELEBRATING:
+			stack = StackParser
+					.parse(XPWars.getConfigurator().config.getConfigurationSection("games-gui.item.stack.ended"));
+			break;
+		case REBUILDING:
+			stack = StackParser
+					.parse(XPWars.getConfigurator().config.getConfigurationSection("games-gui.item.stack.rebuilding"));
+			break;
+		case RUNNING:
+			stack = StackParser
+					.parse(XPWars.getConfigurator().config.getConfigurationSection("games-gui.item.stack.running"));
+			break;
+		case WAITING:
+			if (game.countConnectedPlayers() >= game.getMinPlayers()) {
+				stack = StackParser.parse(
+						XPWars.getConfigurator().config.getConfigurationSection("games-gui.item.stack.starting"));
+			} else
+				stack = StackParser
+						.parse(XPWars.getConfigurator().config.getConfigurationSection("games-gui.item.stack.waiting"));
+			break;
+		default:
+			break;
+		}
+		
 		ItemMeta meta = stack.getItemMeta();
 		List<String> lore = meta.getLore();
 		String name = meta.getDisplayName();
-
-		List<String> newLore = new ArrayList<>();
-
-		GameStatus status = game.getStatus();
-
 		meta.setDisplayName(ChatColor.translateAlternateColorCodes('&',
 				name.replace("%arena%", game.getName()).replace("%mxpl%", Integer.toString(game.getMaxPlayers())
 						.replace("%pl%", Integer.toString(game.countConnectedPlayers())))));
-
+		List<String> newLore = new ArrayList<>();
+		
 		for (String string : lore) {
-
-			switch (status) {
-			case DISABLED:
-				stack = StackParser.parse(
-						XPWars.getConfigurator().config.getConfigurationSection("games-gui.item.stack.disabled"));
-				break;
-			case GAME_END_CELEBRATING:
-				stack = StackParser
-						.parse(XPWars.getConfigurator().config.getConfigurationSection("games-gui.item.stack.ended"));
-				break;
-			case REBUILDING:
-				stack = StackParser.parse(
-						XPWars.getConfigurator().config.getConfigurationSection("games-gui.item.stack.rebuilding"));
-				break;
-			case RUNNING:
-				stack = StackParser
-						.parse(XPWars.getConfigurator().config.getConfigurationSection("games-gui.item.stack.running"));
-				break;
-			case WAITING:
-				if (game.countConnectedPlayers() >= game.getMinPlayers()) {
-					stack = StackParser.parse(
-							XPWars.getConfigurator().config.getConfigurationSection("games-gui.item.stack.starting"));
-				} else
-					stack = StackParser.parse(
-							XPWars.getConfigurator().config.getConfigurationSection("games-gui.item.stack.waiting"));
-				break;
-			default:
-				break;
-			}
-
 			string = string.replaceAll("%pl%", Integer.toString(game.countConnectedPlayers()));
 			string = string.replaceAll("%mxpl%", Integer.toString(game.getMaxPlayers()));
 			string = string.replaceAll("%tl%", Main.getGame(game.getName()).getFormattedTimeLeft());
@@ -165,7 +160,7 @@ public class GamesInventory implements Listener {
 		return i;
 	}
 
-	private void repaint() {
+	public void repaint() {
 		for (Player player : openedForPlayers) {
 			GuiHolder guiHolder = menu.getCurrentGuiHolder(player);
 			if (guiHolder == null) {
@@ -194,10 +189,5 @@ public class GamesInventory implements Listener {
 			repaint();
 			openedForPlayers.remove(player);
 		}
-	}
-
-	@EventHandler
-	public void onTick(BedwarsGameTickEvent event) {
-		repaint();
 	}
 }

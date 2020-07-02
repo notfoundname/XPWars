@@ -9,6 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.commands.BaseCommand;
 import org.screamingsandals.bedwars.lib.sgui.listeners.InventoryListener;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import nfn11.thirdparty.connorlinfoot.actionbarapi.ActionBarAPI;
 import nfn11.xpwars.commands.GamesCommand;
 import nfn11.xpwars.commands.XPWarsCommand;
@@ -45,7 +46,11 @@ public class XPWars extends JavaPlugin implements Listener {
 		new ActionBarAPI();
 		new XPWarsCommand();
 		new GamesCommand();
-		new PlaceholderAPIHook();
+		if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null
+				&& XPWars.getConfigurator().config.getBoolean("features.placeholder-api")) {
+			new PlaceholderAPIHook().register();
+			XPWarsUtils.xpwarsLog("&aSuccesfully registered PlaceholderAPI!");
+		}
 		
 		commands = new HashMap<>();
 		
@@ -54,12 +59,16 @@ public class XPWars extends JavaPlugin implements Listener {
 		XPWarsUtils.xpwarsLog("&aXPWars addon by &enotfoundname11");
 		XPWarsUtils.xpwarsLog("&9https://github.com/notfoundname/XPWars");
 		XPWarsUtils.xpwarsLog("&eType &6/bw xpwars help &eto show available commands.");
+		XPWarsUtils.xpwarsLog("&c&lMake sure you use latest development build! Check it on Github Actions.");
 	}
 	
 	@EventHandler
 	public void onBwReload(PluginEnableEvent event) {
 		String plugin = event.getPlugin().getName();
 		if (plugin.equalsIgnoreCase("BedWars")) {
+			if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null && new PlaceholderAPIHook().isRegistered()) {
+				PlaceholderAPI.unregisterExpansion(new PlaceholderAPIHook());
+			}
 			Bukkit.getServer().getPluginManager().disablePlugin(XPWars.getInstance());
 			Bukkit.getServer().getPluginManager().enablePlugin(XPWars.getInstance());
 		}

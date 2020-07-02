@@ -74,9 +74,9 @@ public class Configurator {
 		checkOrSetConfig(modify, "features.placeholder-api", false);
 		checkOrSetConfig(modify, "features.permission-to-join-game", false);
 		
-		if (config.getBoolean("features.action-bar-message")) {
-			checkOrSetConfig(modify, "action-bar-messages.in-lobby", "You selected team: %team%");
-			checkOrSetConfig(modify, "action-bar-messages.in-game-alive", "Your team: %bed% %team_colored% [%alive%]");
+		if (config.getBoolean("features.action-bar-messages")) {
+			checkOrSetConfig(modify, "action-bar-messages.in-lobby", "Your team: %team% [%pl_t%/%mxpl_t%]");
+			checkOrSetConfig(modify, "action-bar-messages.in-game-alive", "Your team: %bed% %team_colored% %pl_list_t%");
 			checkOrSetConfig(modify, "action-bar-messages.in-game-spectator", "You are spectator!");
 		}
 		
