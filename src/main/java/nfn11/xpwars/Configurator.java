@@ -57,9 +57,9 @@ public class Configurator {
 		AtomicBoolean modify = new AtomicBoolean(false);
 
 		ConfigurationSection resources = Main.getConfigurator().config.getConfigurationSection("resources");
-		
+
 		checkOrSetConfig(modify, "version", 2);
-		
+
 		if (config.getInt("version") != 2) {
 			file.renameTo(new File(dataFolder, "config_backup.yml"));
 			Bukkit.getServer().getLogger()
@@ -67,81 +67,79 @@ public class Configurator {
 			loadDefaults();
 			return;
 		}
-		
+
 		checkOrSetConfig(modify, "features.level-system", false);
 		checkOrSetConfig(modify, "features.games-gui", false);
 		checkOrSetConfig(modify, "features.action-bar-messages", false);
 		checkOrSetConfig(modify, "features.permission-to-join-game", false);
-		
-		if (config.getBoolean("features.action-bar-messages")) {
-			checkOrSetConfig(modify, "action-bar-messages.in-lobby", "Your team: %team% [%pl_t%/%mxpl_t%]");
-			checkOrSetConfig(modify, "action-bar-messages.in-game-alive", "Your team: %bed% %team_colored% %pl_list_t%");
-			checkOrSetConfig(modify, "action-bar-messages.in-game-spectator", "You are spectator!");
-		}
-		
-		if (config.getBoolean("features.level-system")) {
-			checkOrSetConfig(modify, "level.messages.maxreached", "&cYou can't have more than %max% levels!");
-			
-			checkOrSetConfig(modify, "level.percentage.give-from-killed-player", 33);
-			checkOrSetConfig(modify, "level.percentage.keep-from-death", 33);
-			checkOrSetConfig(modify, "level.maximum-xp", 1000);
-			checkOrSetConfig(modify, "level.sound.sound", "ENTITY_EXPERIENCE_ORB_PICKUP");
-			checkOrSetConfig(modify, "level.sound.volume", 1);
-			checkOrSetConfig(modify, "level.sound.pitch", 1);
 
-			checkOrSetConfig(modify, "level.per-arena-settings", new HashMap<String, HashMap<String, Object>>() {{
-				put("ArenaNameCaseSensetive", new HashMap<String, Object>() {{
-					put("percentage.give-from-killed-player", 100);
-					put("percentage.keep-from-death", 0);
-					put("maximum-xp", 0);
-					put("messages.maxreached", "&loof");
-					put("sound.sound", "ENTITY_EXPERIENCE_ORB_PICKUP");
-					put("sound.volume", 1);
-					put("sound.pitch", 2);
-				    for (String key : resources.getKeys(false)) {
-						put("spawners." + key, 10);
+		checkOrSetConfig(modify, "action-bar-messages.in-lobby", "Your team: %team% [%pl_t%/%mxpl_t%]");
+		checkOrSetConfig(modify, "action-bar-messages.in-game-alive", "Your team: %bed% %team_colored% %pl_list_t%");
+		checkOrSetConfig(modify, "action-bar-messages.in-game-spectator", "You are spectator!");
+
+		checkOrSetConfig(modify, "level.messages.maxreached", "&cYou can't have more than %max% levels!");
+
+		checkOrSetConfig(modify, "level.percentage.give-from-killed-player", 33);
+		checkOrSetConfig(modify, "level.percentage.keep-from-death", 33);
+		checkOrSetConfig(modify, "level.maximum-xp", 1000);
+		checkOrSetConfig(modify, "level.sound.sound", "ENTITY_EXPERIENCE_ORB_PICKUP");
+		checkOrSetConfig(modify, "level.sound.volume", 1);
+		checkOrSetConfig(modify, "level.sound.pitch", 1);
+
+		checkOrSetConfig(modify, "level.per-arena-settings", new HashMap<String, HashMap<String, Object>>() {
+			{
+				put("ArenaNameCaseSensetive", new HashMap<String, Object>() {
+					{
+						put("percentage.give-from-killed-player", 100);
+						put("percentage.keep-from-death", 0);
+						put("maximum-xp", 0);
+						put("messages.maxreached", "&loof");
+						put("sound.sound", "ENTITY_EXPERIENCE_ORB_PICKUP");
+						put("sound.volume", 1);
+						put("sound.pitch", 2);
+						for (String key : resources.getKeys(false)) {
+							put("spawners." + key, 10);
+						}
 					}
-				}});
-			}});
+				});
+			}
+		});
 
-			checkOrSetConfig(modify, "level.spawners", new HashMap<String, Object>() {{
+		checkOrSetConfig(modify, "level.spawners", new HashMap<String, Object>() {
+			{
 				for (String key : resources.getKeys(false)) {
 					put(key, 3);
 				}
-			}});
-		}
-		
-		if (config.getBoolean("features.games-gui")) {
-			checkOrSetConfig(modify, "games-gui.permission", "xpwars.gamesgui");
-			
-			checkOrSetConfig(modify, "games-gui.header", "&rGames [&e%free%&7/&6%total%&r]");
-				
-			checkOrSetConfig(modify, "games-gui.item.stack.waiting", "GREEN_WOOL;1;&a%arena%;Waiting");
-			checkOrSetConfig(modify, "games-gui.item.stack.starting", "YELLOW_WOOL;1;&e%arena%;Starting in %tl%");
-			checkOrSetConfig(modify, "games-gui.item.stack.running", "RED_WOOL;1;&c%arena%;Running :) Time left: %tl%");
-			checkOrSetConfig(modify, "games-gui.item.stack.ended", "BLUE_WOOL;1;&9%arena%;Ended");
-			checkOrSetConfig(modify, "games-gui.item.stack.rebuilding", "GRAY_WOOL;1;&7%arena%;rebuilding");
-			checkOrSetConfig(modify, "games-gui.item.stack.disabled", "BLACK_WOOL;1;&0%arena%;disabled");
-		}
-		
+			}
+		});
+
+		checkOrSetConfig(modify, "games-gui.permission", "xpwars.gamesgui");
+
+		checkOrSetConfig(modify, "games-gui.header", "&rGames [&e%free%&7/&6%total%&r]");
+
+		checkOrSetConfig(modify, "games-gui.item.stack.waiting", "GREEN_WOOL;1;&a%arena%;Waiting");
+		checkOrSetConfig(modify, "games-gui.item.stack.starting", "YELLOW_WOOL;1;&e%arena%;Starting in %tl%");
+		checkOrSetConfig(modify, "games-gui.item.stack.running", "RED_WOOL;1;&c%arena%;Running :) Time left: %tl%");
+		checkOrSetConfig(modify, "games-gui.item.stack.ended", "BLUE_WOOL;1;&9%arena%;Ended");
+		checkOrSetConfig(modify, "games-gui.item.stack.rebuilding", "GRAY_WOOL;1;&7%arena%;rebuilding");
+		checkOrSetConfig(modify, "games-gui.item.stack.disabled", "BLACK_WOOL;1;&0%arena%;disabled");
+
 		checkOrSetConfig(modify, "specials.remote-tnt.fuse-ticks", 100);
 		checkOrSetConfig(modify, "specials.remote-tnt.detonator-itemstack", "TRIPWIRE_HOOK;1;&eDetonator");
 		/*
-		checkOrSetConfig(modify, "specials.trampoline.remove-when-used", true);
-		checkOrSetConfig(modify, "specials.trampoline.y-check", 0);
-		checkOrSetConfig(modify, "specials.trampoline.velocity", 5.0);
-		*/
+		 * checkOrSetConfig(modify, "specials.trampoline.remove-when-used", true);
+		 * checkOrSetConfig(modify, "specials.trampoline.y-check", 0);
+		 * checkOrSetConfig(modify, "specials.trampoline.velocity", 5.0);
+		 */
 		checkOrSetConfig(modify, "specials.throwable-tnt.velocity", 5.0);
 		checkOrSetConfig(modify, "specials.throwable-tnt.fuse-ticks", 5);
-		
-		if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-			checkOrSetConfig(modify, "placeholders.waiting", "&aWaiting...");
-			checkOrSetConfig(modify, "placeholders.starting", "&eArena is starting in %time%!");
-			checkOrSetConfig(modify, "placeholders.running", "&cRunning! Time left: %time%");
-			checkOrSetConfig(modify, "placeholders.end-celebration", "&9Game ended!");
-			checkOrSetConfig(modify, "placeholders.rebuilding", "&7Rebuilding...");
-		}
-		
+
+		checkOrSetConfig(modify, "placeholders.waiting", "&aWaiting...");
+		checkOrSetConfig(modify, "placeholders.starting", "&eArena is starting in %time%!");
+		checkOrSetConfig(modify, "placeholders.running", "&cRunning! Time left: %time%");
+		checkOrSetConfig(modify, "placeholders.end-celebration", "&9Game ended!");
+		checkOrSetConfig(modify, "placeholders.rebuilding", "&7Rebuilding...");
+
 		if (modify.get()) {
 			try {
 				config.save(file);
@@ -163,7 +161,7 @@ public class Configurator {
 		return ChatColor.translateAlternateColorCodes('&',
 				XPWars.getConfigurator().config.getString(string, defaultString));
 	}
-	
+
 	public List<String> getStringList(String string) {
 		List<String> list = new ArrayList<>();
 		for (String s : XPWars.getConfigurator().config.getStringList(string)) {

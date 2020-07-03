@@ -5,7 +5,6 @@ import static org.screamingsandals.bedwars.lib.lang.I.i18nonly;
 import java.util.Arrays;
 import java.util.List;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
@@ -20,6 +19,8 @@ import nfn11.xpwars.inventories.LevelShop;
 import nfn11.xpwars.placeholderapi.PlaceholderAPIHook;
 import nfn11.xpwars.utils.XPWarsUtils;
 
+import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
+
 public class XPWarsCommand extends BaseCommand {
 	public XPWarsCommand() {
 		super("xpwars", ADMIN_PERMISSION, true);
@@ -29,7 +30,7 @@ public class XPWarsCommand extends BaseCommand {
 	public void completeTab(List<String> completion, CommandSender sender, List<String> args) {
 		if (args.size() == 1) {
 			if (sender.hasPermission(ADMIN_PERMISSION) || sender.isOp()) {
-				completion.addAll(Arrays.asList("help", "reload", "open"));
+				completion.addAll(Arrays.asList("reload", "open"));
 			}
 		}
 		if (args.size() == 2) {
@@ -53,7 +54,7 @@ public class XPWarsCommand extends BaseCommand {
 	@Override
 	public boolean execute(CommandSender sender, List<String> args) throws IndexOutOfBoundsException {
 		if (!sender.hasPermission(ADMIN_PERMISSION)) {
-			sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "[XPWars] &cYou don't have permission!"));
+			sender.sendMessage(i18n("no_permissions"));
 			return true;
 		}
 		if (args.size() == 1) {
@@ -64,19 +65,7 @@ public class XPWarsCommand extends BaseCommand {
 				}
 				Bukkit.getServer().getPluginManager().disablePlugin(XPWars.getInstance());
 				Bukkit.getServer().getPluginManager().enablePlugin(XPWars.getInstance());
-				sender.sendMessage("[XPWars] &aReloaded!");
-				return true;
-			}
-			if (args.get(0).equalsIgnoreCase("help")) {
-				sender.sendMessage(ChatColor.GREEN + "[XPWars] Version "
-						+ Bukkit.getServer().getPluginManager().getPlugin("XPWars").getDescription().getVersion());
-				sender.sendMessage("Available commands:");
-				sender.sendMessage(ChatColor.GRAY + "/bw xpwars reload - Reload the addon");
-				sender.sendMessage(ChatColor.GRAY + "/bw xpwars help [reload, open, games, lvl] - Show help");
-				sender.sendMessage(ChatColor.GRAY + "/bw xpwars open <store name> [player] - Open shop");
-				if (XPWars.getConfigurator().config.getBoolean("features.games-gui")) {
-					sender.sendMessage(ChatColor.GRAY + "/bw xpwars games - Show available in fancy GUI");
-				}
+				sender.sendMessage("Addon reloaded!");
 				return true;
 			}
 		}
@@ -94,12 +83,13 @@ public class XPWarsCommand extends BaseCommand {
 						}
 					}
 					if (player == null) {
-						sender.sendMessage("[XPWars] " + (args.size() == 3 ? args.get(2) : "Console") + "is not a valid player!");
+						sender.sendMessage((args.size() == 3 ? args.get(2) : "Console") + "is not a valid player!");
 						return true;
 					}
 					GameStore store = new GameStore(null, args.get(1), false, i18nonly("item_shop_name", "[BW] Shop"),
 							false, false);
-					if (XPWars.getConfigurator().config.getBoolean("features.level-system") || !Main.isPlayerInGame(player)) {
+					if (XPWars.getConfigurator().config.getBoolean("features.level-system")
+							|| !Main.isPlayerInGame(player)) {
 						LevelShop shop = new LevelShop();
 						shop.show(player, store);
 					} else {
@@ -111,11 +101,11 @@ public class XPWarsCommand extends BaseCommand {
 					}
 					return true;
 				} else
-					sender.sendMessage("[XPWars] &cInvalid shop file: " + args.get(1));
+					sender.sendMessage("Invalid shop file: " + args.get(1));
 				return true;
 			}
 		} else
-			sender.sendMessage("[XPWars] &cUnknown command or wrong usage!");
+			sender.sendMessage(i18n("unknown_usage"));
 		return true;
 	}
 }

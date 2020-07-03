@@ -43,11 +43,11 @@ public class XPWars extends JavaPlugin implements Listener {
 		new XPWarsCommand();
 		new GamesInventory();
 		new GamesCommand();
-		
+
 		if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
 			new PlaceholderAPIHook().register();
 			XPWarsUtils.xpwarsLog("&aSuccesfully registered PlaceholderAPI!");
-		} else getConfigurator().config.set("features.placeholder-api", false);
+		}
 
 		commands = new HashMap<>();
 
