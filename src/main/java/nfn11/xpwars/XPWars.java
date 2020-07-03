@@ -29,7 +29,7 @@ public class XPWars extends JavaPlugin implements Listener {
 	@Override
 	public void onEnable() {
 		instance = this;
-		
+
 		configurator = new Configurator(this);
 		configurator.loadDefaults();
 
@@ -41,18 +41,16 @@ public class XPWars extends JavaPlugin implements Listener {
 		new RegisterSpecialListeners();
 		new ActionBarAPI();
 		new XPWarsCommand();
-                if (getConfigurator().config.getBoolean("features.games-gui")) {
-                        new GamesInventory();
-		        new GamesCommand();
-                } 
-		if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null
-				&& XPWars.getConfigurator().config.getBoolean("features.placeholder-api")) {
+		new GamesInventory();
+		new GamesCommand();
+		
+		if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
 			new PlaceholderAPIHook().register();
 			XPWarsUtils.xpwarsLog("&aSuccesfully registered PlaceholderAPI!");
-		}
-		
+		} else getConfigurator().config.set("features.placeholder-api", false);
+
 		commands = new HashMap<>();
-		
+
 		XPWarsUtils.xpwarsLog("&aLoaded XPWars &2"
 				+ Bukkit.getServer().getPluginManager().getPlugin("XPWars").getDescription().getVersion() + "&a!");
 		XPWarsUtils.xpwarsLog("&aXPWars addon by &enotfoundname11");
@@ -60,12 +58,13 @@ public class XPWars extends JavaPlugin implements Listener {
 		XPWarsUtils.xpwarsLog("&eType &6/bw xpwars help &eto show available commands.");
 		XPWarsUtils.xpwarsLog("&c&lMake sure you use latest development build! Check it on Github Actions.");
 	}
-	
+
 	@EventHandler
 	public void onBwReload(PluginEnableEvent event) {
 		String plugin = event.getPlugin().getName();
 		if (plugin.equalsIgnoreCase("BedWars")) {
-			if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null && new PlaceholderAPIHook().isRegistered()) {
+			if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null
+					&& new PlaceholderAPIHook().isRegistered()) {
 				PlaceholderAPI.unregisterExpansion(new PlaceholderAPIHook());
 			}
 			Bukkit.getServer().getPluginManager().disablePlugin(XPWars.getInstance());

@@ -29,8 +29,7 @@ public class GamesCommand extends BaseCommand {
 		}
 
 		if (sender instanceof Player) {
-			GamesInventory inv = new GamesInventory();
-			inv.openForPlayer((Player) sender);
+			new GamesInventory().openForPlayer((Player) sender);
 		}
 		return true;
 	}

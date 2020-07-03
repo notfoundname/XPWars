@@ -71,7 +71,6 @@ public class Configurator {
 		checkOrSetConfig(modify, "features.level-system", false);
 		checkOrSetConfig(modify, "features.games-gui", false);
 		checkOrSetConfig(modify, "features.action-bar-messages", false);
-		checkOrSetConfig(modify, "features.placeholder-api", false);
 		checkOrSetConfig(modify, "features.permission-to-join-game", false);
 		
 		if (config.getBoolean("features.action-bar-messages")) {
@@ -116,7 +115,7 @@ public class Configurator {
 			checkOrSetConfig(modify, "games-gui.permission", "xpwars.gamesgui");
 			
 			checkOrSetConfig(modify, "games-gui.header", "&rGames [&e%free%&7/&6%total%&r]");
-			
+				
 			checkOrSetConfig(modify, "games-gui.item.stack.waiting", "GREEN_WOOL;1;&a%arena%;Waiting");
 			checkOrSetConfig(modify, "games-gui.item.stack.starting", "YELLOW_WOOL;1;&e%arena%;Starting in %tl%");
 			checkOrSetConfig(modify, "games-gui.item.stack.running", "RED_WOOL;1;&c%arena%;Running :) Time left: %tl%");
@@ -124,13 +123,9 @@ public class Configurator {
 			checkOrSetConfig(modify, "games-gui.item.stack.rebuilding", "GRAY_WOOL;1;&7%arena%;rebuilding");
 			checkOrSetConfig(modify, "games-gui.item.stack.disabled", "BLACK_WOOL;1;&0%arena%;disabled");
 		}
-
+		
 		checkOrSetConfig(modify, "specials.remote-tnt.fuse-ticks", 100);
-		checkOrSetConfig(modify, "specials.remote-tnt.detonator-itemstack", new ItemStack(Material.TRIPWIRE_HOOK) {{
-			ItemMeta meta = getItemMeta();
-			meta.setDisplayName("&rDetonator");
-			setItemMeta(meta);
-		}});
+		checkOrSetConfig(modify, "specials.remote-tnt.detonator-itemstack", "TRIPWIRE_HOOK;1;&eDetonator");
 		/*
 		checkOrSetConfig(modify, "specials.trampoline.remove-when-used", true);
 		checkOrSetConfig(modify, "specials.trampoline.y-check", 0);
@@ -139,14 +134,14 @@ public class Configurator {
 		checkOrSetConfig(modify, "specials.throwable-tnt.velocity", 5.0);
 		checkOrSetConfig(modify, "specials.throwable-tnt.fuse-ticks", 5);
 		
-		if (config.getBoolean("features.placeholder-api")) {
+		if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
 			checkOrSetConfig(modify, "placeholders.waiting", "&aWaiting...");
 			checkOrSetConfig(modify, "placeholders.starting", "&eArena is starting in %time%!");
 			checkOrSetConfig(modify, "placeholders.running", "&cRunning! Time left: %time%");
 			checkOrSetConfig(modify, "placeholders.end-celebration", "&9Game ended!");
 			checkOrSetConfig(modify, "placeholders.rebuilding", "&7Rebuilding...");
 		}
-
+		
 		if (modify.get()) {
 			try {
 				config.save(file);

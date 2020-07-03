@@ -19,11 +19,8 @@ import org.screamingsandals.bedwars.api.BedwarsAPI;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.lib.sgui.SimpleInventories;
-import org.screamingsandals.bedwars.api.events.BedwarsGameTickEvent;
 import org.screamingsandals.bedwars.lib.sgui.builder.FormatBuilder;
 import org.screamingsandals.bedwars.lib.sgui.events.PostActionEvent;
-import org.screamingsandals.bedwars.lib.sgui.events.CloseInventoryEvent;
-import org.screamingsandals.bedwars.lib.sgui.events.OpenInventoryEvent;
 import org.screamingsandals.bedwars.lib.sgui.inventory.GuiHolder;
 import org.screamingsandals.bedwars.lib.sgui.inventory.Options;
 import org.screamingsandals.bedwars.lib.sgui.utils.MapReader;
@@ -37,6 +34,9 @@ public class GamesInventory implements Listener {
 	private List<Player> openedForPlayers = new ArrayList<>();
 
 	public GamesInventory() {
+		if (XPWars.getConfigurator().getBoolean("feature.games-gui", false) == false)
+			return;
+
 		Bukkit.getServer().getPluginManager().registerEvents(this, XPWars.getInstance());
 		options = new Options(XPWars.getInstance());
 		options.setPrefix(
@@ -89,7 +89,11 @@ public class GamesInventory implements Listener {
 		FormatBuilder builder = new FormatBuilder();
 
 		for (org.screamingsandals.bedwars.api.game.Game game : BedwarsAPI.getInstance().getGames()) {
-			builder.add(formatItem(game)).set("game", game);
+			ItemStack stack = formatItem(game);
+			if (stack.getType().equals(Material.AIR) || stack == null)
+				return;
+
+			builder.add(stack).set("game", game);
 		}
 
 		menu.load(builder);
@@ -99,36 +103,40 @@ public class GamesInventory implements Listener {
 	}
 
 	private ItemStack formatItem(org.screamingsandals.bedwars.api.game.Game game) {
-                ItemStack stack = null;
+		ItemStack stack = null;
+		if (XPWars.getConfigurator().config.getBoolean("features.games-gui", false))
+			return stack;
+
 		switch (game.getStatus()) {
 		case DISABLED:
-			stack = StackParser
-					.parse(XPWars.getConfigurator().config.get("games-gui.item.stack.disabled"));
+			stack = StackParser.parse(
+					XPWars.getConfigurator().config.getConfigurationSection("games-gui.item.stack").get("disabled"));
 			break;
 		case GAME_END_CELEBRATING:
-			stack = StackParser
-					.parse(XPWars.getConfigurator().config.get("games-gui.item.stack.ended"));
+			stack = StackParser.parse(
+					XPWars.getConfigurator().config.getConfigurationSection("games-gui.item.stack").get("ended"));
 			break;
 		case REBUILDING:
-			stack = StackParser
-					.parse(XPWars.getConfigurator().config.get("games-gui.item.stack.rebuilding"));
+			stack = StackParser.parse(
+					XPWars.getConfigurator().config.getConfigurationSection("games-gui.item.stack").get("rebuilding"));
 			break;
 		case RUNNING:
-			stack = StackParser
-					.parse(XPWars.getConfigurator().config.get("games-gui.item.stack.running"));
+			stack = StackParser.parse(
+					XPWars.getConfigurator().config.getConfigurationSection("games-gui.item.stack").get("running"));
 			break;
 		case WAITING:
 			if (game.countConnectedPlayers() >= game.getMinPlayers()) {
-				stack = StackParser.parse(
-						XPWars.getConfigurator().config.get("games-gui.item.stack.starting"));
+				stack = StackParser.parse(XPWars.getConfigurator().config
+						.getConfigurationSection("games-gui.item.stack").get("starting"));
 			} else
-				stack = StackParser
-						.parse(XPWars.getConfigurator().config.get("games-gui.item.stack.waiting"));
+				stack = StackParser.parse(
+						XPWars.getConfigurator().config.getConfigurationSection("games-gui.item.stack").get("waiting"));
 			break;
 		default:
 			break;
 		}
-		if (stack == null) return new ItemStack(Material.AIR);
+		if (stack == null)
+			return new ItemStack(Material.AIR);
 
 		ItemMeta meta = stack.getItemMeta();
 		List<String> lore = meta.getLore();
@@ -137,7 +145,7 @@ public class GamesInventory implements Listener {
 				name.replace("%arena%", game.getName()).replace("%mxpl%", Integer.toString(game.getMaxPlayers())
 						.replace("%pl%", Integer.toString(game.countConnectedPlayers())))));
 		List<String> newLore = new ArrayList<>();
-		
+
 		for (String string : lore) {
 			string = string.replaceAll("%pl%", Integer.toString(game.countConnectedPlayers()));
 			string = string.replaceAll("%mxpl%", Integer.toString(game.getMaxPlayers()));

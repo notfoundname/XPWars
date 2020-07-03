@@ -3,6 +3,7 @@ package nfn11.xpwars.special.listener;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -15,6 +16,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.APIUtils;
@@ -105,6 +107,11 @@ public class RemoteTNTListener implements Listener {
 	}
 
 	private ItemStack detonator() {
-		return StackParser.parse(XPWars.getConfigurator().config.get("specials.remote-tnt.detonator-itemstack"));
+		ItemStack stack = StackParser.parse(XPWars.getConfigurator().config.get("specials.remote-tnt.detonator-itemstack"));
+		ItemMeta meta = stack.getItemMeta();
+		meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', meta.getDisplayName()));
+		stack.setItemMeta(meta);
+		
+		return stack;
 	}
 }
