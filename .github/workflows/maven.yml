@@ -17,5 +17,5 @@ jobs:
     - run: 'mv target/XPWars-1.1.jar target/XPWars-1.1-${{ github.run_number }}.jar'
     - uses: actions/upload-artifact@v2.0.1
       with:
-       name: "XPWars-1.1-${{ github.run_number }}"
-       path: "target/XPWars-1.1-${{ github.run_number }}.jar"
+        name: "XPWars-1.1-${{ github.run_number }}"
+        path: "target/XPWars-1.1-${{ github.run_number }}.jar"
