@@ -13,8 +13,10 @@ import org.screamingsandals.bedwars.api.events.BedwarsGameTickEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsOpenShopEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsPlayerKilledEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsOpenShopEvent.Result;
+import org.screamingsandals.bedwars.api.events.BedwarsPlayerJoinEvent;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
+import org.screamingsandals.bedwars.commands.BaseCommand;
 import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.GamePlayer;
 import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
@@ -177,6 +179,18 @@ public class XPWarsPlayerListener implements Listener {
 									.replace("%pl_t%", Integer.toString(team.countConnectedPlayers()))
 									.replace("%team%", team.teamInfo.color.chatColor + team.getName())
 									.replace("%mxpl_t%", Integer.toString(team.getMaxPlayers())));
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onJoinGame(BedwarsPlayerJoinEvent event) {
+		if (event.isCancelled()) return;
+		
+		if (XPWars.getConfigurator().config.getConfigurationSection("permission-to-join-game").getValues(false).containsKey(event.getGame().getName())) {
+			if (!event.getPlayer().hasPermission(XPWars.getConfigurator().config.getString("permission-to-join-game." + event.getGame().getName()))
+					|| !event.getPlayer().isOp() || !event.getPlayer().hasPermission(BaseCommand.ADMIN_PERMISSION)) {
+				event.setCancelled(true);
 			}
 		}
 	}
