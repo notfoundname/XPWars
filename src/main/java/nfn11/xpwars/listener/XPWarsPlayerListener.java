@@ -173,24 +173,41 @@ public class XPWarsPlayerListener implements Listener {
 							XPWars.getConfigurator().config.getString("action-bar-messages.in-game-spectator"));
 					return;
 				}
-				if (gp.getGame().getStatus() == GameStatus.WAITING)
+				if (gp.getGame().getStatus() == GameStatus.WAITING) {
 					ActionBarAPI.sendActionBar(player,
 							XPWars.getConfigurator().config.getString("action-bar-messages.in-lobby")
 									.replace("%pl_t%", Integer.toString(team.countConnectedPlayers()))
 									.replace("%team%", team.teamInfo.color.chatColor + team.getName())
 									.replace("%mxpl_t%", Integer.toString(team.getMaxPlayers())));
+					return;
+				}
+				if (gp.getGame().getStatus() == GameStatus.RUNNING) {
+					ActionBarAPI.sendActionBar(player,
+							XPWars.getConfigurator().config.getString("action-bar-messages.in-game-alive")
+									.replace("%team%", team.teamInfo.color.chatColor + team.getName()).replace("%bed%",
+											team.isTargetBlockExists()
+													? Main.getConfigurator().config.getString("scoreboard.bedExists")
+													: Main.getConfigurator().config.getString("scoreboard.bedLost")));
+				}
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void onJoinGame(BedwarsPlayerJoinEvent event) {
-		if (event.isCancelled()) return;
-		
-		if (XPWars.getConfigurator().config.getConfigurationSection("permission-to-join-game").getValues(false).containsKey(event.getGame().getName())) {
-			if (!event.getPlayer().hasPermission(XPWars.getConfigurator().config.getString("permission-to-join-game." + event.getGame().getName()))
+		if (event.isCancelled())
+			return;
+
+		if (XPWars.getConfigurator().config.getConfigurationSection("permission-to-join-game.arenas").getValues(false)
+				.containsKey(event.getGame().getName())) {
+			if (!event.getPlayer()
+					.hasPermission(XPWars.getConfigurator().config
+							.getString("permission-to-join-game.arenas." + event.getGame().getName()))
 					|| !event.getPlayer().isOp() || !event.getPlayer().hasPermission(BaseCommand.ADMIN_PERMISSION)) {
 				event.setCancelled(true);
+				event.getPlayer().sendMessage(XPWars.getConfigurator().getString("permission-to-join-game.message", "")
+						.replace("%arena%", event.getGame().getName()).replace("%perm%", XPWars.getConfigurator().config
+								.getString("permission-to-join-game.arenas." + event.getGame().getName())));
 			}
 		}
 	}

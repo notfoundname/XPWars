@@ -73,13 +73,14 @@ public class Configurator {
 		checkOrSetConfig(modify, "features.action-bar-messages", false);
 		checkOrSetConfig(modify, "features.permission-to-join-game", false);
 		
-		checkOrSetConfig(modify, "permission-to-join-game", new HashMap<String, String>() {{
+		checkOrSetConfig(modify, "permission-to-join-game.message", "You don't have permission %perm% to join arena %arena%!");
+		checkOrSetConfig(modify, "permission-to-join-game.arenas", new HashMap<String, String>() {{
 			put("ArenaNameCaseSensetive", "bw.arenanamepermissionanynameyouwant");
 			put("Pancake", "bw.allow.pancake");
 		}});
 		
 		checkOrSetConfig(modify, "action-bar-messages.in-lobby", "Your team: %team% [%pl_t%/%mxpl_t%]");
-		checkOrSetConfig(modify, "action-bar-messages.in-game-alive", "Your team: %bed% %team_colored% %pl_list_t%");
+		checkOrSetConfig(modify, "action-bar-messages.in-game-alive", "Your team: %bed% %team%");
 		checkOrSetConfig(modify, "action-bar-messages.in-game-spectator", "You are spectator!");
 
 		checkOrSetConfig(modify, "level.messages.maxreached", "&cYou can't have more than %max% levels!");
