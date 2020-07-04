@@ -29,7 +29,7 @@ public class GamesCommand extends BaseCommand {
 		}
 
 		if (sender instanceof Player) {
-			new GamesInventory().openForPlayer((Player) sender);
+			new GamesInventory(XPWars.getInstance()).openForPlayer((Player) sender);
 		}
 		return true;
 	}

@@ -33,11 +33,9 @@ public class GamesInventory implements Listener {
 	private Options options;
 	private List<Player> openedForPlayers = new ArrayList<>();
 
-	public GamesInventory() {
-		if (XPWars.getConfigurator().getBoolean("feature.games-gui", false) == false)
-			return;
-
-		Bukkit.getServer().getPluginManager().registerEvents(this, XPWars.getInstance());
+	public GamesInventory(XPWars plugin) {
+		
+		
 		options = new Options(XPWars.getInstance());
 		options.setPrefix(
 				XPWars.getConfigurator().getString("messages.gamesinv.header", "&rGames [&e%free%&7/&6%total%&r]")
@@ -71,6 +69,8 @@ public class GamesInventory implements Listener {
 		options.setRender_actual_rows(6);
 
 		createData();
+		
+		Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 
 	public void destroy() {

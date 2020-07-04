@@ -41,7 +41,8 @@ public class XPWars extends JavaPlugin implements Listener {
 		new RegisterSpecialListeners();
 		new ActionBarAPI();
 		new XPWarsCommand();
-		new GamesInventory();
+		
+		new GamesInventory(XPWars.getInstance());
 		new GamesCommand();
 
 		if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {

@@ -162,7 +162,7 @@ public class XPWarsPlayerListener implements Listener {
 		if (event.getGame() == null)
 			return;
 		if (XPWars.getConfigurator().config.getBoolean("features.games-gui")) {
-			new GamesInventory().repaint();
+			new GamesInventory(XPWars.getInstance()).repaint();
 		}
 		if (XPWars.getConfigurator().config.getBoolean("features.action-bar-messages")) {
 			for (Player player : event.getGame().getConnectedPlayers()) {
