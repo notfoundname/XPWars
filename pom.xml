@@ -72,7 +72,7 @@
 		</resources>
 
 		<defaultGoal>clean install</defaultGoal>
-		<finalName>XPWars-${project.version}</finalName>
+		<finalName>XPWars-${project.version}-${BUILD_NUMBER}</finalName>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
