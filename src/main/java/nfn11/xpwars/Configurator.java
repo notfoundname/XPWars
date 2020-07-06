@@ -8,13 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.screamingsandals.bedwars.Main;
 import org.bukkit.ChatColor;
 
@@ -72,13 +69,16 @@ public class Configurator {
 		checkOrSetConfig(modify, "features.games-gui", false);
 		checkOrSetConfig(modify, "features.action-bar-messages", false);
 		checkOrSetConfig(modify, "features.permission-to-join-game", false);
-		
-		checkOrSetConfig(modify, "permission-to-join-game.message", "You don't have permission %perm% to join arena %arena%!");
-		checkOrSetConfig(modify, "permission-to-join-game.arenas", new HashMap<String, String>() {{
-			put("ArenaNameCaseSensetive", "bw.arenanamepermissionanynameyouwant");
-			put("Pancake", "bw.allow.pancake");
-		}});
-		
+
+		checkOrSetConfig(modify, "permission-to-join-game.message",
+				"You don't have permission %perm% to join arena %arena%!");
+		checkOrSetConfig(modify, "permission-to-join-game.arenas", new HashMap<String, String>() {
+			{
+				put("ArenaNameCaseSensetive", "bw.arenanamepermissionanynameyouwant");
+				put("Pancake", "bw.allow.pancake");
+			}
+		});
+
 		checkOrSetConfig(modify, "action-bar-messages.in-lobby", "Your team: %team% [%pl_t%/%mxpl_t%]");
 		checkOrSetConfig(modify, "action-bar-messages.in-game-alive", "Your team: %bed% %team%");
 		checkOrSetConfig(modify, "action-bar-messages.in-game-spectator", "You are spectator!");
@@ -121,14 +121,18 @@ public class Configurator {
 
 		checkOrSetConfig(modify, "games-gui.permission", "xpwars.gamesgui");
 
-		checkOrSetConfig(modify, "games-gui.header", "&rGames [&e%free%&7/&6%total%&r]");
+		checkOrSetConfig(modify, "games-gui.title", "&rGames [&e%free%&7/&6%total%&r]");
 
-		checkOrSetConfig(modify, "games-gui.item.stack.waiting", "GREEN_WOOL;1;&a%arena%;Waiting");
-		checkOrSetConfig(modify, "games-gui.item.stack.starting", "YELLOW_WOOL;1;&e%arena%;Starting in %tl%");
-		checkOrSetConfig(modify, "games-gui.item.stack.running", "RED_WOOL;1;&c%arena%;Running :) Time left: %tl%");
-		checkOrSetConfig(modify, "games-gui.item.stack.ended", "BLUE_WOOL;1;&9%arena%;Ended");
-		checkOrSetConfig(modify, "games-gui.item.stack.rebuilding", "GRAY_WOOL;1;&7%arena%;rebuilding");
-		checkOrSetConfig(modify, "games-gui.item.stack.disabled", "BLACK_WOOL;1;&0%arena%;disabled");
+		checkOrSetConfig(modify, "games-gui.itemstack.WAITING",
+				"GREEN_WOOL;1;&a%arena% &f[%players%/%maxplayers%];Waiting %time_left%");
+		checkOrSetConfig(modify, "games-gui.itemstack.RUNNING",
+				"RED_WOOL;1;&c%arena% &f[%players%/%maxplayers%];Running :) Time left: %time_left%");
+		checkOrSetConfig(modify, "games-gui.itemstack.GAME_END_CELEBRATING",
+				"BLUE_WOOL;1;&9%arena% &f[%players%/%maxplayers%];Ended");
+		checkOrSetConfig(modify, "games-gui.itemstack.REBUILDING",
+				"GRAY_WOOL;1;&7%arena% &f[%players%/%maxplayers%];rebuilding");
+		checkOrSetConfig(modify, "games-gui.itemstack.DISABLED",
+				"BLACK_WOOL;1;&0%arena% &f[%players%/%maxplayers%];disabled");
 
 		checkOrSetConfig(modify, "specials.remote-tnt.fuse-ticks", 100);
 		checkOrSetConfig(modify, "specials.remote-tnt.detonator-itemstack", "TRIPWIRE_HOOK;1;&eDetonator");

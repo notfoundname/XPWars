@@ -9,6 +9,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.api.game.Game;
+import org.screamingsandals.bedwars.api.game.GameStatus;
 
 public class XPWarsUtils {
 	
@@ -49,5 +51,13 @@ public class XPWarsUtils {
 			return true;
 		}
 		return false;
+	}
+	
+	public static int getFreeGamesInt() {
+		int i = 0;
+		for (Game game : Main.getInstance().getGames()) {
+			if (game.getStatus() == GameStatus.WAITING) i++;
+		}
+		return i;
 	}
 }

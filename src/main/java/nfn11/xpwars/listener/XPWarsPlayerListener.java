@@ -168,11 +168,13 @@ public class XPWarsPlayerListener implements Listener {
 			for (Player player : event.getGame().getConnectedPlayers()) {
 				GamePlayer gp = Main.getPlayerGameProfile(player);
 				CurrentTeam team = gp.getGame().getPlayerTeam(gp);
-				if (team == null || gp.isSpectator) {
+				if (gp.isSpectator) {
 					ActionBarAPI.sendActionBar(player,
 							XPWars.getConfigurator().config.getString("action-bar-messages.in-game-spectator"));
 					return;
 				}
+				if (team == null)
+					return;
 				if (gp.getGame().getStatus() == GameStatus.WAITING) {
 					ActionBarAPI.sendActionBar(player,
 							XPWars.getConfigurator().config.getString("action-bar-messages.in-lobby")
@@ -208,6 +210,7 @@ public class XPWarsPlayerListener implements Listener {
 				event.getPlayer().sendMessage(XPWars.getConfigurator().getString("permission-to-join-game.message", "")
 						.replace("%arena%", event.getGame().getName()).replace("%perm%", XPWars.getConfigurator().config
 								.getString("permission-to-join-game.arenas." + event.getGame().getName())));
+				return;
 			}
 		}
 	}
