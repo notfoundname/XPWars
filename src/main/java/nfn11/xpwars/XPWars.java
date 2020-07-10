@@ -57,9 +57,8 @@ public class XPWars extends JavaPlugin implements Listener {
 		XPWarsUtils.xpwarsLog("&aLoaded XPWars &2"
 				+ Bukkit.getServer().getPluginManager().getPlugin("XPWars").getDescription().getVersion() + "&a!");
 		XPWarsUtils.xpwarsLog("&aXPWars addon by &enotfoundname11");
-		XPWarsUtils.xpwarsLog("&9https://github.com/notfoundname/XPWars");
-		XPWarsUtils.xpwarsLog("&eType &6/bw xpwars help &eto show available commands.");
-		XPWarsUtils.xpwarsLog("&c&lMake sure you use latest development build! Check it on Github Actions.");
+		XPWarsUtils.xpwarsLog("&9https://github.com/notfoundname/XPWars/wiki");
+		XPWarsUtils.xpwarsLog("&c&lMake sure you use latest development build!");
 	}
 
 	@EventHandler
