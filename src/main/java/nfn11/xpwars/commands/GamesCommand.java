@@ -33,14 +33,17 @@ public class GamesCommand extends BaseCommand {
 				.hasPermission(XPWars.getConfigurator().getString("games-gui.permission", "xpwars.gamesgui"))) {
 			return true;
 		}
-
 		if (args.size() == 1) {
-			if (Bukkit.getServer().getPlayer(args.get(0)) != null) {
-				new GamesInventory(XPWars.getInstance()).openForPlayer(Bukkit.getServer().getPlayer(args.get(0)));
+			Player player = null;
+			if (args.get(0) != null) {
+				player = Bukkit.getServer().getPlayer(args.get(0));
+			} else {
+				if (sender instanceof Player) {
+					player = (Player) sender;
+				}
 			}
-		} else {
-			if (sender instanceof Player) {
-				new GamesInventory(XPWars.getInstance()).openForPlayer((Player) sender);
+			if (player != null) {
+				new GamesInventory(XPWars.getInstance()).openForPlayer(player);
 			}
 		}
 		return true;
