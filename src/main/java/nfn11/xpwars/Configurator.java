@@ -30,7 +30,8 @@ public class Configurator {
 		this.dataFolder = main.getDataFolder();
 		this.main = main;
 	}
-
+	
+	@SuppressWarnings("serial")
 	public void loadDefaults() {
 		dataFolder.mkdirs();
 
@@ -55,9 +56,9 @@ public class Configurator {
 
 		ConfigurationSection resources = Main.getConfigurator().config.getConfigurationSection("resources");
 
-		checkOrSetConfig(modify, "version", 2);
+		checkOrSetConfig(modify, "version", 3);
 
-		if (config.getInt("version") != 2) {
+		if (config.getInt("version") != 3) {
 			file.renameTo(new File(dataFolder, "config_backup.yml"));
 			Bukkit.getServer().getLogger()
 					.info("[XPWars] Your XPWars configuration file was backed up. Please transfer values.");
@@ -122,7 +123,19 @@ public class Configurator {
 		checkOrSetConfig(modify, "games-gui.permission", "xpwars.gamesgui");
 
 		checkOrSetConfig(modify, "games-gui.title", "&rGames [&e%free%&7/&6%total%&r]");
-
+		
+		checkOrSetConfig(modify, "games-gui.enable-categories", false);
+		checkOrSetConfig(modify, "games-gui.categories", new HashMap<String, HashMap<String, Object>>() {{
+			put("example", new HashMap<String, Object>() {{
+				put("stack", "BLACK_CONCRETE;1;&rDuos");
+				put("skip", 3);
+				put("arenas", new ArrayList<String>() {{
+					add("ArenaName");
+					add("привет");
+				}});
+			}});
+		}});
+		
 		checkOrSetConfig(modify, "games-gui.itemstack.WAITING",
 				"GREEN_WOOL;1;&a%arena% &f[%players%/%maxplayers%];Waiting %time_left%");
 		checkOrSetConfig(modify, "games-gui.itemstack.RUNNING",

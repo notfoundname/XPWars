@@ -3,6 +3,7 @@ package nfn11.xpwars.inventories;
 import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -66,14 +67,14 @@ public class GamesInventory implements Listener {
 		options.setCosmeticItem(cosmeticItem);
 
 		options.setRender_header_start(0);
-		options.setRender_footer_start(45);
-
 		options.setRender_offset(9);
+		options.setRender_footer_start(45);
 		options.setRows(4);
 		options.setRender_actual_rows(6);
 
 		Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
 		createData();
+
 	}
 
 	public void destroy() {
@@ -87,53 +88,123 @@ public class GamesInventory implements Listener {
 		openedForPlayers.add(player);
 	}
 
+	@SuppressWarnings("serial")
 	private void createData() {
 		SimpleInventories menu = new SimpleInventories(options);
 		FormatBuilder builder = new FormatBuilder();
 
-		ItemStack stack = null;
+		if (XPWars.getConfigurator().config.getBoolean("games-gui.enable-categories")) {
+			for (String s : XPWars.getConfigurator().config.getConfigurationSection("games-gui.categories")
+					.getValues(false).keySet()) {
+				ItemStack category = StackParser.parseNullable(XPWars.getConfigurator().config
+						.getConfigurationSection("games-gui.categories." + s).get("stack"));
+				if (category == null)
+					return;
 
-		for (org.screamingsandals.bedwars.api.game.Game game : BedwarsAPI.getInstance().getGames()) {
+				ItemMeta cmeta = category.getItemMeta();
+				String name = cmeta.getDisplayName();
+				name = ChatColor.translateAlternateColorCodes('&', name);
+				cmeta.setDisplayName(name);
+				category.setItemMeta(cmeta);
 
-			stack = StackParser.parseNullable(XPWars.getConfigurator().config
-					.getConfigurationSection("games-gui.itemstack").get(game.getStatus().toString()));
+				builder.add(category)
+						.set("skip", XPWars.getConfigurator().config.getInt("games-gui.categories." + s + ".skip"))
+						.set("items", new ArrayList<Object>() {
+							{
+								for (org.screamingsandals.bedwars.api.game.Game game : BedwarsAPI.getInstance()
+										.getGames()) {
+									ItemStack stack = StackParser.parse(XPWars.getConfigurator().config
+											.getConfigurationSection("games-gui.itemstack")
+											.get(game.getStatus().toString()));
+									
+									ItemMeta meta = stack.getItemMeta();
+									
+									String name1 = meta.getDisplayName();
 
-			if (stack == null)
-				return;
+									name1 = ChatColor.translateAlternateColorCodes('&', name1);
+									name1 = name1.replace("%arena%", game.getName());
+									name1 = name1.replace("%players%", Integer.toString(game.countConnectedPlayers()));
+									name1 = name1.replace("%maxplayers%", Integer.toString(game.getMaxPlayers()));
+									name1 = name1.replace("%time_left%", Main.getGame(game.getName()).getFormattedTimeLeft().equals("00:0-1") ? ""
+											: Main.getGame(game.getName()).getFormattedTimeLeft());
 
-			ItemMeta meta = stack.getItemMeta();
+									meta.setDisplayName(name1);
 
-			String name = meta.getDisplayName();
+									List<String> newLore = new ArrayList<>();
+									List<String> lore = meta.getLore();
 
-			name = ChatColor.translateAlternateColorCodes('&', name);
-			name = name.replace("%arena%", game.getName());
-			name = name.replace("%players%", Integer.toString(game.countConnectedPlayers()));
-			name = name.replace("%maxplayers%", Integer.toString(game.getMaxPlayers()));
-			name = name.replace("%time_left%", Main.getGame(game.getName()).getFormattedTimeLeft().equals("00:0-1") ? ""
-					: Main.getGame(game.getName()).getFormattedTimeLeft());
+									for (String s : lore) {
+										s = ChatColor.translateAlternateColorCodes('&', s);
 
-			meta.setDisplayName(name);
+										s = s.replaceAll("%arena%", game.getName());
+										s = s.replaceAll("%time_left%",
+												Main.getGame(game.getName()).getFormattedTimeLeft().equals("00:0-1") ? ""
+														: Main.getGame(game.getName()).getFormattedTimeLeft());
+										s = s.replaceAll("%players%", Integer.toString(game.countConnectedPlayers()));
+										s = s.replaceAll("%maxplayers%", Integer.toString(game.getMaxPlayers()));
 
-			List<String> newLore = new ArrayList<>();
-			List<String> lore = meta.getLore();
+										newLore.add(s);
+									}
+									meta.setLore(newLore);
 
-			for (String s : lore) {
-				s = ChatColor.translateAlternateColorCodes('&', s);
+									stack.setItemMeta(meta);
 
-				s = s.replaceAll("%arena%", game.getName());
-				s = s.replaceAll("%time_left%",
-						Main.getGame(game.getName()).getFormattedTimeLeft().equals("00:0-1") ? ""
-								: Main.getGame(game.getName()).getFormattedTimeLeft());
-				s = s.replaceAll("%players%", Integer.toString(game.countConnectedPlayers()));
-				s = s.replaceAll("%maxplayers%", Integer.toString(game.getMaxPlayers()));
-
-				newLore.add(s);
+									if (XPWars.getConfigurator().config
+											.getStringList("games-gui.categories." + s + ".arenas")
+											.contains(game.getName())) {
+										add(new HashMap<String, Object>() {
+											{
+												put("stack", stack);
+												put("game", game);
+											}
+										});
+									}
+								}
+							}
+						});
 			}
-			meta.setLore(newLore);
+		} else {
+			for (org.screamingsandals.bedwars.api.game.Game game : BedwarsAPI.getInstance()
+					.getGames()) {
+				
+				ItemStack stack = StackParser.parse(XPWars.getConfigurator().config
+						.getConfigurationSection("games-gui.itemstack")
+						.get(game.getStatus().toString()));
+				
+				ItemMeta meta = stack.getItemMeta();
+				
+				String name1 = meta.getDisplayName();
 
-			stack.setItemMeta(meta);
+				name1 = ChatColor.translateAlternateColorCodes('&', name1);
+				name1 = name1.replace("%arena%", game.getName());
+				name1 = name1.replace("%players%", Integer.toString(game.countConnectedPlayers()));
+				name1 = name1.replace("%maxplayers%", Integer.toString(game.getMaxPlayers()));
+				name1 = name1.replace("%time_left%", Main.getGame(game.getName()).getFormattedTimeLeft().equals("00:0-1") ? ""
+						: Main.getGame(game.getName()).getFormattedTimeLeft());
 
-			builder.add(stack).set("game", game);
+				meta.setDisplayName(name1);
+
+				List<String> newLore = new ArrayList<>();
+				List<String> lore = meta.getLore();
+
+				for (String s : lore) {
+					s = ChatColor.translateAlternateColorCodes('&', s);
+
+					s = s.replaceAll("%arena%", game.getName());
+					s = s.replaceAll("%time_left%",
+							Main.getGame(game.getName()).getFormattedTimeLeft().equals("00:0-1") ? ""
+									: Main.getGame(game.getName()).getFormattedTimeLeft());
+					s = s.replaceAll("%players%", Integer.toString(game.countConnectedPlayers()));
+					s = s.replaceAll("%maxplayers%", Integer.toString(game.getMaxPlayers()));
+
+					newLore.add(s);
+				}
+				meta.setLore(newLore);
+
+				stack.setItemMeta(meta);
+				
+				builder.add(stack).set("game", game);
+			}
 		}
 
 		menu.load(builder);
