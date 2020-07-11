@@ -6,6 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.commands.BaseCommand;
 import org.screamingsandals.bedwars.lib.sgui.listeners.InventoryListener;
 
@@ -29,13 +30,17 @@ public class XPWars extends JavaPlugin implements Listener {
 	@Override
 	public void onEnable() {
 		instance = this;
-
+		new XPWarsUtils();
+		if (Main.getInstance() == null) {
+			XPWarsUtils.xpwarsLog("did you download wrong bedwars plugin?");
+			Bukkit.getServer().getPluginManager().disablePlugin(this);
+			return;
+		}
 		configurator = new Configurator(this);
 		configurator.loadDefaults();
 
 		InventoryListener.init(this);
 		Bukkit.getPluginManager().registerEvents(this, this);
-		new XPWarsUtils();
 		new LevelShop();
 		new XPWarsPlayerListener();
 		new RegisterSpecialListeners();
