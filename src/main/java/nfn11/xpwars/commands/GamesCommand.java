@@ -13,7 +13,7 @@ import nfn11.xpwars.utils.XPWarsUtils;
 
 public class GamesCommand extends BaseCommand {
 	public GamesCommand() {
-		super("games", null, false);
+		super("games", null, true);
 	}
 
 	@Override
@@ -34,17 +34,14 @@ public class GamesCommand extends BaseCommand {
 			return true;
 		}
 		if (args.size() == 1) {
-			Player player = null;
-			if (args.get(0) != null) {
-				player = Bukkit.getServer().getPlayer(args.get(0));
-			} else {
-				if (sender instanceof Player) {
-					player = (Player) sender;
-				}
-			}
+			Player player = Bukkit.getServer().getPlayer(args.get(0));
 			if (player != null) {
 				new GamesInventory(XPWars.getInstance()).openForPlayer(player);
+				return true;
 			}
+		}
+		if (sender instanceof Player) {
+			new GamesInventory(XPWars.getInstance()).openForPlayer((Player) sender);
 		}
 		return true;
 	}

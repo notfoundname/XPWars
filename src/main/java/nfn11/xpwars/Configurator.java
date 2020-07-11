@@ -13,6 +13,9 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.screamingsandals.bedwars.Main;
+
+import nfn11.xpwars.utils.XPWarsUtils;
+
 import org.bukkit.ChatColor;
 
 /*
@@ -30,7 +33,7 @@ public class Configurator {
 		this.dataFolder = main.getDataFolder();
 		this.main = main;
 	}
-	
+
 	@SuppressWarnings("serial")
 	public void loadDefaults() {
 		dataFolder.mkdirs();
@@ -123,29 +126,36 @@ public class Configurator {
 		checkOrSetConfig(modify, "games-gui.permission", "xpwars.gamesgui");
 
 		checkOrSetConfig(modify, "games-gui.title", "&rGames [&e%free%&7/&6%total%&r]");
-		
+
 		checkOrSetConfig(modify, "games-gui.enable-categories", false);
-		checkOrSetConfig(modify, "games-gui.categories", new HashMap<String, HashMap<String, Object>>() {{
-			put("example", new HashMap<String, Object>() {{
-				put("stack", "BLACK_CONCRETE;1;&rDuos");
-				put("skip", 3);
-				put("arenas", new ArrayList<String>() {{
-					add("ArenaName");
-					add("привет");
-				}});
-			}});
-		}});
-		
-		checkOrSetConfig(modify, "games-gui.itemstack.WAITING",
-				"GREEN_WOOL;1;&a%arena% &f[%players%/%maxplayers%];Waiting %time_left%");
-		checkOrSetConfig(modify, "games-gui.itemstack.RUNNING",
-				"RED_WOOL;1;&c%arena% &f[%players%/%maxplayers%];Running :) Time left: %time_left%");
+		checkOrSetConfig(modify, "games-gui.categories", new HashMap<String, HashMap<String, Object>>() {
+			{
+				put("example", new HashMap<String, Object>() {
+					{
+						put("stack", (XPWarsUtils.isNewVersion() ? "BLACK_CONCRETE" : "CONCRETE") + ";1;&rDuos");
+						put("skip", 3);
+						put("arenas", new ArrayList<String>() {
+							{
+								add("ArenaName");
+								add("привет");
+							}
+						});
+					}
+				});
+			}
+		});
+
+		checkOrSetConfig(modify, "games-gui.itemstack.WAITING", (XPWarsUtils.isNewVersion() ? "GREEN_WOOL" : "WOOL")
+				+ ";1;&a%arena% &f[%players%/%maxplayers%];Waiting %time_left%");
+		checkOrSetConfig(modify, "games-gui.itemstack.RUNNING", (XPWarsUtils.isNewVersion() ? "RED_WOOL" : "WOOL")
+				+ ";1;&c%arena% &f[%players%/%maxplayers%];Running :) Time left: %time_left%");
 		checkOrSetConfig(modify, "games-gui.itemstack.GAME_END_CELEBRATING",
-				"BLUE_WOOL;1;&9%arena% &f[%players%/%maxplayers%];Ended");
-		checkOrSetConfig(modify, "games-gui.itemstack.REBUILDING",
-				"GRAY_WOOL;1;&7%arena% &f[%players%/%maxplayers%];rebuilding");
-		checkOrSetConfig(modify, "games-gui.itemstack.DISABLED",
-				"BLACK_WOOL;1;&0%arena% &f[%players%/%maxplayers%];disabled");
+				(XPWarsUtils.isNewVersion() ? "BLUE_WOOL" : "WOOL")
+						+ ";1;&9%arena% &f[%players%/%maxplayers%];Game ended");
+		checkOrSetConfig(modify, "games-gui.itemstack.REBUILDING", (XPWarsUtils.isNewVersion() ? "GRAY_WOOL" : "WOOL")
+				+ ";1;&7%arena% &f[%players%/%maxplayers%];rebuilding");
+		checkOrSetConfig(modify, "games-gui.itemstack.DISABLED", (XPWarsUtils.isNewVersion() ? "BLACK_WOOL" : "WOOL")
+				+ ";1;&0%arena% &f[%players%/%maxplayers%];disabled");
 
 		checkOrSetConfig(modify, "specials.remote-tnt.fuse-ticks", 100);
 		checkOrSetConfig(modify, "specials.remote-tnt.detonator-itemstack", "TRIPWIRE_HOOK;1;&eDetonator");

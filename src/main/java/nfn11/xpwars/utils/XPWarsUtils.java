@@ -43,8 +43,10 @@ public class XPWarsUtils {
 	}
 
 	public static boolean isNewVersion() {
-		if (Bukkit.getVersion().contains("1.13") || Bukkit.getVersion().contains("1.14")
-				|| Bukkit.getVersion().contains("1.15") || Bukkit.getVersion().contains("1.16")
+		if (Bukkit.getVersion().contains("1.13") 
+				|| Bukkit.getVersion().contains("1.14")
+				|| Bukkit.getVersion().contains("1.15") 
+				|| Bukkit.getVersion().contains("1.16")
 				|| Bukkit.getVersion().contains("1.17"))/* ? */ {
 			return true;
 		}
