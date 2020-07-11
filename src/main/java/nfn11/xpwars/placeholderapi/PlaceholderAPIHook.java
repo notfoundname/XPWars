@@ -104,8 +104,8 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 						game.getFormattedTimeLeft(gameTime - countdown).replace("%left%", game.getFormattedTimeLeft()));
 			}
 			if (status == GameStatus.WAITING && game.getMinPlayers() <= game.countConnectedPlayers()) {
-				return XPWars.getConfigurator().getString("placeholders.starting", "starting")
-						.replace("%left%", game.getFormattedTimeLeft());
+				return XPWars.getConfigurator().getString("placeholders.starting", "starting").replace("%left%",
+						game.getFormattedTimeLeft());
 			}
 			if (status == GameStatus.GAME_END_CELEBRATING) {
 				return XPWars.getConfigurator().getString("placeholders.ended", "ended");
@@ -204,8 +204,8 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 			}
 			if (status == GameStatus.WAITING
 					&& Main.getGame(parsed).getMinPlayers() <= Main.getGame(parsed).countConnectedPlayers()) {
-				return XPWars.getConfigurator().getString("placeholders.starting", "starting")
-						.replace("%left%", Main.getGame(parsed).getFormattedTimeLeft());
+				return XPWars.getConfigurator().getString("placeholders.starting", "starting").replace("%left%",
+						Main.getGame(parsed).getFormattedTimeLeft());
 			}
 			if (status == GameStatus.GAME_END_CELEBRATING) {
 				return XPWars.getConfigurator().getString("placeholders.ended", "ended");

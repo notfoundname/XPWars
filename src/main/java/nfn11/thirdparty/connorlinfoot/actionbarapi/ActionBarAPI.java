@@ -38,7 +38,7 @@ public class ActionBarAPI implements Listener {
 		}
 		message = ChatColor.translateAlternateColorCodes('&', message);
 
-		if (XPWars.getInstance().getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
+		if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
 			message = PlaceholderAPI.setPlaceholders(player, message);
 		}
 

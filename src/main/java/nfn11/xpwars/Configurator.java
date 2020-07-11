@@ -73,109 +73,125 @@ public class Configurator {
 		checkOrSetConfig(modify, "features.games-gui", false);
 		checkOrSetConfig(modify, "features.action-bar-messages", false);
 		checkOrSetConfig(modify, "features.permission-to-join-game", false);
+		checkOrSetConfig(modify, "features.placeholders", false);
+		checkOrSetConfig(modify, "features.specials", false);
 
-		checkOrSetConfig(modify, "permission-to-join-game.message",
-				"You don't have permission %perm% to join arena %arena%!");
-		checkOrSetConfig(modify, "permission-to-join-game.arenas", new HashMap<String, String>() {
-			{
-				put("ArenaNameCaseSensetive", "bw.arenanamepermissionanynameyouwant");
-				put("Pancake", "bw.allow.pancake");
-			}
-		});
-
-		checkOrSetConfig(modify, "action-bar-messages.in-lobby", "Your team: %team% [%pl_t%/%mxpl_t%]");
-		checkOrSetConfig(modify, "action-bar-messages.in-game-alive", "Your team: %bed% %team%");
-		checkOrSetConfig(modify, "action-bar-messages.in-game-spectator", "You are spectator!");
-
-		checkOrSetConfig(modify, "level.messages.maxreached", "&cYou can't have more than %max% levels!");
-
-		checkOrSetConfig(modify, "level.percentage.give-from-killed-player", 33);
-		checkOrSetConfig(modify, "level.percentage.keep-from-death", 33);
-		checkOrSetConfig(modify, "level.maximum-xp", 1000);
-		checkOrSetConfig(modify, "level.sound.sound", "ENTITY_EXPERIENCE_ORB_PICKUP");
-		checkOrSetConfig(modify, "level.sound.volume", 1);
-		checkOrSetConfig(modify, "level.sound.pitch", 1);
-
-		checkOrSetConfig(modify, "level.per-arena-settings", new HashMap<String, HashMap<String, Object>>() {
-			{
-				put("ArenaNameCaseSensetive", new HashMap<String, Object>() {
-					{
-						put("enable", true);
-						put("percentage.give-from-killed-player", 100);
-						put("percentage.keep-from-death", 0);
-						put("maximum-xp", 0);
-						put("messages.maxreached", "&loof");
-						put("sound.sound", "ENTITY_EXPERIENCE_ORB_PICKUP");
-						put("sound.volume", 1);
-						put("sound.pitch", 2);
-						for (String key : resources.getKeys(false)) {
-							put("spawners." + key, 10);
-						}
-					}
-				});
-			}
-		});
-
-		checkOrSetConfig(modify, "level.spawners", new HashMap<String, Object>() {
-			{
-				for (String key : resources.getKeys(false)) {
-					put(key, 3);
+		if (config.getBoolean("features.permission-to-join-game")) {
+			checkOrSetConfig(modify, "permission-to-join-game.message",
+					"You don't have permission %perm% to join arena %arena%!");
+			checkOrSetConfig(modify, "permission-to-join-game.arenas", new HashMap<String, String>() {
+				{
+					put("ArenaNameCaseSensetive", "bw.arenanamepermissionanynameyouwant");
+					put("Pancake", "bw.allow.pancake");
 				}
-			}
-		});
+			});
+		}
 
-		checkOrSetConfig(modify, "games-gui.permission", "xpwars.gamesgui");
+		if (config.getBoolean("features.action-bar-messages")) {
+			checkOrSetConfig(modify, "action-bar-messages.in-lobby", "Your team: %team% [%pl_t%/%mxpl_t%]");
+			checkOrSetConfig(modify, "action-bar-messages.in-game-alive", "Your team: %bed% %team%");
+			checkOrSetConfig(modify, "action-bar-messages.in-game-spectator", "You are spectator!");
+		}
 
-		checkOrSetConfig(modify, "games-gui.title", "&rGames [&e%free%&7/&6%total%&r]");
+		if (config.getBoolean("features.level-system")) {
+			checkOrSetConfig(modify, "level.messages.maxreached", "&cYou can't have more than %max% levels!");
 
-		checkOrSetConfig(modify, "games-gui.enable-categories", false);
-		checkOrSetConfig(modify, "games-gui.categories", new HashMap<String, HashMap<String, Object>>() {
-			{
-				put("example", new HashMap<String, Object>() {
-					{
-						put("stack", (XPWarsUtils.isNewVersion() ? "BLACK_CONCRETE" : "CONCRETE") + ";1;&rDuos");
-						put("skip", 3);
-						put("arenas", new ArrayList<String>() {
-							{
-								add("ArenaName");
-								add("привет");
+			checkOrSetConfig(modify, "level.percentage.give-from-killed-player", 33);
+			checkOrSetConfig(modify, "level.percentage.keep-from-death", 33);
+			checkOrSetConfig(modify, "level.maximum-xp", 1000);
+			checkOrSetConfig(modify, "level.sound.sound", "ENTITY_EXPERIENCE_ORB_PICKUP");
+			checkOrSetConfig(modify, "level.sound.volume", 1);
+			checkOrSetConfig(modify, "level.sound.pitch", 1);
+
+			checkOrSetConfig(modify, "level.per-arena-settings", new HashMap<String, HashMap<String, Object>>() {
+				{
+					put("ArenaNameCaseSensetive", new HashMap<String, Object>() {
+						{
+							put("enable", true);
+							put("percentage.give-from-killed-player", 100);
+							put("percentage.keep-from-death", 0);
+							put("maximum-xp", 0);
+							put("messages.maxreached", "&loof");
+							put("sound.sound", "ENTITY_EXPERIENCE_ORB_PICKUP");
+							put("sound.volume", 1);
+							put("sound.pitch", 2);
+							for (String key : resources.getKeys(false)) {
+								put("spawners." + key, 10);
 							}
-						});
+						}
+					});
+				}
+			});
+
+			checkOrSetConfig(modify, "level.spawners", new HashMap<String, Object>() {
+				{
+					for (String key : resources.getKeys(false)) {
+						put(key, 3);
 					}
-				});
-			}
-		});
+				}
+			});
+		}
 
-		checkOrSetConfig(modify, "games-gui.itemstack.WAITING", (XPWarsUtils.isNewVersion() ? "GREEN_WOOL" : "WOOL")
-				+ ";1;&a%arena% &f[%players%/%maxplayers%];Waiting %time_left%");
-		checkOrSetConfig(modify, "games-gui.itemstack.RUNNING", (XPWarsUtils.isNewVersion() ? "RED_WOOL" : "WOOL")
-				+ ";1;&c%arena% &f[%players%/%maxplayers%];Running :) Time left: %time_left%");
-		checkOrSetConfig(modify, "games-gui.itemstack.GAME_END_CELEBRATING",
-				(XPWarsUtils.isNewVersion() ? "BLUE_WOOL" : "WOOL")
-						+ ";1;&9%arena% &f[%players%/%maxplayers%];Game ended");
-		checkOrSetConfig(modify, "games-gui.itemstack.REBUILDING", (XPWarsUtils.isNewVersion() ? "GRAY_WOOL" : "WOOL")
-				+ ";1;&7%arena% &f[%players%/%maxplayers%];rebuilding");
-		checkOrSetConfig(modify, "games-gui.itemstack.DISABLED", (XPWarsUtils.isNewVersion() ? "BLACK_WOOL" : "WOOL")
-				+ ";1;&0%arena% &f[%players%/%maxplayers%];disabled");
+		if (config.getBoolean("features.games-gui")) {
+			checkOrSetConfig(modify, "games-gui.permission", "xpwars.gamesgui");
 
-		checkOrSetConfig(modify, "specials.remote-tnt.fuse-ticks", 100);
-		checkOrSetConfig(modify, "specials.remote-tnt.detonator-itemstack", "TRIPWIRE_HOOK;1;&eDetonator");
-		/*
-		 * checkOrSetConfig(modify, "specials.trampoline.remove-when-used", true);
-		 * checkOrSetConfig(modify, "specials.trampoline.y-check", 0);
-		 * checkOrSetConfig(modify, "specials.trampoline.velocity", 5.0);
-		 */
-		checkOrSetConfig(modify, "specials.throwable-tnt.velocity", 5.0);
-		checkOrSetConfig(modify, "specials.throwable-tnt.fuse-ticks", 5);
-		
-		checkOrSetConfig(modify, "specials.rideable-projectile.allow-leave", true);
-		checkOrSetConfig(modify, "specials.rideable-projectile.remove-on-leave", true);
-		
-		checkOrSetConfig(modify, "placeholders.waiting", "&aWaiting...");
-		checkOrSetConfig(modify, "placeholders.starting", "&eArena is starting in %time%!");
-		checkOrSetConfig(modify, "placeholders.running", "&cRunning! Time left: %time%");
-		checkOrSetConfig(modify, "placeholders.end-celebration", "&9Game ended!");
-		checkOrSetConfig(modify, "placeholders.rebuilding", "&7Rebuilding...");
+			checkOrSetConfig(modify, "games-gui.title", "&rGames [&e%free%&7/&6%total%&r]");
+
+			checkOrSetConfig(modify, "games-gui.enable-categories", false);
+			checkOrSetConfig(modify, "games-gui.categories", new HashMap<String, HashMap<String, Object>>() {
+				{
+					put("example", new HashMap<String, Object>() {
+						{
+							put("stack", (XPWarsUtils.isNewVersion() ? "BLACK_CONCRETE" : "CONCRETE") + ";1;&rDuos");
+							put("skip", 3);
+							put("arenas", new ArrayList<String>() {
+								{
+									add("ArenaName");
+									add("привет");
+								}
+							});
+						}
+					});
+				}
+			});
+
+			checkOrSetConfig(modify, "games-gui.itemstack.WAITING", (XPWarsUtils.isNewVersion() ? "GREEN_WOOL" : "WOOL")
+					+ ";1;&a%arena% &f[%players%/%maxplayers%];Waiting %time_left%");
+			checkOrSetConfig(modify, "games-gui.itemstack.RUNNING", (XPWarsUtils.isNewVersion() ? "RED_WOOL" : "WOOL")
+					+ ";1;&c%arena% &f[%players%/%maxplayers%];Running :) Time left: %time_left%");
+			checkOrSetConfig(modify, "games-gui.itemstack.GAME_END_CELEBRATING",
+					(XPWarsUtils.isNewVersion() ? "BLUE_WOOL" : "WOOL")
+							+ ";1;&9%arena% &f[%players%/%maxplayers%];Game ended");
+			checkOrSetConfig(modify, "games-gui.itemstack.REBUILDING",
+					(XPWarsUtils.isNewVersion() ? "GRAY_WOOL" : "WOOL")
+							+ ";1;&7%arena% &f[%players%/%maxplayers%];rebuilding");
+			checkOrSetConfig(modify, "games-gui.itemstack.DISABLED",
+					(XPWarsUtils.isNewVersion() ? "BLACK_WOOL" : "WOOL")
+							+ ";1;&0%arena% &f[%players%/%maxplayers%];disabled");
+		}
+
+		if (config.getBoolean("features.specials")) {
+			checkOrSetConfig(modify, "specials.remote-tnt.fuse-ticks", 100);
+			checkOrSetConfig(modify, "specials.remote-tnt.detonator-itemstack", "TRIPWIRE_HOOK;1;&eDetonator");
+			/*
+			 * checkOrSetConfig(modify, "specials.trampoline.remove-when-used", true);
+			 * checkOrSetConfig(modify, "specials.trampoline.y-check", 0);
+			 * checkOrSetConfig(modify, "specials.trampoline.velocity", 5.0);
+			 */
+			checkOrSetConfig(modify, "specials.throwable-tnt.velocity", 5.0);
+			checkOrSetConfig(modify, "specials.throwable-tnt.fuse-ticks", 5);
+
+			checkOrSetConfig(modify, "specials.rideable-projectile.allow-leave", true);
+			checkOrSetConfig(modify, "specials.rideable-projectile.remove-on-leave", true);
+		}
+
+		if (config.getBoolean("features.placeholders")) {
+			checkOrSetConfig(modify, "placeholders.waiting", "&aWaiting...");
+			checkOrSetConfig(modify, "placeholders.starting", "&eArena is starting in %time%!");
+			checkOrSetConfig(modify, "placeholders.running", "&cRunning! Time left: %time%");
+			checkOrSetConfig(modify, "placeholders.end-celebration", "&9Game ended!");
+			checkOrSetConfig(modify, "placeholders.rebuilding", "&7Rebuilding...");
+		}
 
 		if (modify.get()) {
 			try {

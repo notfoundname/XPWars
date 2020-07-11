@@ -10,7 +10,6 @@ import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.commands.BaseCommand;
 import org.screamingsandals.bedwars.lib.sgui.listeners.InventoryListener;
 
-import me.clip.placeholderapi.PlaceholderAPI;
 import nfn11.thirdparty.connorlinfoot.actionbarapi.ActionBarAPI;
 import nfn11.xpwars.commands.GamesCommand;
 import nfn11.xpwars.commands.XPWarsCommand;
@@ -46,16 +45,18 @@ public class XPWars extends JavaPlugin implements Listener {
 		new RegisterSpecialListeners();
 		new ActionBarAPI();
 		new XPWarsCommand();
-		
+
 		if (getConfigurator().config.getBoolean("features.games-gui")) {
 			new GamesInventory(this);
 			new GamesCommand();
 		}
-		
-		if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-			new PlaceholderAPIHook().register();
-			XPWarsUtils.xpwarsLog("&aSuccesfully registered PlaceholderAPI!");
-		}
+		try {
+			if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null
+					&& getConfigurator().config.getBoolean("features.placeholders")) {
+            	new PlaceholderAPIHook().register();
+    		}
+        } catch (Throwable ignored) {
+        }
 
 		commands = new HashMap<>();
 
@@ -72,7 +73,10 @@ public class XPWars extends JavaPlugin implements Listener {
 		if (plugin.equalsIgnoreCase("BedWars")) {
 			if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null
 					&& new PlaceholderAPIHook().isRegistered()) {
-				PlaceholderAPI.unregisterExpansion(new PlaceholderAPIHook());
+				try {
+					me.clip.placeholderapi.PlaceholderAPI.unregisterExpansion(new PlaceholderAPIHook());
+				} catch (Exception ignored) {
+				}
 			}
 			Bukkit.getServer().getPluginManager().disablePlugin(XPWars.getInstance());
 			Bukkit.getServer().getPluginManager().enablePlugin(XPWars.getInstance());
