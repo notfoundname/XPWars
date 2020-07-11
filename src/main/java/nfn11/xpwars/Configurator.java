@@ -100,6 +100,7 @@ public class Configurator {
 			{
 				put("ArenaNameCaseSensetive", new HashMap<String, Object>() {
 					{
+						put("enable", true);
 						put("percentage.give-from-killed-player", 100);
 						put("percentage.keep-from-death", 0);
 						put("maximum-xp", 0);
@@ -166,7 +167,10 @@ public class Configurator {
 		 */
 		checkOrSetConfig(modify, "specials.throwable-tnt.velocity", 5.0);
 		checkOrSetConfig(modify, "specials.throwable-tnt.fuse-ticks", 5);
-
+		
+		checkOrSetConfig(modify, "specials.rideable-projectile.allow-leave", true);
+		checkOrSetConfig(modify, "specials.rideable-projectile.remove-on-leave", true);
+		
 		checkOrSetConfig(modify, "placeholders.waiting", "&aWaiting...");
 		checkOrSetConfig(modify, "placeholders.starting", "&eArena is starting in %time%!");
 		checkOrSetConfig(modify, "placeholders.running", "&cRunning! Time left: %time%");

@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -76,7 +77,8 @@ public class RemoteTNTListener implements Listener {
 			return;
 		ItemStack detonator = detonator();
 		if (!(event.getItem() == null)) {
-			if (event.getItem().equals(detonator)) {
+			if (event.getItem().equals(detonator)
+					&& (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
 				for (Location location : blocks) {
 					event.setCancelled(true);
 					int ticks = location.getBlock().getMetadata("ticks").get(0).asInt();
@@ -107,11 +109,12 @@ public class RemoteTNTListener implements Listener {
 	}
 
 	private ItemStack detonator() {
-		ItemStack stack = StackParser.parse(XPWars.getConfigurator().config.get("specials.remote-tnt.detonator-itemstack"));
+		ItemStack stack = StackParser
+				.parse(XPWars.getConfigurator().config.get("specials.remote-tnt.detonator-itemstack", "TRIPWIRE_HOOK"));
 		ItemMeta meta = stack.getItemMeta();
 		meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', meta.getDisplayName()));
 		stack.setItemMeta(meta);
-		
+
 		return stack;
 	}
 }

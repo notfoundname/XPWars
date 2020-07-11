@@ -427,7 +427,7 @@ public class LevelShop implements Listener {
 
 			if (!Main.getConfigurator().config.getBoolean("removePurchaseMessages", false)) {
 				player.sendMessage(
-						i18n("buy_success").replace("%item%", amount + "x " + getNameOrCustomNameOfItem(newItem))
+						i18n("buy_succes").replace("%item%", amount + "x " + getNameOrCustomNameOfItem(newItem))
 								.replace("%material%", price + " " + "Levels"));
 			}
 			Sounds.playSound(player, player.getLocation(),

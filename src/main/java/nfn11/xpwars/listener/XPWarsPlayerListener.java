@@ -2,6 +2,7 @@ package nfn11.xpwars.listener;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -27,7 +28,6 @@ import nfn11.xpwars.inventories.GamesInventory;
 import nfn11.xpwars.inventories.LevelShop;
 
 public class XPWarsPlayerListener implements Listener {
-	LevelShop xp;
 
 	public XPWarsPlayerListener() {
 		Bukkit.getServer().getPluginManager().registerEvents(this, XPWars.getInstance());
@@ -92,9 +92,10 @@ public class XPWarsPlayerListener implements Listener {
 	public void onShopOpen(BedwarsOpenShopEvent event) {
 		if (Main.getPlayerGameProfile(event.getPlayer()).isSpectator)
 			return;
-		if (XPWars.getConfigurator().config.getBoolean("features.level-system")) {
+		if (XPWars.getConfigurator().config.getBoolean("features.level-system") || XPWars.getConfigurator()
+				.getBoolean("level.per-arena-settings." + event.getGame().getName() + "enable", true)) {
 			event.setResult(Result.DISALLOW_THIRD_PARTY_SHOP);
-			xp.show(event.getPlayer(), event.getStore());
+			new LevelShop().show(event.getPlayer(), event.getStore());
 		} else
 			return;
 	}
@@ -110,31 +111,31 @@ public class XPWarsPlayerListener implements Listener {
 			if (!Main.isPlayerInGame(player))
 				return;
 			String gamename = Main.getPlayerGameProfile(player).getGame().getName();
+			ConfigurationSection sec = XPWars.getConfigurator().config
+					.getConfigurationSection("level.per-arena-settings." + gamename);
+			if (!sec.getBoolean("enable", true)) {
+				return;
+			}
 			ItemStack picked = event.getItem().getItemStack();
 
 			for (ItemSpawnerType type : Main.getInstance().getItemSpawnerTypes()) {
 
 				String defsound = XPWars.getConfigurator().config.getString("level.sound.sound",
 						"ENTITY_EXPERIENCE_ORB_PICKUP");
-				String sound = XPWars.getConfigurator().config
-						.getString("level.per-arena-settings." + gamename + ".sound.sound", defsound);
+				String sound = sec.getString("sound.sound", defsound);
 
 				int level = player.getLevel();
 				int defmax = XPWars.getConfigurator().config.getInt("level.maximum-xp", 0);
-				int max = XPWars.getConfigurator().config.getInt("level.per-arena-settings." + gamename + ".maximum-xp",
-						defmax);
+				int max = sec.getInt("maximum-xp", defmax);
 
 				int defres = XPWars.getConfigurator().config.getInt("level.spawners." + type.getConfigKey(), 0);
-				int res = XPWars.getConfigurator()
-						.getInt("level.per-arena-settings." + gamename + ".spawners." + type.getConfigKey(), defres);
+				int res = sec.getInt("spawners." + type.getConfigKey(), defres);
 
 				float defvolume = XPWars.getConfigurator().config.getInt("level.sound.volume", 1);
-				float volume = XPWars.getConfigurator().config
-						.getInt("level.per-arena-settings." + gamename + ".sound.volume", (int) defvolume);
+				float volume = sec.getInt("sound.volume", (int) defvolume);
 
 				float defpitch = XPWars.getConfigurator().config.getInt("level.sound.pitch", 1);
-				float pitch = XPWars.getConfigurator().config
-						.getInt("level.per-arena-settings." + gamename + ".sound.pitch", (int) defpitch);
+				float pitch = sec.getInt("sound.pitch", (int) defpitch);
 
 				if (picked.isSimilar(type.getStack()) && picked.getItemMeta().equals(type.getStack().getItemMeta())) {
 					event.setCancelled(true);
