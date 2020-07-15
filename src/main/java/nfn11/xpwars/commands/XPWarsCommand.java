@@ -11,17 +11,15 @@ import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.game.GameStore;
 import org.screamingsandals.bedwars.commands.BaseCommand;
-import org.screamingsandals.bedwars.inventories.ShopInventory;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import nfn11.xpwars.XPWars;
-import nfn11.xpwars.inventories.LevelShop;
-import nfn11.xpwars.placeholderapi.PlaceholderAPIHook;
 import nfn11.xpwars.utils.XPWarsUtils;
 
 import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
 
 public class XPWarsCommand extends BaseCommand {
+	
 	public XPWarsCommand() {
 		super("xpwars", ADMIN_PERMISSION, true);
 	}
@@ -60,8 +58,8 @@ public class XPWarsCommand extends BaseCommand {
 		if (args.size() == 1) {
 			if (args.get(0).equalsIgnoreCase("reload")) {
 				if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null
-						&& new PlaceholderAPIHook().isRegistered()) {
-					PlaceholderAPI.unregisterExpansion(new PlaceholderAPIHook());
+						&& XPWars.getPlaceholderAPIHook().isRegistered()) {
+					PlaceholderAPI.unregisterExpansion(XPWars.getPlaceholderAPIHook());
 				}
 				Bukkit.getServer().getPluginManager().disablePlugin(XPWars.getInstance());
 				Bukkit.getServer().getPluginManager().enablePlugin(XPWars.getInstance());
@@ -90,13 +88,11 @@ public class XPWarsCommand extends BaseCommand {
 							false, false);
 					if (XPWars.getConfigurator().config.getBoolean("features.level-system")
 							|| !Main.isPlayerInGame(player)) {
-						LevelShop shop = new LevelShop();
-						shop.show(player, store);
+						XPWars.getLevelShop().show(player, store);
 					} else {
 						if (!Main.getPlayerGameProfile(player).isSpectator
 								&& Main.getPlayerGameProfile(player).getGame().getStatus() == GameStatus.RUNNING) {
-							ShopInventory shop = new ShopInventory();
-							shop.show(player, store);
+							XPWars.getShopInventory().show(player, store);
 						}
 					}
 					return true;

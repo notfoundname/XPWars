@@ -35,9 +35,9 @@ public class GamesInventory implements Listener {
 	XPWars plugin;
 
 	public GamesInventory(XPWars plugin) {
-
+		
 		this.plugin = plugin;
-
+		
 		options = new Options(XPWars.getInstance());
 		options.setPrefix(ChatColor.translateAlternateColorCodes('&',
 				XPWars.getConfigurator().getString("games-gui.title", "games")

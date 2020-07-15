@@ -8,10 +8,12 @@ import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.commands.BaseCommand;
+import org.screamingsandals.bedwars.inventories.ShopInventory;
 import org.screamingsandals.bedwars.lib.sgui.listeners.InventoryListener;
 
 import nfn11.thirdparty.connorlinfoot.actionbarapi.ActionBarAPI;
 import nfn11.xpwars.commands.GamesCommand;
+import nfn11.xpwars.commands.JoinSortedCommand;
 import nfn11.xpwars.commands.XPWarsCommand;
 import nfn11.xpwars.inventories.GamesInventory;
 import nfn11.xpwars.inventories.LevelShop;
@@ -25,7 +27,11 @@ public class XPWars extends JavaPlugin implements Listener {
 	private static XPWars instance;
 	private Configurator configurator;
 	private HashMap<String, BaseCommand> commands;
-
+	private GamesInventory gamesInventory;
+	private LevelShop levelShop;
+	private PlaceholderAPIHook placeholderApiHook;
+	private ShopInventory shopInventory;
+	
 	@Override
 	public void onEnable() {
 		instance = this;
@@ -40,20 +46,22 @@ public class XPWars extends JavaPlugin implements Listener {
 
 		InventoryListener.init(this);
 		Bukkit.getPluginManager().registerEvents(this, this);
-		new LevelShop();
+		levelShop = new LevelShop();
 		new XPWarsPlayerListener();
 		new RegisterSpecialListeners();
 		new ActionBarAPI();
 		new XPWarsCommand();
 
 		if (getConfigurator().config.getBoolean("features.games-gui")) {
-			new GamesInventory(this);
+			gamesInventory = new GamesInventory(this);
 			new GamesCommand();
+			new JoinSortedCommand();
 		}
 		try {
 			if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null
 					&& getConfigurator().config.getBoolean("features.placeholders")) {
-            	new PlaceholderAPIHook().register();
+				placeholderApiHook = new PlaceholderAPIHook();
+				placeholderApiHook.register();
     		}
         } catch (Throwable ignored) {
         }
@@ -72,9 +80,9 @@ public class XPWars extends JavaPlugin implements Listener {
 		String plugin = event.getPlugin().getName();
 		if (plugin.equalsIgnoreCase("BedWars")) {
 			if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null
-					&& new PlaceholderAPIHook().isRegistered()) {
+					&& instance.placeholderApiHook.isRegistered()) {
 				try {
-					me.clip.placeholderapi.PlaceholderAPI.unregisterExpansion(new PlaceholderAPIHook());
+					me.clip.placeholderapi.PlaceholderAPI.unregisterExpansion(instance.placeholderApiHook);
 				} catch (Exception ignored) {
 				}
 			}
@@ -93,5 +101,21 @@ public class XPWars extends JavaPlugin implements Listener {
 
 	public static HashMap<String, BaseCommand> getCommands() {
 		return instance.commands;
+	}
+	
+	public static GamesInventory getGamesInventory() {
+		return instance.gamesInventory;
+	}
+	
+	public static LevelShop getLevelShop() {
+		return instance.levelShop;
+	}
+	
+	public static PlaceholderAPIHook getPlaceholderAPIHook() {
+		return instance.placeholderApiHook;
+	}
+	
+	public static ShopInventory getShopInventory() {
+		return instance.shopInventory;
 	}
 }

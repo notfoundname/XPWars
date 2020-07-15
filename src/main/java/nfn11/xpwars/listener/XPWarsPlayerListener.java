@@ -24,8 +24,6 @@ import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
 
 import nfn11.thirdparty.connorlinfoot.actionbarapi.ActionBarAPI;
 import nfn11.xpwars.XPWars;
-import nfn11.xpwars.inventories.GamesInventory;
-import nfn11.xpwars.inventories.LevelShop;
 
 public class XPWarsPlayerListener implements Listener {
 
@@ -95,7 +93,7 @@ public class XPWarsPlayerListener implements Listener {
 		if (XPWars.getConfigurator().config.getBoolean("features.level-system") || XPWars.getConfigurator()
 				.getBoolean("level.per-arena-settings." + event.getGame().getName() + "enable", true)) {
 			event.setResult(Result.DISALLOW_THIRD_PARTY_SHOP);
-			new LevelShop().show(event.getPlayer(), event.getStore());
+			XPWars.getLevelShop().show(event.getPlayer(), event.getStore());
 		} else
 			return;
 	}
@@ -163,7 +161,7 @@ public class XPWarsPlayerListener implements Listener {
 		if (event.getGame() == null)
 			return;
 		if (XPWars.getConfigurator().config.getBoolean("features.games-gui")) {
-			new GamesInventory(XPWars.getInstance()).repaint();
+			XPWars.getGamesInventory().repaint();
 		}
 		if (XPWars.getConfigurator().config.getBoolean("features.action-bar-messages")) {
 			for (Player player : event.getGame().getConnectedPlayers()) {

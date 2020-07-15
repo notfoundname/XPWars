@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -11,6 +13,8 @@ import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameStatus;
+
+import nfn11.xpwars.XPWars;
 
 public class XPWarsUtils {
 
@@ -43,10 +47,8 @@ public class XPWarsUtils {
 	}
 
 	public static boolean isNewVersion() {
-		if (Bukkit.getVersion().contains("1.13") 
-				|| Bukkit.getVersion().contains("1.14")
-				|| Bukkit.getVersion().contains("1.15") 
-				|| Bukkit.getVersion().contains("1.16")
+		if (Bukkit.getVersion().contains("1.13") || Bukkit.getVersion().contains("1.14")
+				|| Bukkit.getVersion().contains("1.15") || Bukkit.getVersion().contains("1.16")
 				|| Bukkit.getVersion().contains("1.17"))/* ? */ {
 			return true;
 		}
@@ -60,5 +62,37 @@ public class XPWarsUtils {
 				i++;
 		}
 		return i;
+	}
+
+	public static List<String> getAllCategories() {
+		List<String> list = new ArrayList<>();
+		for (String s : XPWars.getConfigurator().config.getConfigurationSection("games-gui.categories").getValues(false)
+				.keySet()) {
+			list.add(s);
+		}
+		return list;
+	}
+
+	public static List<Game> getGamesInCategory(String category) {
+		List<Game> list = new ArrayList<>();
+		for (String s : XPWars.getConfigurator().config.getStringList("games-gui.categories." + category + ".arenas")) {
+			list.add(Main.getGame(s));
+		}
+		return list;
+	}
+
+	public static org.screamingsandals.bedwars.api.game.Game getGameWithHighestPlayersInCategory(String category) {
+		TreeMap<Integer, org.screamingsandals.bedwars.api.game.Game> gameList = new TreeMap<>();
+		for (org.screamingsandals.bedwars.api.game.Game game : getGamesInCategory(category)) {
+			if (game.getStatus() != GameStatus.WAITING) {
+				continue;
+			}
+			if (game.getConnectedPlayers().size() >= game.getMaxPlayers()) {
+				continue;
+			}
+			gameList.put(game.countConnectedPlayers(), game);
+		}
+		Map.Entry<Integer, org.screamingsandals.bedwars.api.game.Game> lastEntry = gameList.lastEntry();
+		return lastEntry.getValue();
 	}
 }

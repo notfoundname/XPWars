@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.commands.BaseCommand;
 
 import nfn11.xpwars.XPWars;
-import nfn11.xpwars.inventories.GamesInventory;
 import nfn11.xpwars.utils.XPWarsUtils;
 
 public class GamesCommand extends BaseCommand {
@@ -36,12 +35,12 @@ public class GamesCommand extends BaseCommand {
 		if (args.size() == 1) {
 			Player player = Bukkit.getServer().getPlayer(args.get(0));
 			if (player != null) {
-				new GamesInventory(XPWars.getInstance()).openForPlayer(player);
+				XPWars.getGamesInventory().openForPlayer(player);
 				return true;
 			}
 		}
 		if (sender instanceof Player) {
-			new GamesInventory(XPWars.getInstance()).openForPlayer((Player) sender);
+			XPWars.getGamesInventory().openForPlayer((Player) sender);
 		}
 		return true;
 	}
