@@ -4,4 +4,7 @@ import org.screamingsandals.bedwars.api.special.SpecialItem;
 
 public interface RideableProjectile extends SpecialItem {
 
+	boolean isAllowedLeaving();
+
+	boolean isRemoveOnLeave();
 }

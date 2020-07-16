@@ -76,7 +76,8 @@ public class XPWarsUtils {
 	public static List<Game> getGamesInCategory(String category) {
 		List<Game> list = new ArrayList<>();
 		for (String s : XPWars.getConfigurator().config.getStringList("games-gui.categories." + category + ".arenas")) {
-			list.add(Main.getGame(s));
+			if (Main.isGameExists(s))
+				list.add(Main.getGame(s));
 		}
 		return list;
 	}

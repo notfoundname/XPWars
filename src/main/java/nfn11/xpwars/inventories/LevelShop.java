@@ -385,7 +385,7 @@ public class LevelShop implements Listener {
 			newItem = changeItemType.getStack();
 		}
 		
-		if (clickType.isShiftClick()) {
+		if (clickType.isShiftClick() && newItem.getMaxStackSize() > 1) {
 			double priceOfOne = (double) price / amount;
 			double maxStackSize;
 			int finalStackSize;
@@ -396,7 +396,7 @@ public class LevelShop implements Listener {
 				}
 			}
 			if (Main.getConfigurator().config.getBoolean("sell-max-64-per-click-in-shop")) {
-				maxStackSize = Math.min(inInventory / priceOfOne, 64);
+				maxStackSize = Math.min(inInventory / priceOfOne, newItem.getMaxStackSize());
 			} else {
 				maxStackSize = inInventory / priceOfOne;
 			}
@@ -423,7 +423,11 @@ public class LevelShop implements Listener {
 			}
 
 			player.setLevel(level - price);
-			event.buyStack(newItem);
+			if (player.getInventory().firstEmpty() == -1) {
+				player.getLocation().getWorld().dropItem(player.getLocation(), newItem);
+			} else {
+				event.buyStack(newItem);
+			}
 
 			if (!Main.getConfigurator().config.getBoolean("removePurchaseMessages", false)) {
 				player.sendMessage(

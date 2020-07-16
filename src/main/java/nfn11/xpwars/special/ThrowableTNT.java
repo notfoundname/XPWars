@@ -9,8 +9,10 @@ public class ThrowableTNT extends SpecialItem implements nfn11.xpwars.special.ap
 	
 	private int fuse_ticks, y_velocity;
 	
-	public ThrowableTNT(Game game, Player player, Team team) {
+	public ThrowableTNT(Game game, Player player, Team team, int fuse_ticks, int y_velocity) {
 		super(game, player, team);
+		this.fuse_ticks = fuse_ticks;
+		this.y_velocity = y_velocity;
 	}
 
 	@Override

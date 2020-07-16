@@ -8,8 +8,9 @@ import org.screamingsandals.bedwars.special.SpecialItem;
 public class RemoteTNT extends SpecialItem implements nfn11.xpwars.special.api.RemoteTNT {
 	private int fuse_ticks;
 	
-	public RemoteTNT(Game game, Player player, Team team) {
+	public RemoteTNT(Game game, Player player, Team team, int fuse_ticks) {
 		super(game, player, team);
+		this.fuse_ticks = fuse_ticks;
 	}
 
 	@Override

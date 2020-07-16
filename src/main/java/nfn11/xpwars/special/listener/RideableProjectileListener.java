@@ -47,7 +47,7 @@ public class RideableProjectileListener implements Listener {
 				boolean allow_leave = Boolean.getBoolean(unhidden.split(":")[2]);
 				boolean remove_on_leave = Boolean.getBoolean(unhidden.split(":")[3]);
 
-				new RideableProjectile(game, player, game.getTeamOfPlayer(player));
+				new RideableProjectile(game, player, game.getTeamOfPlayer(player), allow_leave, remove_on_leave);
 				new BukkitRunnable() {
 					@Override
 					public void run() {

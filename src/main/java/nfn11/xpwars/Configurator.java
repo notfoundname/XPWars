@@ -173,11 +173,10 @@ public class Configurator {
 		if (config.getBoolean("features.specials")) {
 			checkOrSetConfig(modify, "specials.remote-tnt.fuse-ticks", 100);
 			checkOrSetConfig(modify, "specials.remote-tnt.detonator-itemstack", "TRIPWIRE_HOOK;1;&eDetonator");
-			/*
-			 * checkOrSetConfig(modify, "specials.trampoline.remove-when-used", true);
-			 * checkOrSetConfig(modify, "specials.trampoline.y-check", 0);
-			 * checkOrSetConfig(modify, "specials.trampoline.velocity", 5.0);
-			 */
+			
+			checkOrSetConfig(modify, "specials.trampoline.y-velocity", 5.0);
+			
+			checkOrSetConfig(modify, "specials.vouncher.levels", 50);
 			checkOrSetConfig(modify, "specials.throwable-tnt.velocity", 5.0);
 			checkOrSetConfig(modify, "specials.throwable-tnt.fuse-ticks", 5);
 

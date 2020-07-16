@@ -54,7 +54,7 @@ public class RemoteTNTListener implements Listener {
 		if (unhidden != null) {
 			int fuse_ticks = Integer.parseInt(unhidden.split(":")[2]);
 
-			new RemoteTNT(event.getGame(), player, event.getTeam());
+			new RemoteTNT(event.getGame(), player, event.getTeam(), fuse_ticks);
 			ItemStack detonator = detonator();
 
 			Block block = event.getBlock();

@@ -42,35 +42,35 @@ public class ThrowableTNTListener implements Listener {
 		if (event.isCancelled())
 			return;
 
-		GamePlayer gp = Main.getPlayerGameProfile(player);
-
 		if (item == null)
 			return;
 
-		String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(item, THROWABLE_TNT_PREFIX);
-		if (unhidden != null) {
-			int fuse_ticks = Integer.parseInt(unhidden.split(":")[2]);
-			int velocity = Integer.parseInt(unhidden.split(":")[3]);
+		if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+			String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(item, THROWABLE_TNT_PREFIX);
+			if (unhidden != null) {
+				GamePlayer gp = Main.getPlayerGameProfile(player);
+				int fuse_ticks = Integer.parseInt(unhidden.split(":")[2]);
+				int velocity = Integer.parseInt(unhidden.split(":")[3]);
 
-			new ThrowableTNT(gp.getGame(), player, gp.getGame().getPlayerTeam(gp));
+				new ThrowableTNT(gp.getGame(), player, gp.getGame().getPlayerTeam(gp), fuse_ticks, velocity);
 
-			TNTPrimed tnt = (TNTPrimed) player.getWorld().spawn(new Location(player.getWorld(),
-					player.getLocation().getX(), player.getLocation().getY() + 1, player.getLocation().getZ()),
-					TNTPrimed.class);
-			event.setCancelled(true);
-			tnt.setFuseTicks(fuse_ticks);
-			Vector playerDirection = player.getLocation().getDirection();
-			Vector smallerVector = playerDirection.multiply(velocity);
+				TNTPrimed tnt = (TNTPrimed) player.getWorld().spawn(new Location(player.getWorld(),
+						player.getLocation().getX(), player.getLocation().getY() + 1, player.getLocation().getZ()),
+						TNTPrimed.class);
+				event.setCancelled(true);
+				tnt.setFuseTicks(fuse_ticks);
+				Vector playerDirection = player.getLocation().getDirection();
+				Vector smallerVector = playerDirection.multiply(velocity);
 
-			tnt.setVelocity(smallerVector);
+				tnt.setVelocity(smallerVector);
 
-			if (item.getAmount() > 1) {
-				player.getInventory().remove(item);
-			} else {
-				item.setAmount(item.getAmount() - 1);
+				if (item.getAmount() == 1) {
+					player.getInventory().remove(item);
+				} else {
+					item.setAmount(item.getAmount() - 1);
+				}
 			}
 		}
-
 	}
 
 	private String applyProperty(BedwarsApplyPropertyToBoughtItem event) {
