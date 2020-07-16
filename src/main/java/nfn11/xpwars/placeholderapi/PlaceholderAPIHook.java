@@ -11,10 +11,9 @@ import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GamePlayer;
 
-import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import nfn11.xpwars.XPWars;
 
-public class PlaceholderAPIHook extends PlaceholderExpansion {
+public class PlaceholderAPIHook extends me.clip.placeholderapi.expansion.PlaceholderExpansion {
 
 	@Override
 	public String getAuthor() {

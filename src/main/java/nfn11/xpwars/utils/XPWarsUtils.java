@@ -75,10 +75,15 @@ public class XPWarsUtils {
 
 	public static List<Game> getGamesInCategory(String category) {
 		List<Game> list = new ArrayList<>();
-		for (String s : XPWars.getConfigurator().config.getStringList("games-gui.categories." + category + ".arenas")) {
-			if (Main.isGameExists(s))
+		for (String s : XPWars.getConfigurator().config.getConfigurationSection("games-gui.categories." + category)
+				.getStringList("arenas")) {
+			if (Main.isGameExists(s)) {
 				list.add(Main.getGame(s));
+			} else
+				continue;
 		}
+		if (list.isEmpty())
+			return null;
 		return list;
 	}
 
@@ -91,9 +96,32 @@ public class XPWarsUtils {
 			if (game.getConnectedPlayers().size() >= game.getMaxPlayers()) {
 				continue;
 			}
+			if (game.countConnectedPlayers() == 0) {
+				continue;
+			}
 			gameList.put(game.countConnectedPlayers(), game);
 		}
 		Map.Entry<Integer, org.screamingsandals.bedwars.api.game.Game> lastEntry = gameList.lastEntry();
+		if (lastEntry == null) {
+			return getFirstWaitingGameInCategory(category);
+		}
 		return lastEntry.getValue();
+	}
+
+	public static org.screamingsandals.bedwars.api.game.Game getFirstWaitingGameInCategory(String category) {
+		final TreeMap<Integer, Game> availableGames = new TreeMap<>();
+		getGamesInCategory(category).forEach(game -> {
+			if (game.getStatus() != GameStatus.WAITING) {
+				return;
+			}
+
+			availableGames.put(game.getConnectedPlayers().size(), game);
+		});
+
+		if (availableGames.isEmpty()) {
+			return null;
+		}
+
+		return availableGames.lastEntry().getValue();
 	}
 }

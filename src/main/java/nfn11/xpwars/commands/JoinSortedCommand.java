@@ -34,8 +34,8 @@ public class JoinSortedCommand extends BaseCommand {
 			player.sendMessage(i18n("you_are_already_in_some_game"));
 			return true;
 		}
-		if (args.size() == 1) {
-			if (XPWarsUtils.getAllCategories().size() == 0 || XPWarsUtils.getAllCategories().contains(args.get(0)))
+		if (args.size() >= 1) {
+			if (XPWarsUtils.getAllCategories().size() == 0 || !XPWarsUtils.getAllCategories().contains(args.get(0)))
 				return true;
 			XPWarsUtils.getGameWithHighestPlayersInCategory(args.get(0)).joinToGame(player);
 		}

@@ -12,7 +12,6 @@ import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.game.GameStore;
 import org.screamingsandals.bedwars.commands.BaseCommand;
 
-import me.clip.placeholderapi.PlaceholderAPI;
 import nfn11.xpwars.XPWars;
 import nfn11.xpwars.utils.XPWarsUtils;
 
@@ -57,10 +56,6 @@ public class XPWarsCommand extends BaseCommand {
 		}
 		if (args.size() == 1) {
 			if (args.get(0).equalsIgnoreCase("reload")) {
-				if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null
-						&& XPWars.getPlaceholderAPIHook().isRegistered()) {
-					PlaceholderAPI.unregisterExpansion(XPWars.getPlaceholderAPIHook());
-				}
 				Bukkit.getServer().getPluginManager().disablePlugin(XPWars.getInstance());
 				Bukkit.getServer().getPluginManager().enablePlugin(XPWars.getInstance());
 				sender.sendMessage("Addon reloaded!");

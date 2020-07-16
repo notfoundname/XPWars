@@ -18,7 +18,6 @@ import nfn11.xpwars.commands.XPWarsCommand;
 import nfn11.xpwars.inventories.GamesInventory;
 import nfn11.xpwars.inventories.LevelShop;
 import nfn11.xpwars.listener.XPWarsPlayerListener;
-import nfn11.xpwars.placeholderapi.PlaceholderAPIHook;
 import nfn11.xpwars.special.listener.RegisterSpecialListeners;
 import nfn11.xpwars.utils.XPWarsUtils;
 
@@ -29,9 +28,8 @@ public class XPWars extends JavaPlugin implements Listener {
 	private HashMap<String, BaseCommand> commands;
 	private GamesInventory gamesInventory;
 	private LevelShop levelShop;
-	private PlaceholderAPIHook placeholderApiHook;
 	private ShopInventory shopInventory;
-	
+
 	@Override
 	public void onEnable() {
 		instance = this;
@@ -60,11 +58,10 @@ public class XPWars extends JavaPlugin implements Listener {
 		try {
 			if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null
 					&& getConfigurator().config.getBoolean("features.placeholders")) {
-				placeholderApiHook = new PlaceholderAPIHook();
-				placeholderApiHook.register();
-    		}
-        } catch (Throwable ignored) {
-        }
+				new nfn11.xpwars.placeholderapi.PlaceholderAPIHook().register();
+			}
+		} catch (Throwable ignored) {
+		}
 
 		commands = new HashMap<>();
 
@@ -79,13 +76,6 @@ public class XPWars extends JavaPlugin implements Listener {
 	public void onBwReload(PluginEnableEvent event) {
 		String plugin = event.getPlugin().getName();
 		if (plugin.equalsIgnoreCase("BedWars")) {
-			if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null
-					&& instance.placeholderApiHook.isRegistered()) {
-				try {
-					me.clip.placeholderapi.PlaceholderAPI.unregisterExpansion(instance.placeholderApiHook);
-				} catch (Exception ignored) {
-				}
-			}
 			Bukkit.getServer().getPluginManager().disablePlugin(XPWars.getInstance());
 			Bukkit.getServer().getPluginManager().enablePlugin(XPWars.getInstance());
 		}
@@ -102,19 +92,15 @@ public class XPWars extends JavaPlugin implements Listener {
 	public static HashMap<String, BaseCommand> getCommands() {
 		return instance.commands;
 	}
-	
+
 	public static GamesInventory getGamesInventory() {
 		return instance.gamesInventory;
 	}
-	
+
 	public static LevelShop getLevelShop() {
 		return instance.levelShop;
 	}
-	
-	public static PlaceholderAPIHook getPlaceholderAPIHook() {
-		return instance.placeholderApiHook;
-	}
-	
+
 	public static ShopInventory getShopInventory() {
 		return instance.shopInventory;
 	}

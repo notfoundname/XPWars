@@ -55,7 +55,7 @@ public class VouncherListener implements Listener {
 			} else {
 				player.setLevel(player.getLevel() + levels);
 			}
-
+			event.setCancelled(true);
 		}
 	}
 

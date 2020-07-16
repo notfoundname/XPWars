@@ -6,4 +6,5 @@ depend:
 - BedWars
 softdepend:
 - PlaceholderAPI
+load: POSTWORLD
 author: notfoundname11, ConnorLinfoot (ActionBarAPI), ScreamingSandals (SimpleInventories)

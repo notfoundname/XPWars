@@ -8,13 +8,11 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -80,7 +78,6 @@ public class RemoteTNTListener implements Listener {
 			if (event.getItem().equals(detonator)
 					&& (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
 				for (Location location : blocks) {
-					event.setCancelled(true);
 					int ticks = location.getBlock().getMetadata("ticks").get(0).asInt();
 					location.getBlock().setType(Material.AIR);
 					TNTPrimed tnt = (TNTPrimed) location.getWorld().spawn(location.add(0.5, 0.0, 0.5), TNTPrimed.class);
@@ -96,8 +93,10 @@ public class RemoteTNTListener implements Listener {
 									: player.getUniqueId().toString(),
 							new FixedMetadataValue(XPWars.getInstance(), null));
 					location.getBlock().setType(Material.AIR);
-					player.getInventory().remove(detonator);
+					blocks.remove(location);
 				}
+				event.setCancelled(true);
+				player.getInventory().remove(detonator);
 			}
 		} else
 			return;

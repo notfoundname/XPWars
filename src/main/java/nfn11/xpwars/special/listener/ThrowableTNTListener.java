@@ -57,7 +57,6 @@ public class ThrowableTNTListener implements Listener {
 				TNTPrimed tnt = (TNTPrimed) player.getWorld().spawn(new Location(player.getWorld(),
 						player.getLocation().getX(), player.getLocation().getY() + 1, player.getLocation().getZ()),
 						TNTPrimed.class);
-				event.setCancelled(true);
 				tnt.setFuseTicks(fuse_ticks);
 				Vector playerDirection = player.getLocation().getDirection();
 				Vector smallerVector = playerDirection.multiply(velocity);
@@ -69,6 +68,7 @@ public class ThrowableTNTListener implements Listener {
 				} else {
 					item.setAmount(item.getAmount() - 1);
 				}
+				event.setCancelled(true);
 			}
 		}
 	}

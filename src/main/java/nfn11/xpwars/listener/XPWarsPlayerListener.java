@@ -198,9 +198,11 @@ public class XPWarsPlayerListener implements Listener {
 	public void onJoinGame(BedwarsPlayerJoinEvent event) {
 		if (event.isCancelled())
 			return;
-
-		if (XPWars.getConfigurator().config.getConfigurationSection("permission-to-join-game.arenas").getValues(false)
-				.containsKey(event.getGame().getName())) {
+		ConfigurationSection sec = XPWars.getConfigurator().config
+				.getConfigurationSection("permission-to-join-game.arenas");
+		if (sec == null)
+			return;
+		if (sec.getValues(false).containsKey(event.getGame().getName())) {
 			if (!event.getPlayer()
 					.hasPermission(XPWars.getConfigurator().config
 							.getString("permission-to-join-game.arenas." + event.getGame().getName()))
