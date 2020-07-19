@@ -4,22 +4,16 @@ import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
+import org.bukkit.event.*;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.Main;
-import org.screamingsandals.bedwars.api.events.BedwarsGameTickEvent;
-import org.screamingsandals.bedwars.api.events.BedwarsOpenShopEvent;
-import org.screamingsandals.bedwars.api.events.BedwarsPlayerKilledEvent;
+import org.screamingsandals.bedwars.api.events.*;
 import org.screamingsandals.bedwars.api.events.BedwarsOpenShopEvent.Result;
-import org.screamingsandals.bedwars.api.events.BedwarsPlayerJoinEvent;
-import org.screamingsandals.bedwars.api.game.GameStatus;
+import org.screamingsandals.bedwars.api.game.*;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
 import org.screamingsandals.bedwars.commands.BaseCommand;
-import org.screamingsandals.bedwars.game.CurrentTeam;
-import org.screamingsandals.bedwars.game.GamePlayer;
+import org.screamingsandals.bedwars.game.*;
 import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
 
 import nfn11.thirdparty.connorlinfoot.actionbarapi.ActionBarAPI;
@@ -111,29 +105,32 @@ public class XPWarsPlayerListener implements Listener {
 			String gamename = Main.getPlayerGameProfile(player).getGame().getName();
 			ConfigurationSection sec = XPWars.getConfigurator().config
 					.getConfigurationSection("level.per-arena-settings." + gamename);
+			
 			if (!sec.getBoolean("enable", true)) {
 				return;
 			}
+			
 			ItemStack picked = event.getItem().getItemStack();
+			int level = player.getLevel();
+			
+			float defvolume = XPWars.getConfigurator().config.getInt("level.sound.volume", 1);
+			float volume = sec.getInt("sound.volume", (int) defvolume);
+			
+			String defsound = XPWars.getConfigurator().config.getString("level.sound.sound",
+					"ENTITY_EXPERIENCE_ORB_PICKUP");
+			String sound = sec.getString("sound.sound", defsound);
 
+			
+			int defmax = XPWars.getConfigurator().config.getInt("level.maximum-xp", 0);
+			int max = sec.getInt("maximum-xp", defmax);
+			
+			float defpitch = XPWars.getConfigurator().config.getInt("level.sound.pitch", 1);
+			float pitch = sec.getInt("sound.pitch", (int) defpitch);
+			
 			for (ItemSpawnerType type : Main.getInstance().getItemSpawnerTypes()) {
-
-				String defsound = XPWars.getConfigurator().config.getString("level.sound.sound",
-						"ENTITY_EXPERIENCE_ORB_PICKUP");
-				String sound = sec.getString("sound.sound", defsound);
-
-				int level = player.getLevel();
-				int defmax = XPWars.getConfigurator().config.getInt("level.maximum-xp", 0);
-				int max = sec.getInt("maximum-xp", defmax);
 
 				int defres = XPWars.getConfigurator().config.getInt("level.spawners." + type.getConfigKey(), 0);
 				int res = sec.getInt("spawners." + type.getConfigKey(), defres);
-
-				float defvolume = XPWars.getConfigurator().config.getInt("level.sound.volume", 1);
-				float volume = sec.getInt("sound.volume", (int) defvolume);
-
-				float defpitch = XPWars.getConfigurator().config.getInt("level.sound.pitch", 1);
-				float pitch = sec.getInt("sound.pitch", (int) defpitch);
 
 				if (picked.isSimilar(type.getStack()) && picked.getItemMeta().equals(type.getStack().getItemMeta())) {
 					event.setCancelled(true);
@@ -149,10 +146,9 @@ public class XPWarsPlayerListener implements Listener {
 
 					event.getItem().remove();
 					player.setLevel(level + (res * picked.getAmount()));
-
-					player.playSound(player.getLocation(), Sound.valueOf(sound), volume, pitch);
 				}
 			}
+			player.playSound(player.getLocation(), Sound.valueOf(sound), volume, pitch);
 		}
 	}
 
@@ -160,9 +156,6 @@ public class XPWarsPlayerListener implements Listener {
 	public void onGameTick(BedwarsGameTickEvent event) {
 		if (event.getGame() == null)
 			return;
-		if (XPWars.getConfigurator().config.getBoolean("features.games-gui")) {
-			XPWars.getGamesInventory().repaint();
-		}
 		if (XPWars.getConfigurator().config.getBoolean("features.action-bar-messages")) {
 			for (Player player : event.getGame().getConnectedPlayers()) {
 				GamePlayer gp = Main.getPlayerGameProfile(player);
@@ -214,5 +207,10 @@ public class XPWarsPlayerListener implements Listener {
 				return;
 			}
 		}
+	}
+	
+	@EventHandler
+	public void onGameChangeState() {
+		
 	}
 }
