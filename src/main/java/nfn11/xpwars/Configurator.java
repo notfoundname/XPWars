@@ -177,11 +177,20 @@ public class Configurator {
 			checkOrSetConfig(modify, "specials.trampoline.y-velocity", 5.0);
 			
 			checkOrSetConfig(modify, "specials.vouncher.levels", 50);
+			
 			checkOrSetConfig(modify, "specials.throwable-tnt.velocity", 5.0);
 			checkOrSetConfig(modify, "specials.throwable-tnt.fuse-ticks", 5);
 
 			checkOrSetConfig(modify, "specials.rideable-projectile.allow-leave", true);
 			checkOrSetConfig(modify, "specials.rideable-projectile.remove-on-leave", true);
+			
+			checkOrSetConfig(modify, "specials.portable-shop.shop-file", "shop.yml");
+			checkOrSetConfig(modify, "specials.portable-shop.use-parent", true);
+			checkOrSetConfig(modify, "specials.portable-shop.entity-type", "VILLAGER");
+			checkOrSetConfig(modify, "specials.portable-shop.enable-custom-name", false);
+			checkOrSetConfig(modify, "specials.portable-shop.custom-name", "portable vllager");
+			checkOrSetConfig(modify, "specials.portable-shop.duration", 15);
+			checkOrSetConfig(modify, "specials.portable-shop.baby", false);
 		}
 
 		if (config.getBoolean("features.placeholders")) {

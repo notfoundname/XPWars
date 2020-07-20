@@ -1,6 +1,7 @@
 package nfn11.xpwars.special;
 
 import org.bukkit.Location;
+import org.bukkit.entity.Ageable;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.api.Team;
@@ -61,7 +62,10 @@ public class PortableShop extends SpecialItem implements nfn11.xpwars.special.ap
 
 	@Override
 	public boolean isBaby() {
-		return isBaby;
+		if (entity instanceof Ageable) {
+			return isBaby;
+		}
+		return false;
 	}
 
 	@Override
