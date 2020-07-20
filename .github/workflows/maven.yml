@@ -13,8 +13,8 @@ jobs:
       with:
         java-version: 1.8
     - run: mvn -B package --file pom.xml
-    - run: 'mv target/XPWars-1.2-null.jar target/XPWars-1.2-GITHUB-${{ github.run_number }}.jar'
+    - run: 'mv target/XPWars-1.3-null.jar target/XPWars-1.3-GITHUB-${{ github.run_number }}.jar'
     - uses: actions/upload-artifact@v2.0.1
       with:
-        name: "XPWars-1.2-GITHUB-${{ github.run_number }}"
-        path: "target/XPWars-1.2-GITHUB-${{ github.run_number }}.jar"
+        name: "XPWars-1.3-GITHUB-${{ github.run_number }}"
+        path: "target/XPWars-1.3-GITHUB-${{ github.run_number }}.jar"
