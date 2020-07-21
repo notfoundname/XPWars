@@ -18,49 +18,49 @@ import nfn11.xpwars.utils.SpecialItemUtils;
 
 public class VouncherListener implements Listener {
 
-	private static final String VOUNCHER_PREFIX = "Module:Vouncher:";
+    private static final String VOUNCHER_PREFIX = "Module:Vouncher:";
 
-	@EventHandler
-	public void onVouncherBuy(BedwarsApplyPropertyToBoughtItem event) {
-		if (event.getPropertyName().equalsIgnoreCase("vouncher")) {
-			ItemStack stack = event.getStack();
-			APIUtils.hashIntoInvisibleString(stack, applyProperty(event));
-		}
-	}
+    @EventHandler
+    public void onVouncherBuy(BedwarsApplyPropertyToBoughtItem event) {
+        if (event.getPropertyName().equalsIgnoreCase("vouncher")) {
+            ItemStack stack = event.getStack();
+            APIUtils.hashIntoInvisibleString(stack, applyProperty(event));
+        }
+    }
 
-	@EventHandler
-	public void onUseVouncher(PlayerInteractEvent event) {
-		Player player = event.getPlayer();
-		if (!Main.isPlayerInGame(player))
-			return;
-		Game game = Main.getPlayerGameProfile(player).getGame();
-		Action action = event.getAction();
-		ItemStack item = event.getItem();
+    @EventHandler
+    public void onUseVouncher(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+        if (!Main.isPlayerInGame(player))
+            return;
+        Game game = Main.getPlayerGameProfile(player).getGame();
+        Action action = event.getAction();
+        ItemStack item = event.getItem();
 
-		String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(item, VOUNCHER_PREFIX);
-		if (unhidden != null && (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK)) {
-			int levels = Integer.parseInt(unhidden.split(":")[2]);
-			
-			new Vouncher(game, player, game.getTeamOfPlayer(player), levels);
-			
-			int defmax = XPWars.getConfigurator().getInt("level.maximum-xp", 0);
-			int max = XPWars.getConfigurator().getInt("level.games." + game.getName() + ".maximum-xp", defmax);
+        String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(item, VOUNCHER_PREFIX);
+        if (unhidden != null && (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK)) {
+            int levels = Integer.parseInt(unhidden.split(":")[2]);
 
-			if ((player.getLevel() + levels) > max) {
-				ActionBarAPI.sendActionBar(player,
-						XPWars.getConfigurator().config
-								.getString("level.per-arena-settings." + game.getName() + ".messages.maxreached",
-										XPWars.getConfigurator().config.getString("level.messages.maxreached"))
-								.replace("%max%", Integer.toString(max)));
-			} else {
-				player.setLevel(player.getLevel() + levels);
-			}
-			event.setCancelled(true);
-		}
-	}
+            new Vouncher(game, player, game.getTeamOfPlayer(player), levels);
 
-	private String applyProperty(BedwarsApplyPropertyToBoughtItem event) {
-		return VOUNCHER_PREFIX + SpecialItemUtils.getIntFromProperty("levels", XPWars.getConfigurator().config,
-				"specials.vouncher.levels", event);
-	}
+            int defmax = XPWars.getConfigurator().getInt("level.maximum-xp", 0);
+            int max = XPWars.getConfigurator().getInt("level.games." + game.getName() + ".maximum-xp", defmax);
+
+            if ((player.getLevel() + levels) > max) {
+                ActionBarAPI.sendActionBar(player,
+                        XPWars.getConfigurator().config
+                                .getString("level.per-arena-settings." + game.getName() + ".messages.maxreached",
+                                        XPWars.getConfigurator().config.getString("level.messages.maxreached"))
+                                .replace("%max%", Integer.toString(max)));
+            } else {
+                player.setLevel(player.getLevel() + levels);
+            }
+            event.setCancelled(true);
+        }
+    }
+
+    private String applyProperty(BedwarsApplyPropertyToBoughtItem event) {
+        return VOUNCHER_PREFIX + SpecialItemUtils.getIntFromProperty("levels", XPWars.getConfigurator().config,
+                "specials.vouncher.levels", event);
+    }
 }

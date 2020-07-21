@@ -29,181 +29,181 @@ import nfn11.xpwars.XPWars;
 import nfn11.xpwars.utils.XPWarsUtils;
 
 public class GamesInventory implements Listener {
-	private SimpleInventories menu;
-	private Options options;
-	private List<Player> openedForPlayers = new ArrayList<>();
-	XPWars plugin;
+    private SimpleInventories menu;
+    private Options options;
+    private List<Player> openedForPlayers = new ArrayList<>();
+    XPWars plugin;
 
-	public GamesInventory(XPWars plugin) {
-		
-		this.plugin = plugin;
-		
-		options = new Options(XPWars.getInstance());
-		options.setPrefix(ChatColor.translateAlternateColorCodes('&',
-				XPWars.getConfigurator().getString("games-gui.title", "games")
-						.replace("%free%", Integer.toString(XPWarsUtils.getFreeGamesInt()))
-						.replace("%total%", Integer.toString(Main.getGameNames().size()))));
-		options.setShowPageNumber(true);
+    public GamesInventory(XPWars plugin) {
 
-		ItemStack backItem = Main.getConfigurator().readDefinedItem("shopback", "BARRIER");
-		ItemMeta backItemMeta = backItem.getItemMeta();
-		backItemMeta.setDisplayName(i18n("shop_back", false));
-		backItem.setItemMeta(backItemMeta);
-		options.setBackItem(backItem);
+        this.plugin = plugin;
 
-		ItemStack pageBackItem = Main.getConfigurator().readDefinedItem("pageback", "ARROW");
-		ItemMeta pageBackItemMeta = backItem.getItemMeta();
-		pageBackItemMeta.setDisplayName(i18n("page_back", false));
-		pageBackItem.setItemMeta(pageBackItemMeta);
-		options.setPageBackItem(pageBackItem);
+        options = new Options(XPWars.getInstance());
+        options.setPrefix(ChatColor.translateAlternateColorCodes('&',
+                XPWars.getConfigurator().getString("games-gui.title", "games")
+                        .replace("%free%", Integer.toString(XPWarsUtils.getFreeGamesInt()))
+                        .replace("%total%", Integer.toString(Main.getGameNames().size()))));
+        options.setShowPageNumber(true);
 
-		ItemStack pageForwardItem = Main.getConfigurator().readDefinedItem("pageforward", "ARROW");
-		ItemMeta pageForwardItemMeta = backItem.getItemMeta();
-		pageForwardItemMeta.setDisplayName(i18n("page_forward", false));
-		pageForwardItem.setItemMeta(pageForwardItemMeta);
-		options.setPageForwardItem(pageForwardItem);
+        ItemStack backItem = Main.getConfigurator().readDefinedItem("shopback", "BARRIER");
+        ItemMeta backItemMeta = backItem.getItemMeta();
+        backItemMeta.setDisplayName(i18n("shop_back", false));
+        backItem.setItemMeta(backItemMeta);
+        options.setBackItem(backItem);
 
-		ItemStack cosmeticItem = Main.getConfigurator().readDefinedItem("shopcosmetic", "AIR");
-		options.setCosmeticItem(cosmeticItem);
+        ItemStack pageBackItem = Main.getConfigurator().readDefinedItem("pageback", "ARROW");
+        ItemMeta pageBackItemMeta = backItem.getItemMeta();
+        pageBackItemMeta.setDisplayName(i18n("page_back", false));
+        pageBackItem.setItemMeta(pageBackItemMeta);
+        options.setPageBackItem(pageBackItem);
 
-		options.setRender_header_start(0);
-		options.setRender_offset(9);
-		options.setRender_footer_start(45);
-		options.setRows(4);
-		options.setRender_actual_rows(6);
+        ItemStack pageForwardItem = Main.getConfigurator().readDefinedItem("pageforward", "ARROW");
+        ItemMeta pageForwardItemMeta = backItem.getItemMeta();
+        pageForwardItemMeta.setDisplayName(i18n("page_forward", false));
+        pageForwardItem.setItemMeta(pageForwardItemMeta);
+        options.setPageForwardItem(pageForwardItem);
 
-		Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
-		createData();
+        ItemStack cosmeticItem = Main.getConfigurator().readDefinedItem("shopcosmetic", "AIR");
+        options.setCosmeticItem(cosmeticItem);
 
-	}
+        options.setRender_header_start(0);
+        options.setRender_offset(9);
+        options.setRender_footer_start(45);
+        options.setRows(4);
+        options.setRender_actual_rows(6);
 
-	public void destroy() {
-		openedForPlayers.clear();
-		HandlerList.unregisterAll(this);
-	}
+        Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
+        createData();
 
-	public void openForPlayer(Player player) {
-		createData();
-		menu.openForPlayer(player);
-		openedForPlayers.add(player);
-	}
+    }
 
-	@SuppressWarnings("serial")
-	private void createData() {
-		SimpleInventories menu = new SimpleInventories(options);
-		FormatBuilder builder = new FormatBuilder();
+    public void destroy() {
+        openedForPlayers.clear();
+        HandlerList.unregisterAll(this);
+    }
 
-		if (XPWars.getConfigurator().config.getBoolean("games-gui.enable-categories")) {
-			for (String s : XPWars.getConfigurator().config.getConfigurationSection("games-gui.categories")
-					.getValues(false).keySet()) {
-				ItemStack category = StackParser.parseNullable(XPWars.getConfigurator().config
-						.getConfigurationSection("games-gui.categories." + s).get("stack"));
-				if (category == null)
-					return;
+    public void openForPlayer(Player player) {
+        createData();
+        menu.openForPlayer(player);
+        openedForPlayers.add(player);
+    }
 
-				ItemMeta cmeta = category.getItemMeta();
-				String name = cmeta.getDisplayName();
-				name = ChatColor.translateAlternateColorCodes('&', name);
-				cmeta.setDisplayName(name);
-				category.setItemMeta(cmeta);
+    @SuppressWarnings("serial")
+    private void createData() {
+        SimpleInventories menu = new SimpleInventories(options);
+        FormatBuilder builder = new FormatBuilder();
 
-				builder.add(category)
-						.set("skip", XPWars.getConfigurator().config.getInt("games-gui.categories." + s + ".skip"))
-						.set("items", new ArrayList<Object>() {
-							{
-								for (org.screamingsandals.bedwars.api.game.Game game : BedwarsAPI.getInstance()
-										.getGames()) {
-									if (XPWars.getConfigurator().config
-											.getStringList("games-gui.categories." + s + ".arenas")
-											.contains(game.getName())) {
-										add(new HashMap<String, Object>() {
-											{
-												put("stack", formatStack(game));
-												put("game", game);
-											}
-										});
-									}
-								}
-							}
-						});
-			}
-		} else {
-			for (org.screamingsandals.bedwars.api.game.Game game : BedwarsAPI.getInstance().getGames()) {
-				builder.add(formatStack(game)).set("game", game);
-			}
-		}
+        if (XPWars.getConfigurator().config.getBoolean("games-gui.enable-categories")) {
+            for (String s : XPWars.getConfigurator().config.getConfigurationSection("games-gui.categories")
+                    .getValues(false).keySet()) {
+                ItemStack category = StackParser.parseNullable(XPWars.getConfigurator().config
+                        .getConfigurationSection("games-gui.categories." + s).get("stack"));
+                if (category == null)
+                    return;
 
-		menu.load(builder);
-		menu.generateData();
+                ItemMeta cmeta = category.getItemMeta();
+                String name = cmeta.getDisplayName();
+                name = ChatColor.translateAlternateColorCodes('&', name);
+                cmeta.setDisplayName(name);
+                category.setItemMeta(cmeta);
 
-		this.menu = menu;
-	}
+                builder.add(category)
+                        .set("skip", XPWars.getConfigurator().config.getInt("games-gui.categories." + s + ".skip"))
+                        .set("items", new ArrayList<Object>() {
+                            {
+                                for (org.screamingsandals.bedwars.api.game.Game game : BedwarsAPI.getInstance()
+                                        .getGames()) {
+                                    if (XPWars.getConfigurator().config
+                                            .getStringList("games-gui.categories." + s + ".arenas")
+                                            .contains(game.getName())) {
+                                        add(new HashMap<String, Object>() {
+                                            {
+                                                put("stack", formatStack(game));
+                                                put("game", game);
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+                        });
+            }
+        } else {
+            for (org.screamingsandals.bedwars.api.game.Game game : BedwarsAPI.getInstance().getGames()) {
+                builder.add(formatStack(game)).set("game", game);
+            }
+        }
 
-	private ItemStack formatStack(org.screamingsandals.bedwars.api.game.Game game) {
-		ItemStack stack = StackParser.parse(XPWars.getConfigurator().config
-				.getConfigurationSection("games-gui.itemstack").get(game.getStatus().toString()));
+        menu.load(builder);
+        menu.generateData();
 
-		ItemMeta meta = stack.getItemMeta();
+        this.menu = menu;
+    }
 
-		String name1 = meta.getDisplayName();
+    private ItemStack formatStack(org.screamingsandals.bedwars.api.game.Game game) {
+        ItemStack stack = StackParser.parse(XPWars.getConfigurator().config
+                .getConfigurationSection("games-gui.itemstack").get(game.getStatus().toString()));
 
-		name1 = ChatColor.translateAlternateColorCodes('&', name1);
-		name1 = name1.replace("%arena%", game.getName());
-		name1 = name1.replace("%players%", Integer.toString(game.countConnectedPlayers()));
-		name1 = name1.replace("%maxplayers%", Integer.toString(game.getMaxPlayers()));
-		name1 = name1.replace("%time_left%", Main.getGame(game.getName()).getFormattedTimeLeft().equals("00:0-1") ? ""
-				: Main.getGame(game.getName()).getFormattedTimeLeft());
+        ItemMeta meta = stack.getItemMeta();
 
-		meta.setDisplayName(name1);
+        String name1 = meta.getDisplayName();
 
-		List<String> newLore = new ArrayList<>();
-		List<String> lore = meta.getLore();
+        name1 = ChatColor.translateAlternateColorCodes('&', name1);
+        name1 = name1.replace("%arena%", game.getName());
+        name1 = name1.replace("%players%", Integer.toString(game.countConnectedPlayers()));
+        name1 = name1.replace("%maxplayers%", Integer.toString(game.getMaxPlayers()));
+        name1 = name1.replace("%time_left%", Main.getGame(game.getName()).getFormattedTimeLeft().equals("00:0-1") ? ""
+                : Main.getGame(game.getName()).getFormattedTimeLeft());
 
-		for (String s : lore) {
-			s = ChatColor.translateAlternateColorCodes('&', s);
+        meta.setDisplayName(name1);
 
-			s = s.replaceAll("%arena%", game.getName());
-			s = s.replaceAll("%time_left%", Main.getGame(game.getName()).getFormattedTimeLeft().equals("00:0-1") ? ""
-					: Main.getGame(game.getName()).getFormattedTimeLeft());
-			s = s.replaceAll("%players%", Integer.toString(game.countConnectedPlayers()));
-			s = s.replaceAll("%maxplayers%", Integer.toString(game.getMaxPlayers()));
+        List<String> newLore = new ArrayList<>();
+        List<String> lore = meta.getLore();
 
-			newLore.add(s);
-		}
-		meta.setLore(newLore);
+        for (String s : lore) {
+            s = ChatColor.translateAlternateColorCodes('&', s);
 
-		stack.setItemMeta(meta);
-		return stack;
-	}
+            s = s.replaceAll("%arena%", game.getName());
+            s = s.replaceAll("%time_left%", Main.getGame(game.getName()).getFormattedTimeLeft().equals("00:0-1") ? ""
+                    : Main.getGame(game.getName()).getFormattedTimeLeft());
+            s = s.replaceAll("%players%", Integer.toString(game.countConnectedPlayers()));
+            s = s.replaceAll("%maxplayers%", Integer.toString(game.getMaxPlayers()));
 
-	public void repaint() {
-		for (Player player : openedForPlayers) {
-			GuiHolder guiHolder = menu.getCurrentGuiHolder(player);
-			if (guiHolder == null) {
-				return;
-			}
+            newLore.add(s);
+        }
+        meta.setLore(newLore);
 
-			createData();
-			guiHolder.setFormat(menu);
-			guiHolder.repaint();
-		}
-	}
+        stack.setItemMeta(meta);
+        return stack;
+    }
 
-	@EventHandler
-	public void onPostAction(PostActionEvent event) {
-		if (event.getFormat() != menu) {
-			return;
-		}
+    public void repaint() {
+        for (Player player : openedForPlayers) {
+            GuiHolder guiHolder = menu.getCurrentGuiHolder(player);
+            if (guiHolder == null) {
+                return;
+            }
 
-		Player player = event.getPlayer();
-		MapReader reader = event.getItem().getReader();
-		if (reader.containsKey("game")) {
-			Game game = (Game) reader.get("game");
-			Main.getGame(game.getName()).joinToGame(player);
-			player.closeInventory();
+            createData();
+            guiHolder.setFormat(menu);
+            guiHolder.repaint();
+        }
+    }
 
-			repaint();
-			openedForPlayers.remove(player);
-		}
-	}
+    @EventHandler
+    public void onPostAction(PostActionEvent event) {
+        if (event.getFormat() != menu) {
+            return;
+        }
+
+        Player player = event.getPlayer();
+        MapReader reader = event.getItem().getReader();
+        if (reader.containsKey("game")) {
+            Game game = (Game) reader.get("game");
+            Main.getGame(game.getName()).joinToGame(player);
+            player.closeInventory();
+
+            repaint();
+            openedForPlayers.remove(player);
+        }
+    }
 }

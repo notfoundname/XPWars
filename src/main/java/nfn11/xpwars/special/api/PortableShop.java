@@ -5,19 +5,21 @@ import org.bukkit.entity.LivingEntity;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
 
 public interface PortableShop extends SpecialItem {
-	Location getLocation();
+    
+    Location getLocation();
 
-	String getShopFile();
+    String getShopFile();
 
-	boolean isUsesParent();
+    boolean isUsesParent();
 
-	LivingEntity getEntity();
+    LivingEntity getEntity();
 
-	String getShopName();
+    String getShopName();
 
-	boolean isEnabledCustomName();
+    boolean isEnabledCustomName();
 
-	boolean isBaby();
+    boolean isBaby();
 
-	int getDuration();
+    int getDuration();
+
 }

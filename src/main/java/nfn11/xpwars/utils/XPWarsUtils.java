@@ -18,110 +18,110 @@ import nfn11.xpwars.XPWars;
 
 public class XPWarsUtils {
 
-	public static List<String> getShopFileNames() {
-		List<String> list = new ArrayList<>();
-		List<String> non_allowed = Arrays.asList("config.yml", "sign.yml", "record.yml");
-		File[] files = Main.getInstance().getDataFolder().listFiles();
+    public static List<String> getShopFileNames() {
+        List<String> list = new ArrayList<>();
+        List<String> non_allowed = Arrays.asList("config.yml", "sign.yml", "record.yml");
+        File[] files = Main.getInstance().getDataFolder().listFiles();
 
-		for (File file : files) {
-			if (file.isFile() && !non_allowed.contains(file.getName())) {
-				list.add(file.getName());
-			}
-		}
-		return list;
-	}
+        for (File file : files) {
+            if (file.isFile() && !non_allowed.contains(file.getName())) {
+                list.add(file.getName());
+            }
+        }
+        return list;
+    }
 
-	public static void xpwarsLog(String msg) {
-		msg = ChatColor.translateAlternateColorCodes('&', msg);
-		msg = "[XPWars] " + msg;
-		Bukkit.getServer().getLogger().info(msg);
-	}
+    public static void xpwarsLog(String msg) {
+        msg = ChatColor.translateAlternateColorCodes('&', msg);
+        msg = "[XPWars] " + msg;
+        Bukkit.getServer().getLogger().info(msg);
+    }
 
-	public static List<String> getOnlinePlayers() {
-		List<String> list = new ArrayList<>();
+    public static List<String> getOnlinePlayers() {
+        List<String> list = new ArrayList<>();
 
-		for (Player p : Bukkit.getServer().getOnlinePlayers()) {
-			list.add(p.getName());
-		}
-		return list;
-	}
+        for (Player p : Bukkit.getServer().getOnlinePlayers()) {
+            list.add(p.getName());
+        }
+        return list;
+    }
 
-	public static boolean isNewVersion() {
-		if (Bukkit.getVersion().contains("1.13") || Bukkit.getVersion().contains("1.14")
-				|| Bukkit.getVersion().contains("1.15") || Bukkit.getVersion().contains("1.16")
-				|| Bukkit.getVersion().contains("1.17"))/* ? */ {
-			return true;
-		}
-		return false;
-	}
+    public static boolean isNewVersion() {
+        if (Bukkit.getVersion().contains("1.13") || Bukkit.getVersion().contains("1.14")
+                || Bukkit.getVersion().contains("1.15") || Bukkit.getVersion().contains("1.16")
+                || Bukkit.getVersion().contains("1.17"))/* ? */ {
+            return true;
+        }
+        return false;
+    }
 
-	public static int getFreeGamesInt() {
-		int i = 0;
-		for (Game game : Main.getInstance().getGames()) {
-			if (game.getStatus() == GameStatus.WAITING)
-				i++;
-		}
-		return i;
-	}
+    public static int getFreeGamesInt() {
+        int i = 0;
+        for (Game game : Main.getInstance().getGames()) {
+            if (game.getStatus() == GameStatus.WAITING)
+                i++;
+        }
+        return i;
+    }
 
-	public static List<String> getAllCategories() {
-		List<String> list = new ArrayList<>();
-		for (String s : XPWars.getConfigurator().config.getConfigurationSection("games-gui.categories").getValues(false)
-				.keySet()) {
-			list.add(s);
-		}
-		return list;
-	}
+    public static List<String> getAllCategories() {
+        List<String> list = new ArrayList<>();
+        for (String s : XPWars.getConfigurator().config.getConfigurationSection("games-gui.categories").getValues(false)
+                .keySet()) {
+            list.add(s);
+        }
+        return list;
+    }
 
-	public static List<Game> getGamesInCategory(String category) {
-		List<Game> list = new ArrayList<>();
-		for (String s : XPWars.getConfigurator().config.getConfigurationSection("games-gui.categories." + category)
-				.getStringList("arenas")) {
-			if (Main.isGameExists(s)) {
-				list.add(Main.getGame(s));
-			} else
-				continue;
-		}
-		if (list.isEmpty())
-			return null;
-		return list;
-	}
+    public static List<Game> getGamesInCategory(String category) {
+        List<Game> list = new ArrayList<>();
+        for (String s : XPWars.getConfigurator().config.getConfigurationSection("games-gui.categories." + category)
+                .getStringList("arenas")) {
+            if (Main.isGameExists(s)) {
+                list.add(Main.getGame(s));
+            } else
+                continue;
+        }
+        if (list.isEmpty())
+            return null;
+        return list;
+    }
 
-	public static org.screamingsandals.bedwars.api.game.Game getGameWithHighestPlayersInCategory(String category) {
-		TreeMap<Integer, org.screamingsandals.bedwars.api.game.Game> gameList = new TreeMap<>();
-		for (org.screamingsandals.bedwars.api.game.Game game : getGamesInCategory(category)) {
-			if (game.getStatus() != GameStatus.WAITING) {
-				continue;
-			}
-			if (game.getConnectedPlayers().size() >= game.getMaxPlayers()) {
-				continue;
-			}
-			if (game.countConnectedPlayers() == 0) {
-				continue;
-			}
-			gameList.put(game.countConnectedPlayers(), game);
-		}
-		Map.Entry<Integer, org.screamingsandals.bedwars.api.game.Game> lastEntry = gameList.lastEntry();
-		if (lastEntry == null) {
-			return getFirstWaitingGameInCategory(category);
-		}
-		return lastEntry.getValue();
-	}
+    public static org.screamingsandals.bedwars.api.game.Game getGameWithHighestPlayersInCategory(String category) {
+        TreeMap<Integer, org.screamingsandals.bedwars.api.game.Game> gameList = new TreeMap<>();
+        for (org.screamingsandals.bedwars.api.game.Game game : getGamesInCategory(category)) {
+            if (game.getStatus() != GameStatus.WAITING) {
+                continue;
+            }
+            if (game.getConnectedPlayers().size() >= game.getMaxPlayers()) {
+                continue;
+            }
+            if (game.countConnectedPlayers() == 0) {
+                continue;
+            }
+            gameList.put(game.countConnectedPlayers(), game);
+        }
+        Map.Entry<Integer, org.screamingsandals.bedwars.api.game.Game> lastEntry = gameList.lastEntry();
+        if (lastEntry == null) {
+            return getFirstWaitingGameInCategory(category);
+        }
+        return lastEntry.getValue();
+    }
 
-	public static org.screamingsandals.bedwars.api.game.Game getFirstWaitingGameInCategory(String category) {
-		final TreeMap<Integer, Game> availableGames = new TreeMap<>();
-		getGamesInCategory(category).forEach(game -> {
-			if (game.getStatus() != GameStatus.WAITING) {
-				return;
-			}
+    public static org.screamingsandals.bedwars.api.game.Game getFirstWaitingGameInCategory(String category) {
+        final TreeMap<Integer, Game> availableGames = new TreeMap<>();
+        getGamesInCategory(category).forEach(game -> {
+            if (game.getStatus() != GameStatus.WAITING) {
+                return;
+            }
 
-			availableGames.put(game.getConnectedPlayers().size(), game);
-		});
+            availableGames.put(game.getConnectedPlayers().size(), game);
+        });
 
-		if (availableGames.isEmpty()) {
-			return null;
-		}
+        if (availableGames.isEmpty()) {
+            return null;
+        }
 
-		return availableGames.lastEntry().getValue();
-	}
+        return availableGames.lastEntry().getValue();
+    }
 }

@@ -23,85 +23,85 @@ import nfn11.xpwars.utils.XPWarsUtils;
 
 public class XPWars extends JavaPlugin implements Listener {
 
-	private static XPWars instance;
-	private Configurator configurator;
-	private HashMap<String, BaseCommand> commands;
-	private GamesInventory gamesInventory;
-	private LevelShop levelShop;
-	private ShopInventory shopInventory;
+    private static XPWars instance;
+    private Configurator configurator;
+    private HashMap<String, BaseCommand> commands;
+    private GamesInventory gamesInventory;
+    private LevelShop levelShop;
+    private ShopInventory shopInventory;
 
-	@Override
-	public void onEnable() {
-		instance = this;
-		new XPWarsUtils();
-		if (Main.getInstance() == null) {
-			XPWarsUtils.xpwarsLog("did you download wrong bedwars plugin?");
-			Bukkit.getServer().getPluginManager().disablePlugin(this);
-			return;
-		}
-		configurator = new Configurator(this);
-		configurator.loadDefaults();
+    @Override
+    public void onEnable() {
+        instance = this;
+        new XPWarsUtils();
+        if (Main.getInstance() == null) {
+            XPWarsUtils.xpwarsLog("did you download wrong bedwars plugin?");
+            Bukkit.getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+        configurator = new Configurator(this);
+        configurator.loadDefaults();
 
-		InventoryListener.init(this);
-		Bukkit.getPluginManager().registerEvents(this, this);
-		levelShop = new LevelShop();
-		new XPWarsPlayerListener();
-		new RegisterSpecialListeners();
-		new ActionBarAPI();
-		new XPWarsCommand();
+        InventoryListener.init(this);
+        Bukkit.getPluginManager().registerEvents(this, this);
+        levelShop = new LevelShop();
+        new XPWarsPlayerListener();
+        new RegisterSpecialListeners();
+        new ActionBarAPI();
+        new XPWarsCommand();
 
-		if (getConfigurator().config.getBoolean("features.games-gui")) {
-			gamesInventory = new GamesInventory(this);
-			new GamesCommand();
-			new JoinSortedCommand();
-		}
-		try {
-			if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null
-					&& getConfigurator().config.getBoolean("features.placeholders")) {
-				new nfn11.xpwars.placeholderapi.PlaceholderAPIHook().register();
-			}
-		} catch (Throwable ignored) {
-		}
+        if (getConfigurator().config.getBoolean("features.games-gui")) {
+            gamesInventory = new GamesInventory(this);
+            new GamesCommand();
+            new JoinSortedCommand();
+        }
+        try {
+            if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null
+                    && getConfigurator().config.getBoolean("features.placeholders")) {
+                new nfn11.xpwars.placeholderapi.PlaceholderAPIHook().register();
+            }
+        } catch (Throwable ignored) {
+        }
 
-		commands = new HashMap<>();
+        commands = new HashMap<>();
 
-		XPWarsUtils.xpwarsLog("&aLoaded XPWars &2"
-				+ Bukkit.getServer().getPluginManager().getPlugin("XPWars").getDescription().getVersion() + "&a!");
-		XPWarsUtils.xpwarsLog("&aXPWars addon by &enotfoundname11");
-		XPWarsUtils.xpwarsLog("&9https://github.com/notfoundname/XPWars/wiki");
-		XPWarsUtils.xpwarsLog("&c&lMake sure you use latest development build!");
-	}
+        XPWarsUtils.xpwarsLog("&aLoaded XPWars &2"
+                + Bukkit.getServer().getPluginManager().getPlugin("XPWars").getDescription().getVersion() + "&a!");
+        XPWarsUtils.xpwarsLog("&aXPWars addon by &enotfoundname11");
+        XPWarsUtils.xpwarsLog("&9https://github.com/notfoundname/XPWars/wiki");
+        XPWarsUtils.xpwarsLog("&c&lMake sure you use latest development build!");
+    }
 
-	@EventHandler
-	public void onBwReload(PluginEnableEvent event) {
-		String plugin = event.getPlugin().getName();
-		if (plugin.equalsIgnoreCase("BedWars")) {
-			Bukkit.getServer().getPluginManager().disablePlugin(XPWars.getInstance());
-			Bukkit.getServer().getPluginManager().enablePlugin(XPWars.getInstance());
-		}
-	}
+    @EventHandler
+    public void onBwReload(PluginEnableEvent event) {
+        String plugin = event.getPlugin().getName();
+        if (plugin.equalsIgnoreCase("BedWars")) {
+            Bukkit.getServer().getPluginManager().disablePlugin(XPWars.getInstance());
+            Bukkit.getServer().getPluginManager().enablePlugin(XPWars.getInstance());
+        }
+    }
 
-	public static Configurator getConfigurator() {
-		return instance.configurator;
-	}
+    public static Configurator getConfigurator() {
+        return instance.configurator;
+    }
 
-	public static XPWars getInstance() {
-		return instance;
-	}
+    public static XPWars getInstance() {
+        return instance;
+    }
 
-	public static HashMap<String, BaseCommand> getCommands() {
-		return instance.commands;
-	}
+    public static HashMap<String, BaseCommand> getCommands() {
+        return instance.commands;
+    }
 
-	public static GamesInventory getGamesInventory() {
-		return instance.gamesInventory;
-	}
+    public static GamesInventory getGamesInventory() {
+        return instance.gamesInventory;
+    }
 
-	public static LevelShop getLevelShop() {
-		return instance.levelShop;
-	}
+    public static LevelShop getLevelShop() {
+        return instance.levelShop;
+    }
 
-	public static ShopInventory getShopInventory() {
-		return instance.shopInventory;
-	}
+    public static ShopInventory getShopInventory() {
+        return instance.shopInventory;
+    }
 }

@@ -4,9 +4,9 @@ import org.screamingsandals.bedwars.api.special.SpecialItem;
 
 public interface RemoteTNT extends SpecialItem {
 
-	/**
-	 * @return Fuse ticks
-	 */
-	int getFuseTicks();
+    /**
+     * @return Fuse ticks
+     */
+    int getFuseTicks();
 
 }

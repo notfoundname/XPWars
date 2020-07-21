@@ -11,37 +11,37 @@ import nfn11.xpwars.XPWars;
 import nfn11.xpwars.utils.XPWarsUtils;
 
 public class GamesCommand extends BaseCommand {
-	public GamesCommand() {
-		super("games", null, true);
-	}
+    public GamesCommand() {
+        super("games", null, true);
+    }
 
-	@Override
-	public void completeTab(List<String> completion, CommandSender sender, List<String> args) {
-		if (!sender.isOp() || !sender.hasPermission(ADMIN_PERMISSION) || !sender
-				.hasPermission(XPWars.getConfigurator().getString("games-gui.permission", "xpwars.gamesgui"))) {
-			return;
-		}
-		if (args.size() == 1) {
-			completion.addAll(XPWarsUtils.getOnlinePlayers());
-		}
-	}
+    @Override
+    public void completeTab(List<String> completion, CommandSender sender, List<String> args) {
+        if (!sender.isOp() || !sender.hasPermission(ADMIN_PERMISSION) || !sender
+                .hasPermission(XPWars.getConfigurator().getString("games-gui.permission", "xpwars.gamesgui"))) {
+            return;
+        }
+        if (args.size() == 1) {
+            completion.addAll(XPWarsUtils.getOnlinePlayers());
+        }
+    }
 
-	@Override
-	public boolean execute(CommandSender sender, List<String> args) {
-		if (!sender.isOp() || !sender.hasPermission(ADMIN_PERMISSION) || !sender
-				.hasPermission(XPWars.getConfigurator().getString("games-gui.permission", "xpwars.gamesgui"))) {
-			return true;
-		}
-		if (args.size() == 1) {
-			Player player = Bukkit.getServer().getPlayer(args.get(0));
-			if (player != null) {
-				XPWars.getGamesInventory().openForPlayer(player);
-				return true;
-			}
-		}
-		if (sender instanceof Player) {
-			XPWars.getGamesInventory().openForPlayer((Player) sender);
-		}
-		return true;
-	}
+    @Override
+    public boolean execute(CommandSender sender, List<String> args) {
+        if (!sender.isOp() || !sender.hasPermission(ADMIN_PERMISSION) || !sender
+                .hasPermission(XPWars.getConfigurator().getString("games-gui.permission", "xpwars.gamesgui"))) {
+            return true;
+        }
+        if (args.size() == 1) {
+            Player player = Bukkit.getServer().getPlayer(args.get(0));
+            if (player != null) {
+                XPWars.getGamesInventory().openForPlayer(player);
+                return true;
+            }
+        }
+        if (sender instanceof Player) {
+            XPWars.getGamesInventory().openForPlayer((Player) sender);
+        }
+        return true;
+    }
 }
