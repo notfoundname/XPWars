@@ -11,7 +11,6 @@ import org.screamingsandals.bedwars.api.APIUtils;
 import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
 import org.screamingsandals.bedwars.game.Game;
 
-import nfn11.thirdparty.connorlinfoot.actionbarapi.ActionBarAPI;
 import nfn11.xpwars.XPWars;
 import nfn11.xpwars.special.Vouncher;
 import nfn11.xpwars.utils.SpecialItemUtils;
@@ -41,20 +40,8 @@ public class VouncherListener implements Listener {
         if (unhidden != null && (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK)) {
             int levels = Integer.parseInt(unhidden.split(":")[2]);
 
-            new Vouncher(game, player, game.getTeamOfPlayer(player), levels);
-
-            int defmax = XPWars.getConfigurator().getInt("level.maximum-xp", 0);
-            int max = XPWars.getConfigurator().getInt("level.games." + game.getName() + ".maximum-xp", defmax);
-
-            if ((player.getLevel() + levels) > max) {
-                ActionBarAPI.sendActionBar(player,
-                        XPWars.getConfigurator().config
-                                .getString("level.per-arena-settings." + game.getName() + ".messages.maxreached",
-                                        XPWars.getConfigurator().config.getString("level.messages.maxreached"))
-                                .replace("%max%", Integer.toString(max)));
-            } else {
-                player.setLevel(player.getLevel() + levels);
-            }
+            Vouncher special = new Vouncher(game, player, game.getTeamOfPlayer(player), levels, item);
+            special.setLevel();
             event.setCancelled(true);
         }
     }

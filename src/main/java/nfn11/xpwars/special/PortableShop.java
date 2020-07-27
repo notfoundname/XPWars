@@ -1,71 +1,34 @@
 package nfn11.xpwars.special;
 
-import org.bukkit.Location;
-import org.bukkit.entity.Ageable;
+import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.game.Game;
+import org.screamingsandals.bedwars.api.game.GameStore;
+import org.screamingsandals.bedwars.lib.nms.entity.EntityUtils;
 import org.screamingsandals.bedwars.special.SpecialItem;
 
+import nfn11.xpwars.XPWars;
+
 public class PortableShop extends SpecialItem implements nfn11.xpwars.special.api.PortableShop {
-    private final Location loc;
-    private final String shopFile;
-    private final String shopName;
-    private final boolean enableCustomName;
-    private final boolean useParent;
     private int duration;
-    private LivingEntity entity;
-    private boolean isBaby;
+    private ItemStack item;
+    private GameStore store;
 
-    public PortableShop(Game game, Player player, Team team, Location loc, String shopFile, String shopName,
-            boolean enableCustomName, boolean useParent, LivingEntity entity, boolean isBaby, int duration) {
+    public PortableShop(Game game, Player player, Team team, GameStore store, int duration, ItemStack item) {
         super(game, player, team);
-        this.loc = loc;
-        this.shopFile = shopFile;
-        this.shopName = shopName;
-        this.enableCustomName = enableCustomName;
-        this.useParent = useParent;
+        this.store = store;
         this.duration = duration;
-        this.entity = entity;
+        this.item = item;
     }
-
+    
     @Override
-    public Location getLocation() {
-        return loc;
-    }
-
-    @Override
-    public String getShopFile() {
-        return shopFile;
-    }
-
-    @Override
-    public boolean isUsesParent() {
-        return useParent;
-    }
-
-    @Override
-    public LivingEntity getEntity() {
-        return entity;
-    }
-
-    @Override
-    public String getShopName() {
-        return shopName;
-    }
-
-    @Override
-    public boolean isEnabledCustomName() {
-        return enableCustomName;
-    }
-
-    @Override
-    public boolean isBaby() {
-        if (entity instanceof Ageable) {
-            return isBaby;
-        }
-        return false;
+    public GameStore getGameStore() {
+        return store;
     }
 
     @Override
@@ -73,4 +36,40 @@ public class PortableShop extends SpecialItem implements nfn11.xpwars.special.ap
         return duration;
     }
 
+    @Override
+    public ItemStack getItem() {
+        return item;
+    }
+
+    @Override
+    public void run() {
+        if (item.getAmount() > 1) {
+            item.setAmount(item.getAmount() - 1);
+        } else {
+            try {
+                if (player.getInventory().getItemInOffHand().equals(item)) {
+                    player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
+                } else {
+                    player.getInventory().remove(item);
+                }
+            } catch (Throwable e) {
+                player.getInventory().remove(item);
+            }
+        }
+        player.updateInventory();
+
+        LivingEntity entity = store.spawn();
+        EntityUtils.disableEntityAI(entity);
+        entity.setMetadata(player.getUniqueId().toString(), new FixedMetadataValue(XPWars.getInstance(), null));
+        entity.setMetadata("portable-shop", new FixedMetadataValue(XPWars.getInstance(), null));
+        
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (entity.isDead() || entity == null)
+                    return;
+                entity.remove();
+            }
+        }.runTaskLater(XPWars.getInstance(), duration * 20);
+    }
 }

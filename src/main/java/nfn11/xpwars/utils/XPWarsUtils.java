@@ -93,7 +93,7 @@ public class XPWarsUtils {
             if (game.getStatus() != GameStatus.WAITING) {
                 continue;
             }
-            if (game.getConnectedPlayers().size() >= game.getMaxPlayers()) {
+            if (game.countConnectedPlayers() >= game.getMaxPlayers()) {
                 continue;
             }
             if (game.countConnectedPlayers() == 0) {

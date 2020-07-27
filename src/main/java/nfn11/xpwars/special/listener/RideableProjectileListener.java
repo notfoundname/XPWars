@@ -6,14 +6,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.APIUtils;
 import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.game.GamePlayer;
-
 import nfn11.xpwars.XPWars;
 import nfn11.xpwars.special.RideableProjectile;
 import nfn11.xpwars.utils.SpecialItemUtils;
@@ -47,38 +44,22 @@ public class RideableProjectileListener implements Listener {
                 boolean allow_leave = Boolean.getBoolean(unhidden.split(":")[2]);
                 boolean remove_on_leave = Boolean.getBoolean(unhidden.split(":")[3]);
 
-                new RideableProjectile(game, player, game.getTeamOfPlayer(player), allow_leave, remove_on_leave);
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        if (player.isInsideVehicle()) {
-                            player.getVehicle().remove();
-                        }
-                        event.getEntity().addPassenger(player);
-                        if (allow_leave)
-                            event.getEntity().setMetadata("allow-leave",
-                                    new FixedMetadataValue(XPWars.getInstance(), null));
-                        if (remove_on_leave)
-                            event.getEntity().setMetadata("remove-on-leave",
-                                    new FixedMetadataValue(XPWars.getInstance(), null));
-                    }
-                }.runTaskLater(XPWars.getInstance(), 1);
+                RideableProjectile special = new RideableProjectile(game, player, game.getTeamOfPlayer(player),
+                        allow_leave, remove_on_leave, event.getEntity());
+                special.run(event.getEntity());
             }
         }
     }
 
     @EventHandler
     public void onLeave(VehicleExitEvent event) {
-        event.getExited().sendMessage("dude");
         if (event.getExited() instanceof Player) {
             if (!event.getVehicle().hasMetadata("allow-leave")) {
                 event.setCancelled(true);
-                event.getExited().sendMessage("cancel leave");
                 event.getVehicle().removePassenger(event.getExited());
                 event.getVehicle().addPassenger(event.getExited());
             } else {
                 if (event.getVehicle().hasMetadata("remove-on-leave")) {
-                    event.getExited().sendMessage("removed?");
                     event.getVehicle().remove();
                 }
             }

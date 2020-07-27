@@ -1,14 +1,11 @@
 package nfn11.xpwars.special.listener;
 
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Vector;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.APIUtils;
 import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
@@ -52,22 +49,10 @@ public class ThrowableTNTListener implements Listener {
                 int fuse_ticks = Integer.parseInt(unhidden.split(":")[2]);
                 int velocity = Integer.parseInt(unhidden.split(":")[3]);
 
-                new ThrowableTNT(gp.getGame(), player, gp.getGame().getPlayerTeam(gp), fuse_ticks, velocity);
+                ThrowableTNT special = new ThrowableTNT(gp.getGame(), player, gp.getGame().getPlayerTeam(gp),
+                        fuse_ticks, velocity, item);
+                special.throwTnt();
 
-                TNTPrimed tnt = (TNTPrimed) player.getWorld().spawn(new Location(player.getWorld(),
-                        player.getLocation().getX(), player.getLocation().getY() + 1, player.getLocation().getZ()),
-                        TNTPrimed.class);
-                tnt.setFuseTicks(fuse_ticks);
-                Vector playerDirection = player.getLocation().getDirection();
-                Vector smallerVector = playerDirection.multiply(velocity);
-
-                tnt.setVelocity(smallerVector);
-
-                if (item.getAmount() == 1) {
-                    player.getInventory().remove(item);
-                } else {
-                    item.setAmount(item.getAmount() - 1);
-                }
                 event.setCancelled(true);
             }
         }
