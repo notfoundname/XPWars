@@ -129,8 +129,4 @@ public class XPWars extends JavaPlugin implements Listener {
         return i;
     }
 
-    public static boolean isUpdateAvailable() {
-        return false;
-    }
-
 }

@@ -99,4 +99,5 @@ public class XPWarsCommand extends BaseCommand {
             sender.sendMessage(i18n("unknown_usage"));
         return true;
     }
+    
 }

@@ -216,4 +216,5 @@ public class GamesInventory implements Listener {
             openedForPlayers.remove(player);
         }
     }
+    
 }

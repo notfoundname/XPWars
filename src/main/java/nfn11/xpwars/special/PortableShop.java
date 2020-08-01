@@ -72,4 +72,5 @@ public class PortableShop extends SpecialItem implements nfn11.xpwars.special.ap
             }
         }.runTaskLater(XPWars.getInstance(), duration * 20);
     }
+    
 }

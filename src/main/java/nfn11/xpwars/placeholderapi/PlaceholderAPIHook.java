@@ -262,4 +262,5 @@ public class PlaceholderAPIHook extends me.clip.placeholderapi.expansion.Placeho
         }
         return "null";
     }
+    
 }
