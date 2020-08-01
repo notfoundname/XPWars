@@ -1,5 +1,6 @@
 name: XPWars
 version: ${project.version}
+description: '${BUILD_NUMBER}'
 main: nfn11.xpwars.XPWars
 api-version: 1.13
 depend:

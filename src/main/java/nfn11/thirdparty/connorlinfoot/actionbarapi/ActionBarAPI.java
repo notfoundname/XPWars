@@ -39,7 +39,7 @@ public class ActionBarAPI implements Listener {
         message = ChatColor.translateAlternateColorCodes('&', message);
 
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            message = PlaceholderAPI.setPlaceholders(player, message);
+            message = PlaceholderAPI.setPlaceholders(Bukkit.getOfflinePlayer(player.getUniqueId()), message);
         }
 
         // Call the event, if cancelled don't send Action Bar

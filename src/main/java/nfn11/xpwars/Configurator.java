@@ -68,7 +68,9 @@ public class Configurator {
             loadDefaults();
             return;
         }
-
+        
+        checkOrSetConfig(modify, "check-for-updates", true);
+        
         checkOrSetConfig(modify, "features.level-system", false);
         checkOrSetConfig(modify, "features.games-gui", false);
         checkOrSetConfig(modify, "features.action-bar-messages", false);
@@ -136,7 +138,18 @@ public class Configurator {
             checkOrSetConfig(modify, "games-gui.permission", "xpwars.gamesgui");
 
             checkOrSetConfig(modify, "games-gui.title", "&rGames [&e%free%&7/&6%total%&r]");
-
+            
+            checkOrSetConfig(modify, "games-gui.inventory-settings.", "&rGames [&e%free%&7/&6%total%&r]");
+            
+            checkOrSetConfig(modify, "games-gui.inventory-settings.rows", 4);
+            checkOrSetConfig(modify, "games-gui.inventory-settings.render-actual-rows", 6);
+            checkOrSetConfig(modify, "games-gui.inventory-settings.render-offset", 9);
+            checkOrSetConfig(modify, "games-gui.inventory-settings.render-header-start", 0);
+            checkOrSetConfig(modify, "games-gui.inventory-settings.render-footer-start", 45);
+            checkOrSetConfig(modify, "games-gui.inventory-settings.items-on-row", 9);
+            checkOrSetConfig(modify, "games-gui.inventory-settings.show-page-numbers", true);
+            checkOrSetConfig(modify, "games-gui.inventory-settings.inventory-type", "CHEST");
+            
             checkOrSetConfig(modify, "games-gui.enable-categories", false);
             checkOrSetConfig(modify, "games-gui.categories", new HashMap<String, HashMap<String, Object>>() {
                 {

@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.screamingsandals.bedwars.Main;
@@ -65,7 +66,16 @@ public class GamesInventory implements Listener {
 
         ItemStack cosmeticItem = Main.getConfigurator().readDefinedItem("shopcosmetic", "AIR");
         options.setCosmeticItem(cosmeticItem);
-
+        
+        options.setRows(XPWars.getConfigurator().config.getInt("games-gui.inventory-settings.rows", 4));
+        options.setRender_actual_rows(XPWars.getConfigurator().config.getInt("games-gui.inventory-settings.render-actual-rows", 6));
+        options.setRender_offset(XPWars.getConfigurator().config.getInt("games-gui.inventory-settings.render-offset", 9));
+        options.setRender_header_start(XPWars.getConfigurator().config.getInt("games-gui.inventory-settings.render-header-start", 0));
+        options.setRender_footer_start(XPWars.getConfigurator().config.getInt("games-gui.inventory-settings.render-footer-start", 45));
+        options.setItems_on_row(XPWars.getConfigurator().config.getInt("games-gui.inventory-settings.items-on-row", 9));
+        options.setShowPageNumber(XPWars.getConfigurator().config.getBoolean("games-gui.inventory-settings.show-page-numbers", true));
+        options.setInventoryType(InventoryType.valueOf(XPWars.getConfigurator().config.getString("games-gui.inventory-settings.inventory-type", "CHEST")));
+        
         options.setRender_header_start(0);
         options.setRender_offset(9);
         options.setRender_footer_start(45);
