@@ -207,9 +207,5 @@ public class XPWarsPlayerListener implements Listener {
             }
         }
     }
-
-    @EventHandler
-    public void onGameChangeState() {
-
-    }
+    
 }

@@ -49,7 +49,6 @@ public class XPWars extends JavaPlugin implements Listener {
         new RegisterSpecialListeners();
         new ActionBarAPI();
         new XPWarsCommand();
-        new XPWarsUpdateChecker();
 
         if (getConfigurator().config.getBoolean("features.games-gui")) {
             gamesInventory = new GamesInventory(this);
@@ -68,8 +67,11 @@ public class XPWars extends JavaPlugin implements Listener {
 
         XPWarsUtils.xpwarsLog("&aLoaded XPWars &2"
                 + Bukkit.getServer().getPluginManager().getPlugin("XPWars").getDescription().getVersion() + "&a!");
+        if (isSnapshotBuild())
+            XPWarsUtils.xpwarsLog("&cBuild number: " + getBuildNumber());
         XPWarsUtils.xpwarsLog("&aXPWars addon by &enotfoundname11");
         XPWarsUtils.xpwarsLog("&9https://github.com/notfoundname/XPWars/wiki");
+        new XPWarsUpdateChecker();
     }
 
     @EventHandler
@@ -104,7 +106,7 @@ public class XPWars extends JavaPlugin implements Listener {
     public static ShopInventory getShopInventory() {
         return instance.shopInventory;
     }
-    
+
     public static boolean isSnapshotBuild() {
         if (XPWars.getInstance().getDescription().getVersion().contains("-SNAPSHOT"))
             return true;
@@ -130,5 +132,5 @@ public class XPWars extends JavaPlugin implements Listener {
     public static boolean isUpdateAvailable() {
         return false;
     }
-    
+
 }

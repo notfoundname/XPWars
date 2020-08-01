@@ -18,6 +18,9 @@ public class XPWarsUpdateChecker {
     private static final String XPWARS_UPD_JENKINS_ERROR = "&cUnable to check for new snapshot versions.";
     private static final String XPWARS_UPD_FOUND_STABLE = "&a&lFOUND NEW STABLE VERSION: %ver%";
     private static final String XPWARS_UPD_FOUND_SNAP = "&a&lFOUND NEW SNAPSHOT BUILD: %ver%";
+    private static final String XPWARS_UPD_NONE = "&eNo updates available.";
+
+    boolean available = false;
 
     public XPWarsUpdateChecker() {
         if (!XPWars.getConfigurator().config.getBoolean("check-for-updates"))
@@ -39,6 +42,7 @@ public class XPWarsUpdateChecker {
 
     private void checkForNewVersion(URL url) {
         new BukkitRunnable() {
+
             @Override
             public void run() {
                 int New = 0;
@@ -57,8 +61,15 @@ public class XPWarsUpdateChecker {
 
                 XPWarsUtils.xpwarsLog((XPWars.isSnapshotBuild() ? XPWARS_UPD_FOUND_SNAP : XPWARS_UPD_FOUND_STABLE)
                         .replace("%ver%", Integer.toString(New)));
+                available = true;
+                cancel();
             }
+
         }.runTaskAsynchronously(XPWars.getInstance());
+        
+        if (!available)
+            XPWarsUtils.xpwarsLog(XPWARS_UPD_NONE);
+        return;
     }
 
 }
