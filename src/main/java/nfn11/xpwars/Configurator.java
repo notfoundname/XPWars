@@ -138,9 +138,7 @@ public class Configurator {
             checkOrSetConfig(modify, "games-gui.permission", "xpwars.gamesgui");
 
             checkOrSetConfig(modify, "games-gui.title", "&rGames [&e%free%&7/&6%total%&r]");
-            
-            checkOrSetConfig(modify, "games-gui.inventory-settings.", "&rGames [&e%free%&7/&6%total%&r]");
-            
+
             checkOrSetConfig(modify, "games-gui.inventory-settings.rows", 4);
             checkOrSetConfig(modify, "games-gui.inventory-settings.render-actual-rows", 6);
             checkOrSetConfig(modify, "games-gui.inventory-settings.render-offset", 9);
