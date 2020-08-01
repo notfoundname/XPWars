@@ -20,8 +20,6 @@ public class XPWarsUpdateChecker {
     private static final String XPWARS_UPD_FOUND_SNAP = "&a&lFOUND NEW SNAPSHOT BUILD: %ver%";
     private static final String XPWARS_UPD_NONE = "&eNo updates available.";
 
-    boolean available = false;
-
     public XPWarsUpdateChecker() {
         if (!XPWars.getConfigurator().config.getBoolean("check-for-updates"))
             return;
@@ -42,7 +40,7 @@ public class XPWarsUpdateChecker {
 
     private void checkForNewVersion(URL url) {
         new BukkitRunnable() {
-
+            
             @Override
             public void run() {
                 int New = 0;
@@ -52,6 +50,7 @@ public class XPWarsUpdateChecker {
                     New = Integer.parseInt(
                             new BufferedReader(new InputStreamReader(connection.getInputStream())).readLine());
                 } catch (IOException e) {
+                    XPWarsUtils.xpwarsLog(XPWARS_UPD_NONE);
                     cancel();
                     return;
                 }
@@ -61,14 +60,10 @@ public class XPWarsUpdateChecker {
 
                 XPWarsUtils.xpwarsLog((XPWars.isSnapshotBuild() ? XPWARS_UPD_FOUND_SNAP : XPWARS_UPD_FOUND_STABLE)
                         .replace("%ver%", Integer.toString(New)));
-                available = true;
                 cancel();
             }
 
         }.runTaskAsynchronously(XPWars.getInstance());
-        
-        if (!available)
-            XPWarsUtils.xpwarsLog(XPWARS_UPD_NONE);
         return;
     }
 
