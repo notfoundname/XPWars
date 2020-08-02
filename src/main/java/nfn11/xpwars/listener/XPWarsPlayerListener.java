@@ -11,7 +11,6 @@ import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.events.*;
 import org.screamingsandals.bedwars.api.events.BedwarsOpenShopEvent.Result;
 import org.screamingsandals.bedwars.api.game.*;
-import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
 import org.screamingsandals.bedwars.commands.BaseCommand;
 import org.screamingsandals.bedwars.game.*;
 import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
@@ -126,15 +125,13 @@ public class XPWarsPlayerListener implements Listener {
             float defpitch = XPWars.getConfigurator().config.getInt("level.sound.pitch", 1);
             float pitch = sec.getInt("sound.pitch", (int) defpitch);
 
-            for (ItemSpawnerType type : Main.getInstance().getItemSpawnerTypes()) {
-
+            Main.getInstance().getItemSpawnerTypes().forEach(type -> {
                 int defres = XPWars.getConfigurator().config.getInt("level.spawners." + type.getConfigKey(), 0);
                 int res = sec.getInt("spawners." + type.getConfigKey(), defres);
 
                 if (picked.isSimilar(type.getStack()) && picked.getItemMeta().equals(type.getStack().getItemMeta())) {
                     event.setCancelled(true);
                     if (max != 0 && (level + (res * picked.getAmount())) > max) {
-
                         ActionBarAPI.sendActionBar(player,
                                 XPWars.getConfigurator().config
                                         .getString("messages.level.maxreached",
@@ -142,11 +139,10 @@ public class XPWarsPlayerListener implements Listener {
                                         .replace("%max%", Integer.toString(max)));
                         return;
                     }
-
                     event.getItem().remove();
                     player.setLevel(level + (res * picked.getAmount()));
                 }
-            }
+            });
             player.playSound(player.getLocation(), Sound.valueOf(sound), volume, pitch);
         }
     }
@@ -156,7 +152,7 @@ public class XPWarsPlayerListener implements Listener {
         if (event.getGame() == null)
             return;
         if (XPWars.getConfigurator().config.getBoolean("features.action-bar-messages")) {
-            for (Player player : event.getGame().getConnectedPlayers()) {
+            event.getGame().getConnectedPlayers().forEach(player -> {
                 GamePlayer gp = Main.getPlayerGameProfile(player);
                 CurrentTeam team = gp.getGame().getPlayerTeam(gp);
                 if (gp.isSpectator) {
@@ -182,7 +178,7 @@ public class XPWarsPlayerListener implements Listener {
                                                     ? Main.getConfigurator().config.getString("scoreboard.bedExists")
                                                     : Main.getConfigurator().config.getString("scoreboard.bedLost")));
                 }
-            }
+            });
         }
     }
 

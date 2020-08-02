@@ -188,7 +188,7 @@ public class PlaceholderAPIHook extends me.clip.placeholderapi.expansion.Placeho
             }
         }
         if (parsed.contains("_stats_")) {
-            if (parsed.endsWith("_stats_kills")) {
+            if (parsed.endsWith("_kills")) {
                 parsed = parsed.replace("_stats_kills", "");
                 if (!Main.isPlayerGameProfileRegistered(Bukkit.getPlayer(parsed)))
                     return "";
@@ -196,7 +196,7 @@ public class PlaceholderAPIHook extends me.clip.placeholderapi.expansion.Placeho
                 PlayerStatistic stats = Main.getPlayerStatisticsManager().getStatistic(Bukkit.getPlayer(parsed));
                 return Integer.toString(stats.getCurrentKills() + stats.getKills());
             }
-            if (parsed.endsWith("_stats_deaths")) {
+            if (parsed.endsWith("_deaths")) {
                 parsed = parsed.replace("_stats_deaths", "");
                 if (!Main.isPlayerGameProfileRegistered(Bukkit.getPlayer(parsed)))
                     return "";
@@ -205,7 +205,7 @@ public class PlaceholderAPIHook extends me.clip.placeholderapi.expansion.Placeho
                 return Integer.toString(stats.getCurrentDeaths() + stats.getDeaths());
             }
 
-            if (parsed.endsWith("_stats_destroyed_beds")) {
+            if (parsed.endsWith("_destroyed_beds")) {
                 parsed = parsed.replace("_stats_destroyed_beds", "");
                 if (!Main.isPlayerGameProfileRegistered(Bukkit.getPlayer(parsed)))
                     return "";
@@ -214,7 +214,7 @@ public class PlaceholderAPIHook extends me.clip.placeholderapi.expansion.Placeho
                 return Integer.toString(stats.getCurrentDestroyedBeds() + stats.getDestroyedBeds());
             }
 
-            if (parsed.endsWith("_stats_loses")) {
+            if (parsed.endsWith("_loses")) {
                 parsed = parsed.replace("_stats_loses", "");
                 if (!Main.isPlayerGameProfileRegistered(Bukkit.getPlayer(parsed)))
                     return "";
@@ -224,7 +224,7 @@ public class PlaceholderAPIHook extends me.clip.placeholderapi.expansion.Placeho
 
             }
 
-            if (parsed.endsWith("_stats_score")) {
+            if (parsed.endsWith("_score")) {
                 parsed = parsed.replace("_stats_score", "");
                 if (!Main.isPlayerGameProfileRegistered(Bukkit.getPlayer(parsed)))
                     return "";
@@ -233,7 +233,7 @@ public class PlaceholderAPIHook extends me.clip.placeholderapi.expansion.Placeho
                 return Integer.toString(stats.getCurrentScore() + stats.getScore());
             }
 
-            if (parsed.endsWith("_stats_wins")) {
+            if (parsed.endsWith("_wins")) {
                 parsed = parsed.replace("_stats_wins", "");
                 if (!Main.isPlayerGameProfileRegistered(Bukkit.getPlayer(parsed)))
                     return "";
@@ -242,7 +242,7 @@ public class PlaceholderAPIHook extends me.clip.placeholderapi.expansion.Placeho
                 return Integer.toString(stats.getCurrentWins() + stats.getWins());
             }
 
-            if (parsed.endsWith("_stats_games")) {
+            if (parsed.endsWith("_games")) {
                 parsed = parsed.replace("_stats_games", "");
                 if (!Main.isPlayerGameProfileRegistered(Bukkit.getPlayer(parsed)))
                     return "";
@@ -251,8 +251,8 @@ public class PlaceholderAPIHook extends me.clip.placeholderapi.expansion.Placeho
                 return Integer.toString(stats.getCurrentGames() + stats.getGames());
             }
 
-            if (parsed.endsWith("_stats_kd")) {
-                parsed = parsed.replace("_stats_loses", "");
+            if (parsed.endsWith("_kd")) {
+                parsed = parsed.replace("_stats_kd", "");
                 if (!Main.isPlayerGameProfileRegistered(Bukkit.getPlayer(parsed)))
                     return "";
 

@@ -7,6 +7,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
+
+import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import nfn11.xpwars.utils.XPWarsUtils;
@@ -20,10 +22,10 @@ public class XPWarsUpdateChecker {
     private static final String XPWARS_UPD_FOUND_SNAP = "&a&lFOUND NEW SNAPSHOT BUILD: %ver%";
     private static final String XPWARS_UPD_NONE = "&eNo updates available.";
 
-    public XPWarsUpdateChecker() {
+    public XPWarsUpdateChecker(CommandSender sender) {
         if (!XPWars.getConfigurator().config.getBoolean("check-for-updates"))
             return;
-        XPWarsUtils.xpwarsLog("Checking for updates...");
+        XPWarsUtils.xpwarsLog(sender, "Checking for updates...");
         URL url = null;
 
         try {
@@ -32,13 +34,13 @@ public class XPWarsUpdateChecker {
         }
 
         if (url == null) {
-            XPWarsUtils.xpwarsLog(XPWars.isSnapshotBuild() ? XPWARS_UPD_JENKINS_ERROR : XPWARS_UPD_SPIGOT_ERROR);
+            XPWarsUtils.xpwarsLog(sender, XPWars.isSnapshotBuild() ? XPWARS_UPD_JENKINS_ERROR : XPWARS_UPD_SPIGOT_ERROR);
             return;
         }
-        checkForNewVersion(url);
+        checkForNewVersion(sender, url);
     }
 
-    private void checkForNewVersion(URL url) {
+    private void checkForNewVersion(CommandSender sender, URL url) {
         new BukkitRunnable() {
             
             @Override
@@ -50,7 +52,7 @@ public class XPWarsUpdateChecker {
                     New = Integer.parseInt(
                             new BufferedReader(new InputStreamReader(connection.getInputStream())).readLine());
                 } catch (IOException e) {
-                    XPWarsUtils.xpwarsLog(XPWARS_UPD_NONE);
+                    XPWarsUtils.xpwarsLog(sender, XPWARS_UPD_NONE);
                     cancel();
                     return;
                 }
@@ -58,7 +60,7 @@ public class XPWarsUpdateChecker {
                 if (New == (XPWars.isSnapshotBuild() ? XPWars.getBuildNumber() : XPWars.getVersion()))
                     return;
 
-                XPWarsUtils.xpwarsLog((XPWars.isSnapshotBuild() ? XPWARS_UPD_FOUND_SNAP : XPWARS_UPD_FOUND_STABLE)
+                XPWarsUtils.xpwarsLog(sender, (XPWars.isSnapshotBuild() ? XPWARS_UPD_FOUND_SNAP : XPWARS_UPD_FOUND_STABLE)
                         .replace("%ver%", Integer.toString(New)));
                 cancel();
             }

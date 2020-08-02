@@ -35,7 +35,7 @@ public class XPWars extends JavaPlugin implements Listener {
         instance = this;
         new XPWarsUtils();
         if (Main.getInstance() == null) {
-            XPWarsUtils.xpwarsLog("did you download wrong bedwars plugin?");
+            XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(), "did you download wrong bedwars plugin?"); // does this work?
             Bukkit.getServer().getPluginManager().disablePlugin(this);
             return;
         }
@@ -65,13 +65,11 @@ public class XPWars extends JavaPlugin implements Listener {
 
         commands = new HashMap<>();
 
-        XPWarsUtils.xpwarsLog("&aLoaded XPWars &2"
-                + Bukkit.getServer().getPluginManager().getPlugin("XPWars").getDescription().getVersion() + "&a!");
-        if (isSnapshotBuild())
-            XPWarsUtils.xpwarsLog("&cBuild number: " + getBuildNumber());
-        XPWarsUtils.xpwarsLog("&aXPWars addon by &enotfoundname11");
-        XPWarsUtils.xpwarsLog("&9https://github.com/notfoundname/XPWars/wiki");
-        new XPWarsUpdateChecker();
+        XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(), "&aLoaded XPWars &2" + XPWars.getInstance().getDescription().getVersion()
+                + (isSnapshotBuild() ? " " + getBuildNumber() + "&a!" : "&a!"));
+        XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(), "&aXPWars addon by &enotfoundname11");
+        XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(), "&9https://github.com/notfoundname/XPWars/wiki");
+        new XPWarsUpdateChecker(Bukkit.getConsoleSender());
     }
 
     @EventHandler
@@ -121,12 +119,11 @@ public class XPWars extends JavaPlugin implements Listener {
     }
 
     public static int getBuildNumber() {
-        int i = 0;
         try {
-            i = Integer.parseInt(XPWars.getInstance().getDescription().getDescription());
+            return Integer.parseInt(XPWars.getInstance().getDescription().getDescription());
         } catch (Throwable ignored) {
+            return 0;
         }
-        return i;
     }
 
 }

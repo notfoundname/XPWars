@@ -53,6 +53,10 @@ public class Configurator {
             config.load(file);
         } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
+            file.renameTo(new File(dataFolder, "config_backup.yml"));
+            XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(), "[XPWars] &aYour XPWars configuration file was backed up. Please transfer values.");
+            loadDefaults();
+            return;
         }
 
         AtomicBoolean modify = new AtomicBoolean(false);
@@ -212,13 +216,7 @@ public class Configurator {
             checkOrSetConfig(modify, "placeholders.rebuilding", "&7Rebuilding...");
         }
 
-        if (modify.get()) {
-            try {
-                config.save(file);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        saveConfig();
     }
 
     public void saveConfig() {

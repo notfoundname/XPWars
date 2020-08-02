@@ -66,16 +66,22 @@ public class GamesInventory implements Listener {
 
         ItemStack cosmeticItem = Main.getConfigurator().readDefinedItem("shopcosmetic", "AIR");
         options.setCosmeticItem(cosmeticItem);
-        
+
         options.setRows(XPWars.getConfigurator().config.getInt("games-gui.inventory-settings.rows", 4));
-        options.setRender_actual_rows(XPWars.getConfigurator().config.getInt("games-gui.inventory-settings.render-actual-rows", 6));
-        options.setRender_offset(XPWars.getConfigurator().config.getInt("games-gui.inventory-settings.render-offset", 9));
-        options.setRender_header_start(XPWars.getConfigurator().config.getInt("games-gui.inventory-settings.render-header-start", 0));
-        options.setRender_footer_start(XPWars.getConfigurator().config.getInt("games-gui.inventory-settings.render-footer-start", 45));
+        options.setRender_actual_rows(
+                XPWars.getConfigurator().config.getInt("games-gui.inventory-settings.render-actual-rows", 6));
+        options.setRender_offset(
+                XPWars.getConfigurator().config.getInt("games-gui.inventory-settings.render-offset", 9));
+        options.setRender_header_start(
+                XPWars.getConfigurator().config.getInt("games-gui.inventory-settings.render-header-start", 0));
+        options.setRender_footer_start(
+                XPWars.getConfigurator().config.getInt("games-gui.inventory-settings.render-footer-start", 45));
         options.setItems_on_row(XPWars.getConfigurator().config.getInt("games-gui.inventory-settings.items-on-row", 9));
-        options.setShowPageNumber(XPWars.getConfigurator().config.getBoolean("games-gui.inventory-settings.show-page-numbers", true));
-        options.setInventoryType(InventoryType.valueOf(XPWars.getConfigurator().config.getString("games-gui.inventory-settings.inventory-type", "CHEST")));
-        
+        options.setShowPageNumber(
+                XPWars.getConfigurator().config.getBoolean("games-gui.inventory-settings.show-page-numbers", true));
+        options.setInventoryType(InventoryType.valueOf(
+                XPWars.getConfigurator().config.getString("games-gui.inventory-settings.inventory-type", "CHEST")));
+
         options.setRender_header_start(0);
         options.setRender_offset(9);
         options.setRender_footer_start(45);
@@ -104,8 +110,8 @@ public class GamesInventory implements Listener {
         FormatBuilder builder = new FormatBuilder();
 
         if (XPWars.getConfigurator().config.getBoolean("games-gui.enable-categories")) {
-            for (String s : XPWars.getConfigurator().config.getConfigurationSection("games-gui.categories")
-                    .getValues(false).keySet()) {
+            XPWars.getConfigurator().config.getConfigurationSection("games-gui.categories")
+            .getValues(false).keySet().forEach(s -> {
                 ItemStack category = StackParser.parseNullable(XPWars.getConfigurator().config
                         .getConfigurationSection("games-gui.categories." + s).get("stack"));
                 if (category == null)
@@ -119,29 +125,22 @@ public class GamesInventory implements Listener {
 
                 builder.add(category)
                         .set("skip", XPWars.getConfigurator().config.getInt("games-gui.categories." + s + ".skip"))
-                        .set("items", new ArrayList<Object>() {
-                            {
-                                for (org.screamingsandals.bedwars.api.game.Game game : BedwarsAPI.getInstance()
-                                        .getGames()) {
-                                    if (XPWars.getConfigurator().config
-                                            .getStringList("games-gui.categories." + s + ".arenas")
-                                            .contains(game.getName())) {
-                                        add(new HashMap<String, Object>() {
-                                            {
-                                                put("stack", formatStack(game));
-                                                put("game", game);
-                                            }
-                                        });
-                                    }
-                                }
-                            }
-                        });
-            }
-        } else {
-            for (org.screamingsandals.bedwars.api.game.Game game : BedwarsAPI.getInstance().getGames()) {
+                        .set("items", new ArrayList<Object>() {{
+                            BedwarsAPI.getInstance().getGames().forEach(game -> {
+                                if (XPWars.getConfigurator().config
+                                        .getStringList("games-gui.categories." + s + ".arenas")
+                                        .contains(game.getName()))
+                                    add(new HashMap<String, Object>() {{
+                                            put("stack", formatStack(game));
+                                            put("game", game);
+                                    }});
+                            });
+                        }});
+            });
+        } else 
+            BedwarsAPI.getInstance().getGames().forEach(game -> {
                 builder.add(formatStack(game)).set("game", game);
-            }
-        }
+            });
 
         menu.load(builder);
         menu.generateData();
@@ -169,7 +168,7 @@ public class GamesInventory implements Listener {
         List<String> newLore = new ArrayList<>();
         List<String> lore = meta.getLore();
 
-        for (String s : lore) {
+        lore.forEach(s -> {
             s = ChatColor.translateAlternateColorCodes('&', s);
 
             s = s.replaceAll("%arena%", game.getName());
@@ -179,7 +178,7 @@ public class GamesInventory implements Listener {
             s = s.replaceAll("%maxplayers%", Integer.toString(game.getMaxPlayers()));
 
             newLore.add(s);
-        }
+        });
         meta.setLore(newLore);
 
         stack.setItemMeta(meta);
@@ -187,7 +186,7 @@ public class GamesInventory implements Listener {
     }
 
     public void repaint() {
-        for (Player player : openedForPlayers) {
+        openedForPlayers.forEach(player -> {
             GuiHolder guiHolder = menu.getCurrentGuiHolder(player);
             if (guiHolder == null) {
                 return;
@@ -196,7 +195,7 @@ public class GamesInventory implements Listener {
             createData();
             guiHolder.setFormat(menu);
             guiHolder.repaint();
-        }
+        });
     }
 
     @EventHandler
@@ -216,5 +215,5 @@ public class GamesInventory implements Listener {
             openedForPlayers.remove(player);
         }
     }
-    
+
 }

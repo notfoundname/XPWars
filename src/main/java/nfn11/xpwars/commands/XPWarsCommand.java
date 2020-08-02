@@ -13,6 +13,7 @@ import org.screamingsandals.bedwars.api.game.GameStore;
 import org.screamingsandals.bedwars.commands.BaseCommand;
 
 import nfn11.xpwars.XPWars;
+import nfn11.xpwars.XPWarsUpdateChecker;
 import nfn11.xpwars.utils.XPWarsUtils;
 
 import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
@@ -27,7 +28,7 @@ public class XPWarsCommand extends BaseCommand {
     public void completeTab(List<String> completion, CommandSender sender, List<String> args) {
         if (args.size() == 1) {
             if (sender.hasPermission(ADMIN_PERMISSION) || sender.isOp()) {
-                completion.addAll(Arrays.asList("reload", "open"));
+                completion.addAll(Arrays.asList("reload", "open", "updates"));
             }
         }
         if (args.size() == 2) {
@@ -59,6 +60,10 @@ public class XPWarsCommand extends BaseCommand {
                 Bukkit.getServer().getPluginManager().disablePlugin(XPWars.getInstance());
                 Bukkit.getServer().getPluginManager().enablePlugin(XPWars.getInstance());
                 sender.sendMessage("Addon reloaded!");
+                return true;
+            }
+            if (args.get(0).equalsIgnoreCase("updates")) {
+                new XPWarsUpdateChecker(sender);
                 return true;
             }
         }

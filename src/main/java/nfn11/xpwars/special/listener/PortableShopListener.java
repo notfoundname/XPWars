@@ -1,5 +1,6 @@
 package nfn11.xpwars.special.listener;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -59,11 +60,12 @@ public class PortableShopListener implements Listener {
                     player.sendMessage("Duration can't be lower than 3 seconds!");
                     return;
                 }
+                Location loc = event.getClickedBlock().getLocation();
+                GameStore store = new GameStore(new Location(loc.getWorld(), loc.getX(), loc.getY() + 1, loc.getZ()),
+                        shop_file, use_parent, EntityType.valueOf(entity_type), custom_name, enable_custom_name,
+                        is_baby);
 
-                GameStore store = new GameStore(event.getClickedBlock().getLocation(), shop_file, use_parent,
-                        EntityType.valueOf(entity_type), custom_name, enable_custom_name, is_baby);
-
-                PortableShop special = new PortableShop(game, player, game.getTeamOfPlayer(player), store, duration, item);
+                PortableShop special = new PortableShop(game, player, game.getTeamOfPlayer(player), store, duration,item);
                 special.run();
             }
         }

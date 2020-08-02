@@ -9,7 +9,7 @@ import java.util.TreeMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameStatus;
@@ -31,18 +31,17 @@ public class XPWarsUtils {
         return list;
     }
 
-    public static void xpwarsLog(String msg) {
+    public static void xpwarsLog(CommandSender sender, String msg) {
         msg = ChatColor.translateAlternateColorCodes('&', msg);
         msg = "[XPWars] " + msg;
-        Bukkit.getServer().getLogger().info(msg);
+        sender.sendMessage(msg);
     }
 
     public static List<String> getOnlinePlayers() {
         List<String> list = new ArrayList<>();
-
-        for (Player p : Bukkit.getServer().getOnlinePlayers()) {
-            list.add(p.getName());
-        }
+        Bukkit.getServer().getOnlinePlayers().forEach(player ->  {
+            list.add(player.getName());
+        });
         return list;
     }
 
@@ -66,10 +65,9 @@ public class XPWarsUtils {
 
     public static List<String> getAllCategories() {
         List<String> list = new ArrayList<>();
-        for (String s : XPWars.getConfigurator().config.getConfigurationSection("games-gui.categories").getValues(false)
-                .keySet()) {
+        XPWars.getConfigurator().config.getConfigurationSection("games-gui.categories").getValues(false).keySet().forEach(s -> {
             list.add(s);
-        }
+        });
         return list;
     }
 
@@ -114,7 +112,6 @@ public class XPWarsUtils {
             if (game.getStatus() != GameStatus.WAITING) {
                 return;
             }
-
             availableGames.put(game.getConnectedPlayers().size(), game);
         });
 
