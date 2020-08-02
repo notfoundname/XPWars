@@ -35,7 +35,8 @@ public class XPWars extends JavaPlugin implements Listener {
         instance = this;
         new XPWarsUtils();
         if (Main.getInstance() == null) {
-            XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(), "did you download wrong bedwars plugin?"); // does this work?
+            XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(), "did you download wrong bedwars plugin?"); // does this
+                                                                                                        // work?
             Bukkit.getServer().getPluginManager().disablePlugin(this);
             return;
         }
@@ -65,8 +66,9 @@ public class XPWars extends JavaPlugin implements Listener {
 
         commands = new HashMap<>();
 
-        XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(), "&aLoaded XPWars &2" + XPWars.getInstance().getDescription().getVersion()
-                + (isSnapshotBuild() ? " " + getBuildNumber() + "&a!" : "&a!"));
+        XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(),
+                "&aLoaded XPWars &2" + XPWars.getInstance().getDescription().getVersion()
+                        + (isSnapshotBuild() ? " " + getBuildNumber() + "&a!" : "&a!"));
         XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(), "&aXPWars addon by &enotfoundname11");
         XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(), "&9https://github.com/notfoundname/XPWars/wiki");
         new XPWarsUpdateChecker(Bukkit.getConsoleSender());
@@ -106,16 +108,16 @@ public class XPWars extends JavaPlugin implements Listener {
     }
 
     public static boolean isSnapshotBuild() {
-        if (XPWars.getInstance().getDescription().getVersion().contains("-SNAPSHOT"))
+        if (XPWars.getInstance().getDescription().getVersion().contains("-SNAPSHOT") && getBuildNumber() != 0)
             return true;
         return false;
     }
 
-    public static int getVersion() {
+    public static float getVersion() {
         if (isSnapshotBuild()) {
-            return Integer.parseInt(XPWars.getInstance().getDescription().getVersion().replace("-SNAPSHOT", ""));
+            return Float.parseFloat(XPWars.getInstance().getDescription().getVersion().replace("-SNAPSHOT", ""));
         }
-        return Integer.parseInt(XPWars.getInstance().getDescription().getVersion());
+        return Float.parseFloat(XPWars.getInstance().getDescription().getVersion());
     }
 
     public static int getBuildNumber() {

@@ -45,23 +45,26 @@ public class XPWarsUpdateChecker {
             
             @Override
             public void run() {
-                int New = 0;
+                float New = 0;
                 try {
                     final HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
                     connection.setRequestMethod("GET");
-                    New = Integer.parseInt(
+                    New = Float.parseFloat(
                             new BufferedReader(new InputStreamReader(connection.getInputStream())).readLine());
+                    if (New == (XPWars.isSnapshotBuild() ? XPWars.getBuildNumber() : XPWars.getVersion()) ||
+                            New <= (XPWars.isSnapshotBuild() ? XPWars.getBuildNumber() : XPWars.getVersion())) {
+                        XPWarsUtils.xpwarsLog(sender, XPWARS_UPD_NONE);
+                        cancel();
+                        return;
+                    }
                 } catch (IOException e) {
                     XPWarsUtils.xpwarsLog(sender, XPWARS_UPD_NONE);
                     cancel();
                     return;
                 }
-
-                if (New == (XPWars.isSnapshotBuild() ? XPWars.getBuildNumber() : XPWars.getVersion()))
-                    return;
-
+                
                 XPWarsUtils.xpwarsLog(sender, (XPWars.isSnapshotBuild() ? XPWARS_UPD_FOUND_SNAP : XPWARS_UPD_FOUND_STABLE)
-                        .replace("%ver%", Integer.toString(New)));
+                        .replace("%ver%", Float.toString(New)));
                 cancel();
             }
 
