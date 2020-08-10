@@ -12,12 +12,12 @@ import nfn11.xpwars.utils.XPWarsUtils;
 
 public class GamesCommand extends BaseCommand {
     public GamesCommand() {
-        super("games", null, true);
+        super("games", null, true, true);
     }
 
     @Override
     public void completeTab(List<String> completion, CommandSender sender, List<String> args) {
-        if (!sender.isOp() || !sender.hasPermission(ADMIN_PERMISSION) || !sender
+        if (!sender.isOp() || BaseCommand.hasPermission(sender, ADMIN_PERMISSION, false) || !sender
                 .hasPermission(XPWars.getConfigurator().getString("games-gui.permission", "xpwars.gamesgui"))) {
             return;
         }
@@ -28,7 +28,7 @@ public class GamesCommand extends BaseCommand {
 
     @Override
     public boolean execute(CommandSender sender, List<String> args) {
-        if (!sender.isOp() || !sender.hasPermission(ADMIN_PERMISSION) || !sender
+        if (!sender.isOp() || BaseCommand.hasPermission(sender, ADMIN_PERMISSION, false) || !sender
                 .hasPermission(XPWars.getConfigurator().getString("games-gui.permission", "xpwars.gamesgui"))) {
             return true;
         }

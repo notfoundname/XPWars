@@ -9,7 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.commands.BaseCommand;
 import org.screamingsandals.bedwars.inventories.ShopInventory;
-import org.screamingsandals.bedwars.lib.sgui.listeners.InventoryListener;
+import org.screamingsandals.simpleinventories.listeners.InventoryListener;
 
 import nfn11.thirdparty.connorlinfoot.actionbarapi.ActionBarAPI;
 import nfn11.xpwars.commands.GamesCommand;

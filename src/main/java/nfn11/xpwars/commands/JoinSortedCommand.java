@@ -6,7 +6,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.commands.BaseCommand;
-import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
+import static misat11.lib.lang.I18n.i18n;
+import static misat11.lib.lang.I18n.i18nonly;
 
 import nfn11.xpwars.XPWars;
 import nfn11.xpwars.utils.XPWarsUtils;
@@ -14,7 +15,7 @@ import nfn11.xpwars.utils.XPWarsUtils;
 public class JoinSortedCommand extends BaseCommand {
 
     public JoinSortedCommand() {
-        super("connect", null, false);
+        super("connect", null, false, false);
     }
 
     @Override
@@ -27,7 +28,7 @@ public class JoinSortedCommand extends BaseCommand {
     @Override
     public boolean execute(CommandSender sender, List<String> args) {
         Player player = (Player) sender;
-        if (!player.isOp() || !player.hasPermission(ADMIN_PERMISSION)
+        if (!player.isOp() || !BaseCommand.hasPermission(sender, ADMIN_PERMISSION, false)
                 || !player.hasPermission(XPWars.getConfigurator().getString("games-gui.permission", "xpwars.gamesgui")))
             return true;
         if (Main.isPlayerInGame(player)) {

@@ -1,7 +1,5 @@
 package nfn11.xpwars.inventories;
 
-import static org.screamingsandals.bedwars.lib.lang.I.i18n;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,13 +16,15 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.BedwarsAPI;
 import org.screamingsandals.bedwars.game.Game;
-import org.screamingsandals.bedwars.lib.sgui.SimpleInventories;
-import org.screamingsandals.bedwars.lib.sgui.builder.FormatBuilder;
-import org.screamingsandals.bedwars.lib.sgui.events.PostActionEvent;
-import org.screamingsandals.bedwars.lib.sgui.inventory.GuiHolder;
-import org.screamingsandals.bedwars.lib.sgui.inventory.Options;
-import org.screamingsandals.bedwars.lib.sgui.utils.MapReader;
-import org.screamingsandals.bedwars.lib.sgui.utils.StackParser;
+import org.screamingsandals.simpleinventories.SimpleInventories;
+import org.screamingsandals.simpleinventories.builder.FormatBuilder;
+import org.screamingsandals.simpleinventories.events.PostActionEvent;
+import org.screamingsandals.simpleinventories.inventory.GuiHolder;
+import org.screamingsandals.simpleinventories.inventory.Options;
+import org.screamingsandals.simpleinventories.utils.MapReader;
+import org.screamingsandals.simpleinventories.utils.StackParser;
+
+import static misat11.lib.lang.I18n.i18n;
 
 import nfn11.xpwars.XPWars;
 import nfn11.xpwars.utils.XPWarsUtils;
@@ -38,7 +38,7 @@ public class GamesInventory implements Listener {
     public GamesInventory(XPWars plugin) {
 
         this.plugin = plugin;
-
+        
         options = new Options(XPWars.getInstance());
         options.setPrefix(ChatColor.translateAlternateColorCodes('&',
                 XPWars.getConfigurator().getString("games-gui.title", "games")

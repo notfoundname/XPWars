@@ -13,7 +13,7 @@ import org.screamingsandals.bedwars.api.events.BedwarsOpenShopEvent.Result;
 import org.screamingsandals.bedwars.api.game.*;
 import org.screamingsandals.bedwars.commands.BaseCommand;
 import org.screamingsandals.bedwars.game.*;
-import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
+import org.screamingsandals.lib.nms.entity.PlayerUtils;
 
 import nfn11.thirdparty.connorlinfoot.actionbarapi.ActionBarAPI;
 import nfn11.xpwars.XPWars;
@@ -101,33 +101,29 @@ public class XPWarsPlayerListener implements Listener {
             Player player = (Player) event.getEntity();
             if (!Main.isPlayerInGame(player))
                 return;
-            String gamename = Main.getPlayerGameProfile(player).getGame().getName();
-            ConfigurationSection sec = XPWars.getConfigurator().config
-                    .getConfigurationSection("level.per-arena-settings." + gamename);
 
-            if (!sec.getBoolean("enable", true)) {
+            String customPath = "level.per-arena-settings." + Main.getPlayerGameProfile(player).getGame().getName();
+            ConfigurationSection customSection = XPWars.getConfigurator().config.getConfigurationSection(customPath);
+
+            if (!customSection.getBoolean("enable", true))
                 return;
-            }
 
             ItemStack picked = event.getItem().getItemStack();
             int level = player.getLevel();
 
-            float defvolume = XPWars.getConfigurator().config.getInt("level.sound.volume", 1);
-            float volume = sec.getInt("sound.volume", (int) defvolume);
-
-            String defsound = XPWars.getConfigurator().config.getString("level.sound.sound",
-                    "ENTITY_EXPERIENCE_ORB_PICKUP");
-            String sound = sec.getString("sound.sound", defsound);
-
-            int defmax = XPWars.getConfigurator().config.getInt("level.maximum-xp", 0);
-            int max = sec.getInt("maximum-xp", defmax);
-
-            float defpitch = XPWars.getConfigurator().config.getInt("level.sound.pitch", 1);
-            float pitch = sec.getInt("sound.pitch", (int) defpitch);
-
+            String sound = XPWars.getConfigurator().config.getString(
+                    customSection == null ? "level.sound.sound" : customPath + ".sound.sound", "ENTITY_EXPERIENCE_ORB_PICKUP");
+            double volume = XPWars.getConfigurator().config
+                    .getDouble(customSection == null ? "level.sound.volume" : customPath + ".sound.volume", 1);
+            double pitch = XPWars.getConfigurator().config
+                    .getDouble(customSection == null ? "level.sound.pitch" : customPath + ".sound.pitch", 1);
+            
+            int max = XPWars.getConfigurator().config.getInt(customSection == null ? "level.maximum-xp" : customPath + ".maximum-xp",
+                    0);
+            
             Main.getInstance().getItemSpawnerTypes().forEach(type -> {
-                int defres = XPWars.getConfigurator().config.getInt("level.spawners." + type.getConfigKey(), 0);
-                int res = sec.getInt("spawners." + type.getConfigKey(), defres);
+                int res = XPWars.getConfigurator().config
+                        .getInt(customSection == null ? "level.spawners." + type.getConfigKey() : customPath + ".spawners." + type.getConfigKey(), 0);
 
                 if (picked.isSimilar(type.getStack()) && picked.getItemMeta().equals(type.getStack().getItemMeta())) {
                     event.setCancelled(true);
@@ -143,7 +139,7 @@ public class XPWarsPlayerListener implements Listener {
                     player.setLevel(level + (res * picked.getAmount()));
                 }
             });
-            player.playSound(player.getLocation(), Sound.valueOf(sound), volume, pitch);
+            player.playSound(player.getLocation(), Sound.valueOf(sound), (float) volume, (float) pitch);
         }
     }
 
@@ -194,7 +190,8 @@ public class XPWarsPlayerListener implements Listener {
             if (!event.getPlayer()
                     .hasPermission(XPWars.getConfigurator().config
                             .getString("permission-to-join-game.arenas." + event.getGame().getName()))
-                    || !event.getPlayer().isOp() || !event.getPlayer().hasPermission(BaseCommand.ADMIN_PERMISSION)) {
+                    || !event.getPlayer().isOp()
+                    || BaseCommand.hasPermission(event.getPlayer(), BaseCommand.ADMIN_PERMISSION, false)) {
                 event.setCancelled(true);
                 event.getPlayer().sendMessage(XPWars.getConfigurator().getString("permission-to-join-game.message", "")
                         .replace("%arena%", event.getGame().getName()).replace("%perm%", XPWars.getConfigurator().config
@@ -203,5 +200,5 @@ public class XPWarsPlayerListener implements Listener {
             }
         }
     }
-    
+
 }
