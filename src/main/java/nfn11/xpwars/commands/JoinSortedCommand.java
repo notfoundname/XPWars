@@ -6,8 +6,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.commands.BaseCommand;
-import static misat11.lib.lang.I18n.i18n;
-import static misat11.lib.lang.I18n.i18nonly;
+
+import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
 
 import nfn11.xpwars.XPWars;
 import nfn11.xpwars.utils.XPWarsUtils;

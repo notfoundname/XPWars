@@ -9,8 +9,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameStore;
+import org.screamingsandals.bedwars.lib.nms.entity.EntityUtils;
 import org.screamingsandals.bedwars.special.SpecialItem;
-import org.screamingsandals.lib.nms.entity.EntityUtils;
 
 import nfn11.xpwars.XPWars;
 

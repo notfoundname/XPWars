@@ -9,8 +9,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.commands.BaseCommand;
 import org.screamingsandals.bedwars.inventories.ShopInventory;
-import org.screamingsandals.simpleinventories.listeners.InventoryListener;
-
 import nfn11.thirdparty.connorlinfoot.actionbarapi.ActionBarAPI;
 import nfn11.xpwars.commands.GamesCommand;
 import nfn11.xpwars.commands.JoinSortedCommand;
@@ -20,6 +18,7 @@ import nfn11.xpwars.inventories.LevelShop;
 import nfn11.xpwars.listener.XPWarsPlayerListener;
 import nfn11.xpwars.special.listener.RegisterSpecialListeners;
 import nfn11.xpwars.utils.XPWarsUtils;
+import org.screamingsandals.bedwars.lib.sgui.listeners.InventoryListener;
 
 public class XPWars extends JavaPlugin implements Listener {
 

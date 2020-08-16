@@ -54,7 +54,8 @@ public class Configurator {
         } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
             file.renameTo(new File(dataFolder, "config_backup.yml"));
-            XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(), "[XPWars] &aYour XPWars configuration file was backed up. Please transfer values.");
+            XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(),
+                    "[XPWars] &aYour XPWars configuration file was backed up. Please transfer values.");
             loadDefaults();
             return;
         }
@@ -63,9 +64,9 @@ public class Configurator {
 
         ConfigurationSection resources = Main.getConfigurator().config.getConfigurationSection("resources");
 
-        checkOrSetConfig(modify, "version", 3);
+        checkOrSetConfig(modify, "version", 4);
 
-        if (config.getInt("version") != 3) {
+        if (config.getInt("version") != 4) {
             file.renameTo(new File(dataFolder, "config_backup.yml"));
             Bukkit.getServer().getLogger()
                     .info("[XPWars] Your XPWars configuration file was backed up. Please transfer values.");
@@ -85,12 +86,16 @@ public class Configurator {
         if (config.getBoolean("features.permission-to-join-game")) {
             checkOrSetConfig(modify, "permission-to-join-game.message",
                     "You don't have permission %perm% to join arena %arena%!");
-            checkOrSetConfig(modify, "permission-to-join-game.arenas", new HashMap<String, String>() {
-                {
-                    put("ArenaNameCaseSensetive", "bw.arenanamepermissionanynameyouwant");
-                    put("Pancake", "bw.allow.pancake");
-                }
-            });
+            checkOrSetConfig(modify, "permission-to-join-game.arenas", new HashMap<String, Object>() {{
+                put("xpwars.example", new ArrayList<String>() {{
+                    add("ArenaName");
+                    add("CaseSensetive");
+                }});
+                put("bw.vip.game", new ArrayList<String>() {{
+                    add("Пихайте_чё_хотите_сюда");
+                    add("abvaoiuobaoinoyaAvylbygbkYI");
+                }});
+            }});
         }
 
         if (config.getBoolean("features.action-bar-messages")) {
@@ -109,33 +114,25 @@ public class Configurator {
             checkOrSetConfig(modify, "level.sound.volume", 1);
             checkOrSetConfig(modify, "level.sound.pitch", 1);
 
-            checkOrSetConfig(modify, "level.per-arena-settings", new HashMap<String, HashMap<String, Object>>() {
-                {
-                    put("ArenaNameCaseSensetive", new HashMap<String, Object>() {
-                        {
-                            put("enable", true);
-                            put("percentage.give-from-killed-player", 100);
-                            put("percentage.keep-from-death", 0);
-                            put("maximum-xp", 0);
-                            put("messages.maxreached", "&loof");
-                            put("sound.sound", "ENTITY_EXPERIENCE_ORB_PICKUP");
-                            put("sound.volume", 1);
-                            put("sound.pitch", 2);
-                            for (String key : resources.getKeys(false)) {
-                                put("spawners." + key, 10);
-                            }
-                        }
-                    });
-                }
-            });
-
-            checkOrSetConfig(modify, "level.spawners", new HashMap<String, Object>() {
-                {
+            checkOrSetConfig(modify, "level.per-arena-settings", new HashMap<String, HashMap<String, Object>>() {{
+                put("ArenaNameCaseSensetive", new HashMap<String, Object>() {{
+                    put("enable", true);
+                    put("percentage.give-from-killed-player", 100);
+                    put("percentage.keep-from-death", 0);
+                    put("maximum-xp", 0);
+                    put("messages.maxreached", "&loof");
+                    put("sound.sound", "none");
+                    put("sound.volume", 1);
+                    put("sound.pitch", 2);
                     for (String key : resources.getKeys(false)) {
-                        put(key, 3);
+                        put("spawners." + key, 10);
                     }
-                }
-            });
+                }});
+            }});
+
+            checkOrSetConfig(modify, "level.spawners", new HashMap<String, Object>() {{
+                for (String key : resources.getKeys(false)) put(key, 3);
+            }});
         }
 
         if (config.getBoolean("features.games-gui")) {
@@ -153,22 +150,16 @@ public class Configurator {
             checkOrSetConfig(modify, "games-gui.inventory-settings.inventory-type", "CHEST");
             
             checkOrSetConfig(modify, "games-gui.enable-categories", false);
-            checkOrSetConfig(modify, "games-gui.categories", new HashMap<String, HashMap<String, Object>>() {
-                {
-                    put("example", new HashMap<String, Object>() {
-                        {
-                            put("stack", (XPWarsUtils.isNewVersion() ? "BLACK_CONCRETE" : "CONCRETE") + ";1;&rDuos");
-                            put("skip", 3);
-                            put("arenas", new ArrayList<String>() {
-                                {
-                                    add("ArenaName");
-                                    add("привет");
-                                }
-                            });
-                        }
-                    });
-                }
-            });
+            checkOrSetConfig(modify, "games-gui.categories", new HashMap<String, HashMap<String, Object>>() {{
+                put("example", new HashMap<String, Object>() {{
+                    put("stack", (XPWarsUtils.isNewVersion() ? "BLACK_CONCRETE" : "CONCRETE") + ";1;&rDuos");
+                    put("skip", 3);
+                    put("arenas", new ArrayList<String>() {{
+                        add("ArenaName");
+                        add("привет");
+                    }});
+                }});
+            }});
 
             checkOrSetConfig(modify, "games-gui.itemstack.WAITING", (XPWarsUtils.isNewVersion() ? "GREEN_WOOL" : "WOOL")
                     + ";1;&a%arena% &f[%players%/%maxplayers%];Waiting %time_left%");
@@ -203,7 +194,7 @@ public class Configurator {
             checkOrSetConfig(modify, "specials.portable-shop.use-parent", true);
             checkOrSetConfig(modify, "specials.portable-shop.entity-type", "VILLAGER");
             checkOrSetConfig(modify, "specials.portable-shop.enable-custom-name", false);
-            checkOrSetConfig(modify, "specials.portable-shop.custom-name", "portable vllager");
+            checkOrSetConfig(modify, "specials.portable-shop.custom-name", "Portable Villager");
             checkOrSetConfig(modify, "specials.portable-shop.duration", 15);
             checkOrSetConfig(modify, "specials.portable-shop.baby", false);
         }

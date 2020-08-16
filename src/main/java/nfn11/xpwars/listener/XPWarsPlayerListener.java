@@ -4,16 +4,21 @@ import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.bukkit.event.*;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.events.*;
 import org.screamingsandals.bedwars.api.events.BedwarsOpenShopEvent.Result;
 import org.screamingsandals.bedwars.api.game.*;
+import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
 import org.screamingsandals.bedwars.commands.BaseCommand;
 import org.screamingsandals.bedwars.game.*;
-import org.screamingsandals.lib.nms.entity.PlayerUtils;
+import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
 
 import nfn11.thirdparty.connorlinfoot.actionbarapi.ActionBarAPI;
 import nfn11.xpwars.XPWars;
@@ -34,32 +39,17 @@ public class XPWarsPlayerListener implements Listener {
 
             int player_level = player.getLevel();
 
-            int def_keep_from_death_player = XPWars.getConfigurator().getInt("level.percentage.keep-from-death", 0);
-            int def_to_killer = XPWars.getConfigurator().getInt("level.percentage.give-from-killed-player", 0);
+            ConfigurationSection arenaSettings = XPWars.getConfigurator().config.getConfigurationSection(
+                    "level.per-arena-settings." + gamename);
+            ConfigurationSection globalSettings = XPWars.getConfigurator().config.getConfigurationSection("level");
 
-            int keep_from_death_player = XPWars.getConfigurator()
-                    .getInt("level.games." + gamename + ".percentage.keep-from-death", def_keep_from_death_player);
-            int to_killer = XPWars.getConfigurator()
-                    .getInt("level.games." + gamename + "percentage.give-from-killed-player", def_to_killer);
+            if (!arenaSettings.getBoolean("enable", true))
+                return;
 
-            if (def_to_killer > 100 || def_to_killer < 0) {
-                def_to_killer = 100;
-            }
-
-            if (to_killer > 100 || to_killer < 0) {
-                to_killer = 100;
-            }
-
-            if (def_keep_from_death_player > 100 || def_keep_from_death_player < 0) {
-                def_keep_from_death_player = 0;
-            }
-
-            if (keep_from_death_player > 100 || keep_from_death_player < 0) {
-                def_keep_from_death_player = 0;
-            }
-
-            int defmax = XPWars.getConfigurator().getInt("level.maximum-xp", 0);
-            int max = XPWars.getConfigurator().getInt("level.games." + gamename + ".maximum-xp", defmax);
+            int keep_from_death_player = arenaSettings.getInt("percentage.keep-from-death",
+                    globalSettings.getInt("percentage.keep-from-death",0));
+            int to_killer = arenaSettings.getInt("percentage.give-from-killed-player", 0);
+            int max = arenaSettings.getInt("maximum-xp", globalSettings.getInt("maximum-xp", 0));
 
             if (event.getKiller() != null) {
                 Player killer = event.getKiller();
@@ -75,8 +65,9 @@ public class XPWarsPlayerListener implements Listener {
             } else
                 player.setLevel((player_level / 100) * keep_from_death_player);
         }
-        player.setHealth(player.getMaxHealth());
-        PlayerUtils.respawn(XPWars.getInstance(), player, 0);
+        PlayerRespawnEvent playerRespawnEvent = new PlayerRespawnEvent(player, Main.getPlayerGameProfile(player).isSpectator
+                ? event.getGame().getSpectatorSpawn() : event.getGame().getTeamOfPlayer(player).getTeamSpawn(), false, false);
+        Bukkit.getPluginManager().callEvent(playerRespawnEvent);
     }
 
     @EventHandler
@@ -87,77 +78,66 @@ public class XPWarsPlayerListener implements Listener {
                 .getBoolean("level.per-arena-settings." + event.getGame().getName() + "enable", true)) {
             event.setResult(Result.DISALLOW_THIRD_PARTY_SHOP);
             XPWars.getLevelShop().show(event.getPlayer(), event.getStore());
-        } else
-            return;
+        }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onPickup(EntityPickupItemEvent event) {
         if (!XPWars.getConfigurator().config.getBoolean("features.level-system"))
             return;
-
         if (event.getEntity() instanceof Player) {
-
             Player player = (Player) event.getEntity();
             if (!Main.isPlayerInGame(player))
                 return;
 
-            String customPath = "level.per-arena-settings." + Main.getPlayerGameProfile(player).getGame().getName();
-            ConfigurationSection customSection = XPWars.getConfigurator().config.getConfigurationSection(customPath);
+            ConfigurationSection arenaSettings = XPWars.getConfigurator().config.getConfigurationSection(
+                    "level.per-arena-settings." + Main.getPlayerGameProfile(player).getGame().getName());
+            ConfigurationSection globalSettings = XPWars.getConfigurator().config.getConfigurationSection("level");
 
-            if (!customSection.getBoolean("enable", true))
+            if (!arenaSettings.getBoolean("enable", true))
                 return;
 
             ItemStack picked = event.getItem().getItemStack();
             int level = player.getLevel();
 
-            String sound = XPWars.getConfigurator().config.getString(
-                    customSection == null ? "level.sound.sound" : customPath + ".sound.sound", "ENTITY_EXPERIENCE_ORB_PICKUP");
-            double volume = XPWars.getConfigurator().config
-                    .getDouble(customSection == null ? "level.sound.volume" : customPath + ".sound.volume", 1);
-            double pitch = XPWars.getConfigurator().config
-                    .getDouble(customSection == null ? "level.sound.pitch" : customPath + ".sound.pitch", 1);
+            String sound = arenaSettings.getString("sound.sound", globalSettings.getString
+                    ("sound.sound","ENTITY_EXPERIENCE_ORB_PICKUP"));
+            double volume = arenaSettings.getDouble("sound.volume", globalSettings.getDouble("sound.volume", 1));
+            double pitch = arenaSettings.getDouble("sound.pitch", globalSettings.getDouble("sound.pitch", 1));
             
-            int max = XPWars.getConfigurator().config.getInt(customSection == null ? "level.maximum-xp" : customPath + ".maximum-xp",
-                    0);
+            int max = XPWars.getConfigurator().config.getInt("maximum-xp", 0);
             
-            Main.getInstance().getItemSpawnerTypes().forEach(type -> {
-                int res = XPWars.getConfigurator().config
-                        .getInt(customSection == null ? "level.spawners." + type.getConfigKey() : customPath + ".spawners." + type.getConfigKey(), 0);
-
+            for (ItemSpawnerType type : Main.getInstance().getItemSpawnerTypes()) {
+                int res = arenaSettings.getInt("spawners." + type.getConfigKey(), globalSettings.getInt
+                        ("spawners." + type.getConfigKey()));
                 if (picked.isSimilar(type.getStack()) && picked.getItemMeta().equals(type.getStack().getItemMeta())) {
                     event.setCancelled(true);
                     if (max != 0 && (level + (res * picked.getAmount())) > max) {
-                        ActionBarAPI.sendActionBar(player,
-                                XPWars.getConfigurator().config
-                                        .getString("messages.level.maxreached",
-                                                "&cYou can't have more than %max% levels!")
+                        arenaSettings.getString("messages.maxreached", globalSettings.getString(
+                                "messages.maxreached","&cYou can't have more than %max% levels!")
                                         .replace("%max%", Integer.toString(max)));
                         return;
                     }
                     event.getItem().remove();
                     player.setLevel(level + (res * picked.getAmount()));
                 }
-            });
-            player.playSound(player.getLocation(), Sound.valueOf(sound), (float) volume, (float) pitch);
+            }
+            if (!sound.equalsIgnoreCase("none"))
+                player.playSound(player.getLocation(), Sound.valueOf(sound), (float) volume, (float) pitch);
         }
     }
 
     @EventHandler
     public void onGameTick(BedwarsGameTickEvent event) {
-        if (event.getGame() == null)
-            return;
         if (XPWars.getConfigurator().config.getBoolean("features.action-bar-messages")) {
             event.getGame().getConnectedPlayers().forEach(player -> {
                 GamePlayer gp = Main.getPlayerGameProfile(player);
                 CurrentTeam team = gp.getGame().getPlayerTeam(gp);
-                if (gp.isSpectator) {
+                if (team == null || gp.isSpectator) {
                     ActionBarAPI.sendActionBar(player,
                             XPWars.getConfigurator().config.getString("action-bar-messages.in-game-spectator"));
                     return;
                 }
-                if (team == null)
-                    return;
                 if (gp.getGame().getStatus() == GameStatus.WAITING) {
                     ActionBarAPI.sendActionBar(player,
                             XPWars.getConfigurator().config.getString("action-bar-messages.in-lobby")
@@ -169,7 +149,8 @@ public class XPWarsPlayerListener implements Listener {
                 if (gp.getGame().getStatus() == GameStatus.RUNNING) {
                     ActionBarAPI.sendActionBar(player,
                             XPWars.getConfigurator().config.getString("action-bar-messages.in-game-alive")
-                                    .replace("%team%", team.teamInfo.color.chatColor + team.getName()).replace("%bed%",
+                                    .replace("%team%", team.teamInfo.color.chatColor + team.getName())
+                                    .replace("%bed%",
                                             team.isTargetBlockExists()
                                                     ? Main.getConfigurator().config.getString("scoreboard.bedExists")
                                                     : Main.getConfigurator().config.getString("scoreboard.bedLost")));
@@ -182,20 +163,17 @@ public class XPWarsPlayerListener implements Listener {
     public void onJoinGame(BedwarsPlayerJoinEvent event) {
         if (event.isCancelled())
             return;
-        ConfigurationSection sec = XPWars.getConfigurator().config
-                .getConfigurationSection("permission-to-join-game.arenas");
+        ConfigurationSection sec = XPWars.getConfigurator().config.getConfigurationSection("permission-to-join-game");
         if (sec == null)
             return;
-        if (sec.getValues(false).containsKey(event.getGame().getName())) {
-            if (!event.getPlayer()
-                    .hasPermission(XPWars.getConfigurator().config
-                            .getString("permission-to-join-game.arenas." + event.getGame().getName()))
-                    || !event.getPlayer().isOp()
-                    || BaseCommand.hasPermission(event.getPlayer(), BaseCommand.ADMIN_PERMISSION, false)) {
+        for (String permission : sec.getConfigurationSection("arenas").getValues(false).keySet()) {
+            if (sec.getStringList("arenas." + permission).contains(event.getGame().getName()) && !event.getPlayer()
+                    .hasPermission(permission)) {
                 event.setCancelled(true);
-                event.getPlayer().sendMessage(XPWars.getConfigurator().getString("permission-to-join-game.message", "")
-                        .replace("%arena%", event.getGame().getName()).replace("%perm%", XPWars.getConfigurator().config
-                                .getString("permission-to-join-game.arenas." + event.getGame().getName())));
+                event.getPlayer().sendMessage(sec.getString("permission-to-join-game.message",
+                        "You don't have permission %perm% to join arena %arena%!")
+                        .replace("%perm%", permission)
+                        .replace("%arena%", event.getGame().getName()));
                 return;
             }
         }

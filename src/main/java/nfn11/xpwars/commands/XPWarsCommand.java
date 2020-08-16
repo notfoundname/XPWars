@@ -1,7 +1,5 @@
 package nfn11.xpwars.commands;
 
-import static org.screamingsandals.bedwars.lib.lang.I.i18nonly;
-
 import java.util.Arrays;
 import java.util.List;
 import org.bukkit.Bukkit;
@@ -12,49 +10,32 @@ import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.game.GameStore;
 import org.screamingsandals.bedwars.commands.BaseCommand;
 
+import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
+import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
+
 import nfn11.xpwars.XPWars;
 import nfn11.xpwars.XPWarsUpdateChecker;
 import nfn11.xpwars.utils.XPWarsUtils;
 
-import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
-
 public class XPWarsCommand extends BaseCommand {
 
     public XPWarsCommand() {
-        super("xpwars", ADMIN_PERMISSION, true);
+        super("xpwars", ADMIN_PERMISSION, true, true);
     }
 
     @Override
     public void completeTab(List<String> completion, CommandSender sender, List<String> args) {
         if (args.size() == 1) {
-            if (sender.hasPermission(ADMIN_PERMISSION) || sender.isOp()) {
-                completion.addAll(Arrays.asList("reload", "open", "updates"));
-            }
+            completion.addAll(Arrays.asList("reload", "open", "updates"));
         }
-        if (args.size() == 2) {
-            if (!sender.hasPermission(ADMIN_PERMISSION) || !sender.isOp()) {
-                return;
-            }
-            if (args.get(0).equalsIgnoreCase("open")) {
-                completion.addAll(XPWarsUtils.getShopFileNames());
-            }
-        }
-        if (args.size() == 3) {
-            if (!sender.hasPermission(ADMIN_PERMISSION) || !sender.isOp()) {
-                return;
-            }
-            if (args.get(0).equalsIgnoreCase("open")) {
-                completion.addAll(XPWarsUtils.getOnlinePlayers());
-            }
+        if (args.get(0).equalsIgnoreCase("open")) {
+            if (args.size() == 2) completion.addAll(XPWarsUtils.getShopFileNames());
+            if (args.size() == 3) completion.addAll(XPWarsUtils.getOnlinePlayers());
         }
     }
 
     @Override
     public boolean execute(CommandSender sender, List<String> args) throws IndexOutOfBoundsException {
-        if (!sender.hasPermission(ADMIN_PERMISSION)) {
-            sender.sendMessage(i18n("no_permissions"));
-            return true;
-        }
         if (args.size() == 1) {
             if (args.get(0).equalsIgnoreCase("reload")) {
                 Bukkit.getServer().getPluginManager().disablePlugin(XPWars.getInstance());
