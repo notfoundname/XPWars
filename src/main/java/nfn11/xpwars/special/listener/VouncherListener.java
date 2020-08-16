@@ -36,6 +36,8 @@ public class VouncherListener implements Listener {
         Action action = event.getAction();
         ItemStack item = event.getItem();
 
+        if (item != null)
+            return;
         String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(item, VOUNCHER_PREFIX);
         if (unhidden != null && (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK)) {
             int levels = Integer.parseInt(unhidden.split(":")[2]);

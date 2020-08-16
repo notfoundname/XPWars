@@ -66,7 +66,7 @@ public class PortableShop extends SpecialItem implements nfn11.xpwars.special.ap
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (entity.isDead() || entity == null)
+                if (entity.isDead())
                     return;
                 entity.remove();
             }

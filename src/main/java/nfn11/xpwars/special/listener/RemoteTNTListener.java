@@ -29,7 +29,7 @@ import org.screamingsandals.bedwars.lib.sgui.utils.StackParser;
 public class RemoteTNTListener implements Listener {
 
     private static final String REMOTE_TNT_PREFIX = "Module:RemoteTnt:";
-    final List<Location> locations = new ArrayList<Location>();
+    final List<Location> locations = new ArrayList<>();
 
     @EventHandler
     public void onRemoteTntBuy(BedwarsApplyPropertyToBoughtItem event) {
@@ -57,8 +57,7 @@ public class RemoteTNTListener implements Listener {
             if (!player.getInventory().contains(detonator)) {
                 player.getInventory().addItem(detonator);
             }
-        } else
-            return;
+        }
     }
 
     @EventHandler
@@ -73,7 +72,7 @@ public class RemoteTNTListener implements Listener {
                 for (Location location : locations) {
                     int ticks = location.getBlock().getMetadata("ticks").get(0).asInt();
                     location.getBlock().setType(Material.AIR);
-                    TNTPrimed tnt = (TNTPrimed) location.getWorld().spawn(location.add(0.5, 0.0, 0.5), TNTPrimed.class);
+                    TNTPrimed tnt = location.getWorld().spawn(location.add(0.5, 0.0, 0.5), TNTPrimed.class);
                     for (Player players : Main.getPlayerGameProfile(player).getGame().getConnectedPlayers()) {
                         if (ticks >= 30) {
                             players.playSound(tnt.getLocation(), Sound.ENTITY_TNT_PRIMED, 1.0F, 1.0F);
@@ -89,8 +88,7 @@ public class RemoteTNTListener implements Listener {
                 event.setCancelled(true);
                 player.getInventory().remove(detonator);
             }
-        } else
-            return;
+        }
     }
 
     @EventHandler
@@ -104,8 +102,7 @@ public class RemoteTNTListener implements Listener {
             TNTPrimed tnt = (TNTPrimed) event.getDamager();
             if (tnt.hasMetadata("owner")) {
                 event.setCancelled(
-                        tnt.getMetadata("owner").get(0).asString().equals(player.getUniqueId().toString()) ? true
-                                : false);
+                        tnt.getMetadata("owner").get(0).asString().equals(player.getUniqueId().toString()));
             }
         }
     }

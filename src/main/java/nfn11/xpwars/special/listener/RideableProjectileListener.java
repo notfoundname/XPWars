@@ -36,8 +36,6 @@ public class RideableProjectileListener implements Listener {
             GamePlayer gamePlayer = Main.getPlayerGameProfile(player);
             Game game = gamePlayer.getGame();
             ItemStack stack = player.getInventory().getItemInHand();
-            if (stack == null)
-                return;
 
             String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack, RIDEABLE_PROJECTILE_PREFIX);
             if (unhidden != null) {

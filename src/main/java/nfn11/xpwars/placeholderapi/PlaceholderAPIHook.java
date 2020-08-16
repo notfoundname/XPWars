@@ -31,6 +31,16 @@ public class PlaceholderAPIHook extends me.clip.placeholderapi.expansion.Placeho
     }
 
     @Override
+    public boolean canRegister(){
+        return true;
+    }
+
+    @Override
+    public boolean persist(){
+        return true;
+    }
+
+    @Override
     public String onPlaceholderRequest(Player player, String parsed) {
 
         if (player == null)
@@ -260,7 +270,7 @@ public class PlaceholderAPIHook extends me.clip.placeholderapi.expansion.Placeho
                 return Double.toString(stats.getCurrentKD());
             }
         }
-        return "null";
+        return null;
     }
     
 }
