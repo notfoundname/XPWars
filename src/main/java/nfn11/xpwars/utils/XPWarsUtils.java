@@ -20,11 +20,11 @@ public class XPWarsUtils {
 
     public static List<String> getShopFileNames() {
         List<String> list = new ArrayList<>();
-        List<String> non_allowed = Arrays.asList("config.yml", "sign.yml", "record.yml");
+        List<String> notAllowed = Arrays.asList("config.yml", "sign.yml", "record.yml");
         File[] files = Main.getInstance().getDataFolder().listFiles();
 
         for (File file : files) {
-            if (file.isFile() && !non_allowed.contains(file.getName())) {
+            if (file.isFile() && !notAllowed.contains(file.getName())) {
                 list.add(file.getName());
             }
         }
@@ -39,19 +39,14 @@ public class XPWarsUtils {
 
     public static List<String> getOnlinePlayers() {
         List<String> list = new ArrayList<>();
-        Bukkit.getServer().getOnlinePlayers().forEach(player ->  {
-            list.add(player.getName());
-        });
+        Bukkit.getServer().getOnlinePlayers().forEach(player -> list.add(player.getName()));
         return list;
     }
 
     public static boolean isNewVersion() {
-        if (Bukkit.getVersion().contains("1.13") || Bukkit.getVersion().contains("1.14")
+        return Bukkit.getVersion().contains("1.13") || Bukkit.getVersion().contains("1.14")
                 || Bukkit.getVersion().contains("1.15") || Bukkit.getVersion().contains("1.16")
-                || Bukkit.getVersion().contains("1.17"))/* ? */ {
-            return true;
-        }
-        return false;
+                || Bukkit.getVersion().contains("1.17");
     }
 
     public static int getFreeGamesInt() {
@@ -65,9 +60,7 @@ public class XPWarsUtils {
 
     public static List<String> getAllCategories() {
         List<String> list = new ArrayList<>();
-        XPWars.getConfigurator().config.getConfigurationSection("games-gui.categories").getValues(false).keySet().forEach(s -> {
-            list.add(s);
-        });
+        list.addAll(XPWars.getConfigurator().config.getConfigurationSection("games-gui.categories").getValues(false).keySet());
         return list;
     }
 
@@ -77,8 +70,7 @@ public class XPWarsUtils {
                 .getStringList("arenas")) {
             if (Main.isGameExists(s)) {
                 list.add(Main.getGame(s));
-            } else
-                continue;
+            }
         }
         if (list.isEmpty())
             return null;
@@ -121,4 +113,5 @@ public class XPWarsUtils {
 
         return availableGames.lastEntry().getValue();
     }
+    
 }

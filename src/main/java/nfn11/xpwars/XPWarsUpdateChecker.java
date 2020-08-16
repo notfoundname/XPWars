@@ -45,7 +45,7 @@ public class XPWarsUpdateChecker {
             
             @Override
             public void run() {
-                float New = 0;
+                float New;
                 try {
                     final HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
                     connection.setRequestMethod("GET");
@@ -63,13 +63,14 @@ public class XPWarsUpdateChecker {
                     return;
                 }
                 
-                XPWarsUtils.xpwarsLog(sender, (XPWars.isSnapshotBuild() ? XPWARS_UPD_FOUND_SNAP : XPWARS_UPD_FOUND_STABLE)
-                        .replace("%ver%", Float.toString(New)));
+                XPWarsUtils.xpwarsLog(sender, (XPWars.isSnapshotBuild() ?
+                        XPWARS_UPD_FOUND_SNAP.replace("%ver%", Integer.toString((int) New))
+                        : XPWARS_UPD_FOUND_STABLE.replace("%ver%", Float.toString(New))));
                 cancel();
             }
 
         }.runTaskAsynchronously(XPWars.getInstance());
-        return;
+
     }
 
 }

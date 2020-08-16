@@ -107,9 +107,7 @@ public class XPWars extends JavaPlugin implements Listener {
     }
 
     public static boolean isSnapshotBuild() {
-        if (XPWars.getInstance().getDescription().getVersion().contains("-SNAPSHOT") && getBuildNumber() != 0)
-            return true;
-        return false;
+        return XPWars.getInstance().getDescription().getVersion().contains("-SNAPSHOT") && getBuildNumber() != 0;
     }
 
     public static float getVersion() {
