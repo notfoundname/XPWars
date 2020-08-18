@@ -168,7 +168,7 @@ public class XPWarsPlayerListener implements Listener {
             return;
         for (String permission : sec.getConfigurationSection("arenas").getValues(false).keySet()) {
             if (sec.getStringList("arenas." + permission).contains(event.getGame().getName()) && !event.getPlayer()
-                    .hasPermission(permission)) {
+                    .hasPermission(permission.replace("[", "").replace("]", ""))) {
                 event.setCancelled(true);
                 event.getPlayer().sendMessage(sec.getString("permission-to-join-game.message",
                         "You don't have permission %perm% to join arena %arena%!")

@@ -87,11 +87,11 @@ public class Configurator {
             checkOrSetConfig(modify, "permission-to-join-game.message",
                     "You don't have permission %perm% to join arena %arena%!");
             checkOrSetConfig(modify, "permission-to-join-game.arenas", new HashMap<String, Object>() {{
-                put("xpwars.example", new ArrayList<String>() {{
+                put("[xpwars.example]", new ArrayList<String>() {{
                     add("ArenaName");
                     add("CaseSensetive");
                 }});
-                put("bw.vip.game", new ArrayList<String>() {{
+                put("[bw.vip.game]", new ArrayList<String>() {{
                     add("Пихайте_чё_хотите_сюда");
                     add("abvaoiuobaoinoyaAvylbygbkYI");
                 }});

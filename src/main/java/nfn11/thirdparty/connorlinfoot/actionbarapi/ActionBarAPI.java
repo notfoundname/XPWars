@@ -17,8 +17,7 @@ public class ActionBarAPI implements Listener {
     private static String nmsver;
 
     public ActionBarAPI() {
-        nmsver = Bukkit.getServer().getClass().getPackage().getName();
-        nmsver = nmsver.substring(nmsver.lastIndexOf(".") + 1);
+        nmsver = Bukkit.getServer().getClass().getPackage().getName().substring(nmsver.lastIndexOf(".") + 1);
 
         Bukkit.getPluginManager().registerEvents(this, XPWars.getInstance());
     }
