@@ -81,7 +81,7 @@ public class XPWarsPlayerListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR) 
     public void onPickup(EntityPickupItemEvent event) {
         if (!XPWars.getConfigurator().config.getBoolean("features.level-system"))
             return;
@@ -105,7 +105,7 @@ public class XPWarsPlayerListener implements Listener {
             double volume = arenaSettings.getDouble("sound.volume", globalSettings.getDouble("sound.volume", 1));
             double pitch = arenaSettings.getDouble("sound.pitch", globalSettings.getDouble("sound.pitch", 1));
             
-            int max = XPWars.getConfigurator().config.getInt("maximum-xp", 0);
+            int max = arenaSettings.getInt("maximum-xp", globalSettings.getInt("maximum-xp", 0));
             
             for (ItemSpawnerType type : Main.getInstance().getItemSpawnerTypes()) {
                 int res = arenaSettings.getInt("spawners." + type.getConfigKey(), globalSettings.getInt
