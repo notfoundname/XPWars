@@ -61,9 +61,6 @@ public class XPWarsPlayerListener implements Listener {
             } else
                 player.setLevel((player_level / 100) * keep_from_death_player);
         }
-        PlayerRespawnEvent playerRespawnEvent = new PlayerRespawnEvent(player, Main.getPlayerGameProfile(player).isSpectator
-                ? event.getGame().getSpectatorSpawn() : event.getGame().getTeamOfPlayer(player).getTeamSpawn(), false, false);
-        Bukkit.getPluginManager().callEvent(playerRespawnEvent);
     }
 
     @EventHandler
