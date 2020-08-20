@@ -86,6 +86,8 @@ public class XPWarsPlayerListener implements Listener {
             ConfigurationSection arenaSettings = XPWars.getConfigurator().config.getConfigurationSection(
                     "level.per-arena-settings." + Main.getPlayerGameProfile(player).getGame().getName());
             ConfigurationSection globalSettings = XPWars.getConfigurator().config.getConfigurationSection("level");
+            
+            if (arenaSettings == null) arenaSettings = globalSettings;
 
             if (!arenaSettings.getBoolean("enable", true))
                 return;
