@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -15,8 +16,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.screamingsandals.bedwars.Main;
 
 import nfn11.xpwars.utils.XPWarsUtils;
-
-import org.bukkit.ChatColor;
 
 /*
  * not mine. thanks misat11 & ceph
