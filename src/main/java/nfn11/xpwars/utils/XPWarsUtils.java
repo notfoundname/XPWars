@@ -7,9 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameStatus;
@@ -113,5 +117,10 @@ public class XPWarsUtils {
 
         return availableGames.lastEntry().getValue();
     }
-    
+
+    @SuppressWarnings("deprecation")
+    public static void sendActionBar(Player player, String message) {
+        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message));
+    }
+
 }

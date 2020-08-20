@@ -9,7 +9,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.commands.BaseCommand;
 import org.screamingsandals.bedwars.inventories.ShopInventory;
-import nfn11.thirdparty.connorlinfoot.actionbarapi.ActionBarAPI;
 import nfn11.xpwars.commands.GamesCommand;
 import nfn11.xpwars.commands.JoinSortedCommand;
 import nfn11.xpwars.commands.XPWarsCommand;
@@ -34,8 +33,7 @@ public class XPWars extends JavaPlugin implements Listener {
         instance = this;
         new XPWarsUtils();
         if (Main.getInstance() == null) {
-            XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(), "did you download wrong bedwars plugin?"); // does this
-                                                                                                        // work?
+            XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(), "did you download wrong bedwars plugin?"); // does this even work?
             Bukkit.getServer().getPluginManager().disablePlugin(this);
             return;
         }
@@ -47,7 +45,6 @@ public class XPWars extends JavaPlugin implements Listener {
         levelShop = new LevelShop();
         new XPWarsPlayerListener();
         new RegisterSpecialListeners();
-        new ActionBarAPI();
         new XPWarsCommand();
 
         if (getConfigurator().config.getBoolean("features.games-gui")) {

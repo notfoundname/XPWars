@@ -1,12 +1,12 @@
 package nfn11.xpwars.special;
 
+import nfn11.xpwars.utils.XPWarsUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.special.SpecialItem;
 
-import nfn11.thirdparty.connorlinfoot.actionbarapi.ActionBarAPI;
 import nfn11.xpwars.XPWars;
 
 public class Vouncher extends SpecialItem implements nfn11.xpwars.special.api.Vouncher {
@@ -35,7 +35,7 @@ public class Vouncher extends SpecialItem implements nfn11.xpwars.special.api.Vo
         int max = XPWars.getConfigurator().getInt("level.games." + game.getName() + ".maximum-xp", defmax);
 
         if ((player.getLevel() + levels) > max) {
-            ActionBarAPI.sendActionBar(player,
+            XPWarsUtils.sendActionBar(player,
                     XPWars.getConfigurator().config
                             .getString("level.per-arena-settings." + game.getName() + ".messages.maxreached",
                                     XPWars.getConfigurator().config.getString("level.messages.maxreached"))

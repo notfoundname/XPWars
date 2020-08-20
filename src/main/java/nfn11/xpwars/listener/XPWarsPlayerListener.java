@@ -1,5 +1,6 @@
 package nfn11.xpwars.listener;
 
+import nfn11.xpwars.utils.XPWarsUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
@@ -17,7 +18,6 @@ import org.screamingsandals.bedwars.api.game.*;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
 import org.screamingsandals.bedwars.game.*;
 
-import nfn11.thirdparty.connorlinfoot.actionbarapi.ActionBarAPI;
 import nfn11.xpwars.XPWars;
 
 public class XPWarsPlayerListener implements Listener {
@@ -26,7 +26,6 @@ public class XPWarsPlayerListener implements Listener {
         Bukkit.getServer().getPluginManager().registerEvents(this, XPWars.getInstance());
     }
 
-    @SuppressWarnings("deprecation")
     @EventHandler(priority = EventPriority.MONITOR)
     public void onDeath(BedwarsPlayerKilledEvent event) {
         Player player = event.getPlayer();
@@ -131,12 +130,11 @@ public class XPWarsPlayerListener implements Listener {
                 GamePlayer gp = Main.getPlayerGameProfile(player);
                 CurrentTeam team = gp.getGame().getPlayerTeam(gp);
                 if (team == null || gp.isSpectator) {
-                    ActionBarAPI.sendActionBar(player,
-                            XPWars.getConfigurator().config.getString("action-bar-messages.in-game-spectator"));
+                    XPWarsUtils.sendActionBar(player, XPWars.getConfigurator().config.getString("action-bar-messages.in-game-spectator"));
                     return;
                 }
                 if (gp.getGame().getStatus() == GameStatus.WAITING) {
-                    ActionBarAPI.sendActionBar(player,
+                    XPWarsUtils.sendActionBar(player,
                             XPWars.getConfigurator().config.getString("action-bar-messages.in-lobby")
                                     .replace("%pl_t%", Integer.toString(team.countConnectedPlayers()))
                                     .replace("%team%", team.teamInfo.color.chatColor + team.getName())
@@ -144,7 +142,7 @@ public class XPWarsPlayerListener implements Listener {
                     return;
                 }
                 if (gp.getGame().getStatus() == GameStatus.RUNNING) {
-                    ActionBarAPI.sendActionBar(player,
+                    XPWarsUtils.sendActionBar(player,
                             XPWars.getConfigurator().config.getString("action-bar-messages.in-game-alive")
                                     .replace("%team%", team.teamInfo.color.chatColor + team.getName())
                                     .replace("%bed%",
