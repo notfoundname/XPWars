@@ -47,6 +47,11 @@ public class XPWarsCommand extends BaseCommand {
                 new XPWarsUpdateChecker(sender);
                 return true;
             }
+            if (args.get(0).equalsIgnoreCase("kits")) {
+                if (sender instanceof Player && Main.isPlayerInGame((Player) sender))
+                    XPWars.getKitSelectionInventory().openForPlayer((Player) sender);
+                return true;
+            }
         }
         if (args.size() == 2 || args.size() == 3) {
             if (args.get(0).equalsIgnoreCase("open")) {
