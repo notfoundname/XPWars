@@ -43,14 +43,14 @@ import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("deprecation")
-public class LevelShop implements Listener {
+public class LevelShopInventory implements Listener {
     /*
      * Well, just original shop with some changed things.
      */
+
     private Map<String, SimpleInventories> shopMap = new HashMap<>();
     private Options options = new Options(Main.getInstance());
-    
-    public LevelShop() {
+    public LevelShopInventory() {
         Bukkit.getServer().getPluginManager().registerEvents(this, XPWars.getInstance());
 
         ItemStack backItem = Main.getConfigurator().readDefinedItem("shopback", "BARRIER");
@@ -158,6 +158,17 @@ public class LevelShop implements Listener {
         });
 
         loadNewShop("default", null, true);
+    }
+
+    @EventHandler
+    public void onShopOpen(BedwarsOpenShopEvent event) {
+        if (Main.getPlayerGameProfile(event.getPlayer()).isSpectator)
+            return;
+        if (XPWars.getConfigurator().config.getBoolean("features.level-system") || XPWars.getConfigurator()
+                .getBoolean("level.per-arena-settings." + event.getGame().getName() + "enable", true)) {
+            event.setResult(BedwarsOpenShopEvent.Result.DISALLOW_THIRD_PARTY_SHOP);
+            show(event.getPlayer(), event.getStore());
+        }
     }
 
     public void show(Player player, GameStore store) {

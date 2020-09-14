@@ -1,6 +1,5 @@
 package nfn11.xpwars.listener;
 
-import nfn11.xpwars.utils.XPWarsUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
@@ -9,20 +8,16 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.events.*;
-import org.screamingsandals.bedwars.api.events.BedwarsOpenShopEvent.Result;
-import org.screamingsandals.bedwars.api.game.*;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
-import org.screamingsandals.bedwars.game.*;
 
 import nfn11.xpwars.XPWars;
 
-public class XPWarsPlayerListener implements Listener {
+public class LevelSystemListener implements Listener {
 
-    public XPWarsPlayerListener() {
+    public LevelSystemListener() {
         Bukkit.getServer().getPluginManager().registerEvents(this, XPWars.getInstance());
     }
 
@@ -60,17 +55,6 @@ public class XPWarsPlayerListener implements Listener {
                 player.setLevel(max);
             } else
                 player.setLevel((player_level / 100) * keep_from_death_player);
-        }
-    }
-
-    @EventHandler
-    public void onShopOpen(BedwarsOpenShopEvent event) {
-        if (Main.getPlayerGameProfile(event.getPlayer()).isSpectator)
-            return;
-        if (XPWars.getConfigurator().config.getBoolean("features.level-system") || XPWars.getConfigurator()
-                .getBoolean("level.per-arena-settings." + event.getGame().getName() + "enable", true)) {
-            event.setResult(Result.DISALLOW_THIRD_PARTY_SHOP);
-            XPWars.getLevelShop().show(event.getPlayer(), event.getStore());
         }
     }
 
@@ -119,57 +103,6 @@ public class XPWarsPlayerListener implements Listener {
             }
             if (!sound.equalsIgnoreCase("none"))
                 player.playSound(player.getLocation(), Sound.valueOf(sound), (float) volume, (float) pitch);
-        }
-    }
-
-    @EventHandler
-    public void onGameTick(BedwarsGameTickEvent event) {
-        if (XPWars.getConfigurator().config.getBoolean("features.action-bar-messages")) {
-            event.getGame().getConnectedPlayers().forEach(player -> {
-                GamePlayer gp = Main.getPlayerGameProfile(player);
-                CurrentTeam team = gp.getGame().getPlayerTeam(gp);
-                if (team == null || gp.isSpectator) {
-                    XPWarsUtils.sendActionBar(player, XPWars.getConfigurator().config.getString("action-bar-messages.in-game-spectator"));
-                    return;
-                }
-                if (gp.getGame().getStatus() == GameStatus.WAITING) {
-                    XPWarsUtils.sendActionBar(player,
-                            XPWars.getConfigurator().config.getString("action-bar-messages.in-lobby")
-                                    .replace("%pl_t%", Integer.toString(team.countConnectedPlayers()))
-                                    .replace("%team%", team.teamInfo.color.chatColor + team.getName())
-                                    .replace("%mxpl_t%", Integer.toString(team.getMaxPlayers())));
-                    return;
-                }
-                if (gp.getGame().getStatus() == GameStatus.RUNNING) {
-                    XPWarsUtils.sendActionBar(player,
-                            XPWars.getConfigurator().config.getString("action-bar-messages.in-game-alive")
-                                    .replace("%team%", team.teamInfo.color.chatColor + team.getName())
-                                    .replace("%bed%",
-                                            team.isTargetBlockExists()
-                                                    ? Main.getConfigurator().config.getString("scoreboard.bedExists")
-                                                    : Main.getConfigurator().config.getString("scoreboard.bedLost")));
-                }
-            });
-        }
-    }
-
-    @EventHandler
-    public void onJoinGame(BedwarsPlayerJoinEvent event) {
-        if (event.isCancelled())
-            return;
-        ConfigurationSection sec = XPWars.getConfigurator().config.getConfigurationSection("permission-to-join-game");
-        if (sec == null)
-            return;
-        for (String permission : sec.getConfigurationSection("arenas").getValues(false).keySet()) {
-            if (sec.getStringList("arenas." + permission).contains(event.getGame().getName()) && !event.getPlayer()
-                    .hasPermission(permission.replace("[", "").replace("]", ""))) {
-                event.setCancelled(true);
-                event.getPlayer().sendMessage(sec.getString("permission-to-join-game.message",
-                        "You don't have permission %perm% to join arena %arena%!")
-                        .replace("%perm%", permission)
-                        .replace("%arena%", event.getGame().getName()));
-                return;
-            }
         }
     }
 

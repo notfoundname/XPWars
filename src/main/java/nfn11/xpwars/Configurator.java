@@ -7,6 +7,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import nfn11.xpwars.commands.GamesCommand;
+import nfn11.xpwars.commands.JoinSortedCommand;
+import nfn11.xpwars.inventories.KitSelectionInventory;
+import nfn11.xpwars.listener.ActionBarMessageListener;
+import nfn11.xpwars.listener.LevelSystemListener;
+import nfn11.xpwars.special.listener.RegisterSpecialListeners;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
@@ -54,7 +61,7 @@ public class Configurator {
             e.printStackTrace();
             file.renameTo(new File(dataFolder, "config_backup.yml"));
             XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(),
-                    "[XPWars] &aYour XPWars configuration file was backed up. Please transfer values.");
+                    "[XPWars] &aYour XPWars configuration file was broken and plugin backed it up.");
             loadDefaults();
             return;
         }
@@ -81,6 +88,7 @@ public class Configurator {
         checkOrSetConfig(modify, "features.permission-to-join-game", false);
         checkOrSetConfig(modify, "features.placeholders", false);
         checkOrSetConfig(modify, "features.specials", false);
+        checkOrSetConfig(modify, "features.kits", false);
 
         if (config.getBoolean("features.permission-to-join-game")) {
             checkOrSetConfig(modify, "permission-to-join-game.message",
@@ -98,14 +106,17 @@ public class Configurator {
         }
 
         if (config.getBoolean("features.action-bar-messages")) {
+            new ActionBarMessageListener();
+
             checkOrSetConfig(modify, "action-bar-messages.in-lobby", "Your team: %team% [%pl_t%/%mxpl_t%]");
             checkOrSetConfig(modify, "action-bar-messages.in-game-alive", "Your team: %bed% %team%");
             checkOrSetConfig(modify, "action-bar-messages.in-game-spectator", "You are spectator!");
         }
 
         if (config.getBoolean("features.level-system")) {
-            checkOrSetConfig(modify, "level.messages.maxreached", "&cYou can't have more than %max% levels!");
+            new LevelSystemListener();
 
+            checkOrSetConfig(modify, "level.messages.maxreached", "&cYou can't have more than %max% levels!");
             checkOrSetConfig(modify, "level.percentage.give-from-killed-player", 33);
             checkOrSetConfig(modify, "level.percentage.keep-from-death", 33);
             checkOrSetConfig(modify, "level.maximum-xp", 1000);
@@ -135,6 +146,9 @@ public class Configurator {
         }
 
         if (config.getBoolean("features.games-gui")) {
+            new GamesCommand();
+            new JoinSortedCommand();
+
             checkOrSetConfig(modify, "games-gui.permission", "xpwars.gamesgui");
 
             checkOrSetConfig(modify, "games-gui.title", "&rGames [&e%free%&7/&6%total%&r]");
@@ -176,6 +190,7 @@ public class Configurator {
         }
 
         if (config.getBoolean("features.specials")) {
+            new RegisterSpecialListeners();
             checkOrSetConfig(modify, "specials.remote-tnt.fuse-ticks", 100);
             checkOrSetConfig(modify, "specials.remote-tnt.detonator-itemstack", "TRIPWIRE_HOOK;1;&eDetonator");
 
@@ -199,11 +214,54 @@ public class Configurator {
         }
 
         if (config.getBoolean("features.placeholders")) {
-            checkOrSetConfig(modify, "placeholders.waiting", "&aWaiting...");
-            checkOrSetConfig(modify, "placeholders.starting", "&eArena is starting in %time%!");
-            checkOrSetConfig(modify, "placeholders.running", "&cRunning! Time left: %time%");
-            checkOrSetConfig(modify, "placeholders.end-celebration", "&9Game ended!");
-            checkOrSetConfig(modify, "placeholders.rebuilding", "&7Rebuilding...");
+            if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+                try {
+                    new nfn11.xpwars.placeholderapi.PlaceholderAPIHook().register();
+
+                    checkOrSetConfig(modify, "placeholders.waiting", "&aWaiting...");
+                    checkOrSetConfig(modify, "placeholders.starting", "&eArena is starting in %time%!");
+                    checkOrSetConfig(modify, "placeholders.running", "&cRunning! Time left: %time%");
+                    checkOrSetConfig(modify, "placeholders.end-celebration", "&9Game ended!");
+                    checkOrSetConfig(modify, "placeholders.rebuilding", "&7Rebuilding...");
+                } catch (Throwable ignored) { }
+            }
+        }
+
+        if (config.getBoolean("features.kits")) {
+            checkOrSetConfig(modify, "kits.settings.rows", 4);
+            checkOrSetConfig(modify, "kits.settings.render-actual-rows", 6);
+            checkOrSetConfig(modify, "kits.settings.render-offset", 9);
+            checkOrSetConfig(modify, "kits.settings.render-header-start", 0);
+            checkOrSetConfig(modify, "kits.settings.render-footer-start", 45);
+            checkOrSetConfig(modify, "kits.settings.items-on-row", 9);
+            checkOrSetConfig(modify, "kits.settings.show-page-numbers", true);
+            checkOrSetConfig(modify, "kits.settings.inventory-type", "CHEST");
+
+            checkOrSetConfig(modify,"kits.list", new ArrayList<Object>() {{
+                add(new HashMap<String, Object>() {{
+                    put("code-name", "example1");
+                    put("display-icon", "IRON_SWORD;1;Example 1;It contains iron tools!");
+                    put("items", new ArrayList<String>() {{
+                        add("IRON_SWORD");
+                        add("IRON_PICKAXE");
+                        add("IRON_AXE");
+                        add("IRON_SHOVEL");
+                        add("IRON_HOE");
+                    }});
+                    put("price", "1000");
+                    put("price-type", "score");
+                }});
+                add(new HashMap<String, Object>() {{
+                    put("name", "example2");
+                    put("display-icon", "APPLE;3;Example 2;Everyone likes apples!; ;...right?");
+                    put("items", new ArrayList<String>() {{
+                        add("APPLE;64;Apples!");
+                        add("CARROT;1;Not an apple.");
+                    }});
+                    put("price", "300");
+                    put("price-type", "vault");
+                }});
+            }});
         }
 
         saveConfig();

@@ -81,12 +81,6 @@ public class GamesInventory implements Listener {
         options.setInventoryType(InventoryType.valueOf(
                 XPWars.getConfigurator().config.getString("games-gui.inventory-settings.inventory-type", "CHEST")));
 
-        options.setRender_header_start(0);
-        options.setRender_offset(9);
-        options.setRender_footer_start(45);
-        options.setRows(4);
-        options.setRender_actual_rows(6);
-
         Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
         createData();
 
