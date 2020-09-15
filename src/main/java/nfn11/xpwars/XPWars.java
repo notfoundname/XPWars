@@ -34,7 +34,8 @@ public class XPWars extends JavaPlugin implements Listener {
     public void onEnable() {
         instance = this;
         new XPWarsUtils();
-
+        new XPWarsCommand();
+        
         if (Main.getInstance() == null) {
             XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(), "did you download wrong bedwars plugin?"); // does this even work?
             Bukkit.getServer().getPluginManager().disablePlugin(this);
