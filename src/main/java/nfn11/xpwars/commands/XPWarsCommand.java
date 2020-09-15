@@ -27,6 +27,9 @@ public class XPWarsCommand extends BaseCommand {
     public void completeTab(List<String> completion, CommandSender sender, List<String> args) {
         if (args.size() == 1) {
             completion.addAll(Arrays.asList("reload", "open", "updates"));
+            if (XPWars.getConfigurator().config.getBoolean("features.kits")) {
+                completion.add("kits");
+            }
         }
         if (args.get(0).equalsIgnoreCase("open")) {
             if (args.size() == 2) completion.addAll(XPWarsUtils.getShopFileNames());
@@ -47,7 +50,8 @@ public class XPWarsCommand extends BaseCommand {
                 new XPWarsUpdateChecker(sender);
                 return true;
             }
-            if (args.get(0).equalsIgnoreCase("kits")) {
+            if (args.get(0).equalsIgnoreCase("kits") && XPWars.getConfigurator().config.getBoolean
+                    ("features.kits")) {
                 if (sender instanceof Player && Main.isPlayerInGame((Player) sender))
                     XPWars.getKitSelectionInventory().openForPlayer((Player) sender);
                 return true;
