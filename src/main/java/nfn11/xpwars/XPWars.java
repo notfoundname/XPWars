@@ -3,10 +3,13 @@ package nfn11.xpwars;
 import java.util.HashMap;
 
 import nfn11.xpwars.inventories.KitSelectionInventory;
+import nfn11.xpwars.listener.ActionBarMessageListener;
+import nfn11.xpwars.special.listener.RegisterSpecialListeners;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginEnableEvent;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.commands.BaseCommand;
@@ -34,7 +37,7 @@ public class XPWars extends JavaPlugin implements Listener {
     public void onEnable() {
         instance = this;
         new XPWarsUtils();
-
+        new XPWarsCommand();
         if (Main.getInstance() == null) {
             XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(), "did you download wrong bedwars plugin?"); // does this even work?
             Bukkit.getServer().getPluginManager().disablePlugin(this);
@@ -47,12 +50,26 @@ public class XPWars extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(this, this);
         levelShopInventory = new LevelShopInventory();
 
+        if (getConfigurator().config.getBoolean("features.action-bar-messages")) {
+            new ActionBarMessageListener();
+        }
+
+        if (getConfigurator().config.getBoolean("features.level-system")) {
+            new LevelSystemListener();
+        }
+
         if (getConfigurator().config.getBoolean("features.games-gui")) {
             gamesInventory = new GamesInventory(this);
+            new GamesCommand();
+            new JoinSortedCommand();
         }
 
         if (getConfigurator().config.getBoolean("features.kits")) {
             kitSelectionInventory = new KitSelectionInventory(this);
+        }
+
+        if (getConfigurator().config.getBoolean("features.specials")) {
+            new RegisterSpecialListeners();
         }
 
         XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(),
@@ -68,8 +85,8 @@ public class XPWars extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onBwReload(PluginEnableEvent event) {
-        String plugin = event.getPlugin().getName();
-        if (plugin.equalsIgnoreCase("BedWars")) {
+        Plugin plugin = event.getPlugin();
+        if (plugin.equals(Main.getInstance())) {
             Bukkit.getServer().getPluginManager().disablePlugin(XPWars.getInstance());
             Bukkit.getServer().getPluginManager().enablePlugin(XPWars.getInstance());
         }

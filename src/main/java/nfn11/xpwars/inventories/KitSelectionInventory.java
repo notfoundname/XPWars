@@ -39,9 +39,7 @@ public class KitSelectionInventory implements Listener {
 
         options = new Options(XPWars.getInstance());
         options.setPrefix(ChatColor.translateAlternateColorCodes('&',
-                XPWars.getConfigurator().getString("games-gui.title", "games")
-                        .replace("%free%", Integer.toString(XPWarsUtils.getFreeGamesInt()))
-                        .replace("%total%", Integer.toString(Main.getGameNames().size()))));
+                XPWars.getConfigurator().getString("kits.settings.title", "kits")));
         options.setShowPageNumber(true);
 
         ItemStack backItem = Main.getConfigurator().readDefinedItem("shopback", "BARRIER");

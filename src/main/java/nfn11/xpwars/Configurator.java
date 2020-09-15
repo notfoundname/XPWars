@@ -106,16 +106,12 @@ public class Configurator {
         }
 
         if (config.getBoolean("features.action-bar-messages")) {
-            new ActionBarMessageListener();
-
             checkOrSetConfig(modify, "action-bar-messages.in-lobby", "Your team: %team% [%pl_t%/%mxpl_t%]");
             checkOrSetConfig(modify, "action-bar-messages.in-game-alive", "Your team: %bed% %team%");
             checkOrSetConfig(modify, "action-bar-messages.in-game-spectator", "You are spectator!");
         }
 
         if (config.getBoolean("features.level-system")) {
-            new LevelSystemListener();
-
             checkOrSetConfig(modify, "level.messages.maxreached", "&cYou can't have more than %max% levels!");
             checkOrSetConfig(modify, "level.percentage.give-from-killed-player", 33);
             checkOrSetConfig(modify, "level.percentage.keep-from-death", 33);
@@ -146,8 +142,6 @@ public class Configurator {
         }
 
         if (config.getBoolean("features.games-gui")) {
-            new GamesCommand();
-            new JoinSortedCommand();
 
             checkOrSetConfig(modify, "games-gui.permission", "xpwars.gamesgui");
 
@@ -190,7 +184,6 @@ public class Configurator {
         }
 
         if (config.getBoolean("features.specials")) {
-            new RegisterSpecialListeners();
             checkOrSetConfig(modify, "specials.remote-tnt.fuse-ticks", 100);
             checkOrSetConfig(modify, "specials.remote-tnt.detonator-itemstack", "TRIPWIRE_HOOK;1;&eDetonator");
 
@@ -228,6 +221,7 @@ public class Configurator {
         }
 
         if (config.getBoolean("features.kits")) {
+            checkOrSetConfig(modify, "kits.settings.title", "&4BW &rKits");
             checkOrSetConfig(modify, "kits.settings.rows", 4);
             checkOrSetConfig(modify, "kits.settings.render-actual-rows", 6);
             checkOrSetConfig(modify, "kits.settings.render-offset", 9);
