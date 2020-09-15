@@ -233,7 +233,7 @@ public class Configurator {
 
             checkOrSetConfig(modify,"kits.list", new ArrayList<Object>() {{
                 add(new HashMap<String, Object>() {{
-                    put("code-name", "example1");
+                    put("name", "example1");
                     put("display-icon", "IRON_SWORD;1;Example 1;It contains iron tools!");
                     put("items", new ArrayList<String>() {{
                         add("IRON_SWORD");
@@ -242,8 +242,6 @@ public class Configurator {
                         add("IRON_SHOVEL");
                         add("IRON_HOE");
                     }});
-                    put("price", "1000");
-                    put("price-type", "score");
                 }});
                 add(new HashMap<String, Object>() {{
                     put("name", "example2");
@@ -252,8 +250,6 @@ public class Configurator {
                         add("APPLE;64;Apples!");
                         add("CARROT;1;Not an apple.");
                     }});
-                    put("price", "300");
-                    put("price-type", "vault");
                 }});
             }});
         }

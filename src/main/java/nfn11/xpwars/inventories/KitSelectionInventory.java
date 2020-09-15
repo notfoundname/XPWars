@@ -142,8 +142,8 @@ public class KitSelectionInventory implements Listener {
         if (reader.containsKey("kit-name")) {
             player.closeInventory();
 
-            selectedKit.put(event.getPlayer(), reader.getString("kit-name"));
-            event.getPlayer().sendMessage("selected kit: " + reader.getString("kit-name"));
+            selectedKit.replace(event.getPlayer(), reader.getString("kit-name"));
+            event.getPlayer().sendMessage("Selected kit: " + reader.getString("kit-name"));
             repaint();
             openedForPlayers.remove(player);
         }
@@ -151,14 +151,19 @@ public class KitSelectionInventory implements Listener {
 
     @EventHandler
     public void onGameStart(BedwarsGameStartedEvent event) {
-        for (Player player : event.getGame().getConnectedPlayers()) {
-            for (HashMap<String, Object> map : (List<HashMap<String, Object>>) XPWars.getConfigurator().config
-                    .getList("kits.list")) {
-                for (ItemStack item : StackParser.parseAll((Collection<Object>) map.get("items"))) {
-                    player.getInventory().addItem(item);
-                }
+        event.getGame().getConnectedPlayers().forEach(player -> {
+            if (selectedKit.containsKey(player)) {
+
+                XPWars.getConfigurator().config.getMapList("kits.list").forEach(map -> {
+                    if (selectedKit.get(player).equals(map.get("name"))) {
+                        StackParser.parseAll((Collection<Object>) map.get("items")).forEach(itemStack -> {
+                            player.getInventory().addItem(itemStack);
+                        });
+                    }
+                });
+                selectedKit.remove(player);
             }
-        }
+        });
     }
 
 }
