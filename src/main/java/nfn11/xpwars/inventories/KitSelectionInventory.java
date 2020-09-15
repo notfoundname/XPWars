@@ -115,7 +115,7 @@ public class KitSelectionInventory implements Listener {
             String name = (String) kit.get("name");
             ItemStack icon = StackParser.parse(kit.get("display-icon"));
             List<ItemStack> items = StackParser.parseAll((Collection<Object>) kit.get("items"));
-            int price = (int) kit.get("price");
+            int price = Integer.parseInt((String) kit.get("price"));
             String priceType = (String) kit.get("price-type");
 
             builder.add(icon)
