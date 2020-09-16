@@ -5,6 +5,7 @@ import java.util.HashMap;
 import nfn11.xpwars.inventories.KitSelectionInventory;
 import nfn11.xpwars.listener.ActionBarMessageListener;
 import nfn11.xpwars.special.listener.RegisterSpecialListeners;
+import nfn11.xpwars.utils.KitManager;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -67,6 +68,7 @@ public class XPWars extends JavaPlugin implements Listener {
 
         if (getConfigurator().config.getBoolean("features.kits")) {
             kitSelectionInventory = new KitSelectionInventory(this);
+            new KitManager();
         }
 
         if (getConfigurator().config.getBoolean("features.specials")) {

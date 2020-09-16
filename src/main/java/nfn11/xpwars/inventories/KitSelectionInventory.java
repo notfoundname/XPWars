@@ -1,6 +1,7 @@
 package nfn11.xpwars.inventories;
 
 import nfn11.xpwars.XPWars;
+import nfn11.xpwars.utils.KitManager;
 import nfn11.xpwars.utils.XPWarsUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -142,7 +143,9 @@ public class KitSelectionInventory implements Listener {
         if (reader.containsKey("kit-name")) {
             player.closeInventory();
 
-            selectedKit.replace(event.getPlayer(), reader.getString("kit-name"));
+            if (selectedKit.containsKey(event.getPlayer()))
+                selectedKit.remove(event.getPlayer());
+            selectedKit.put(event.getPlayer(), reader.getString("kit-name"));
             event.getPlayer().sendMessage("Selected kit: " + reader.getString("kit-name"));
             repaint();
             openedForPlayers.remove(player);
@@ -152,17 +155,7 @@ public class KitSelectionInventory implements Listener {
     @EventHandler
     public void onGameStart(BedwarsGameStartedEvent event) {
         event.getGame().getConnectedPlayers().forEach(player -> {
-            if (selectedKit.containsKey(player)) {
-
-                XPWars.getConfigurator().config.getMapList("kits.list").forEach(map -> {
-                    if (selectedKit.get(player).equals(map.get("name"))) {
-                        StackParser.parseAll((Collection<Object>) map.get("items")).forEach(itemStack -> {
-                            player.getInventory().addItem(itemStack);
-                        });
-                    }
-                });
-                selectedKit.remove(player);
-            }
+            KitManager.giveKit(player, KitManager.getKit(selectedKit.get(player)));
         });
     }
 
