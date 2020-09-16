@@ -28,10 +28,6 @@ public class GamesCommand extends BaseCommand {
 
     @Override
     public boolean execute(CommandSender sender, List<String> args) {
-        if (!sender.isOp() || BaseCommand.hasPermission(sender, ADMIN_PERMISSION, false) || !sender
-                .hasPermission(XPWars.getConfigurator().getString("games-gui.permission", "xpwars.gamesgui"))) {
-            return true;
-        }
         if (args.size() == 1) {
             Player player = Bukkit.getServer().getPlayer(args.get(0));
             if (player != null) {

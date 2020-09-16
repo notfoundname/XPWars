@@ -155,7 +155,8 @@ public class KitSelectionInventory implements Listener {
     @EventHandler
     public void onGameStart(BedwarsGameStartedEvent event) {
         event.getGame().getConnectedPlayers().forEach(player -> {
-            KitManager.giveKit(player, KitManager.getKit(selectedKit.get(player)));
+            if (selectedKit.containsKey(player))
+                KitManager.giveKit(player, KitManager.getKit(selectedKit.get(player)));
         });
     }
 

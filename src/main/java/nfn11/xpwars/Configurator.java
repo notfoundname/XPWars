@@ -143,8 +143,6 @@ public class Configurator {
 
         if (config.getBoolean("features.games-gui")) {
 
-            checkOrSetConfig(modify, "games-gui.permission", "xpwars.gamesgui");
-
             checkOrSetConfig(modify, "games-gui.title", "&rGames [&e%free%&7/&6%total%&r]");
 
             checkOrSetConfig(modify, "games-gui.inventory-settings.rows", 4);
