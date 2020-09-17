@@ -116,14 +116,14 @@ public class KitSelectionInventory implements Listener {
             String name = (String) kit.get("name");
             ItemStack icon = StackParser.parse(kit.get("display-icon"));
             List<ItemStack> items = StackParser.parseAll((Collection<Object>) kit.get("items"));
-            //int price = Integer.parseInt((String) kit.get("price"));
-            //String priceType = (String) kit.get("price-type");
+            int price = Integer.parseInt(kit.get("price").toString());
+            String priceType = kit.get("price-type").toString();
 
             builder.add(icon)
-                    .set("kit-items", items)
-                    //.set("kit-price", price)
-                    //.set("kit-price-type", priceType)
-                    .set("kit-name", name);
+                .set("kit-items", items)
+                .set("kit-price", price)
+                .set("kit-price-type", priceType)
+                .set("kit-name", name);
         }
 
         menu.load(builder);
@@ -143,10 +143,14 @@ public class KitSelectionInventory implements Listener {
         if (reader.containsKey("kit-name")) {
             player.closeInventory();
 
-            if (selectedKit.containsKey(event.getPlayer()))
-                selectedKit.remove(event.getPlayer());
-            selectedKit.put(event.getPlayer(), reader.getString("kit-name"));
-            event.getPlayer().sendMessage("Selected kit: " + reader.getString("kit-name"));
+            if (reader.getInt("kit-price") < Main.getPlayerStatisticsManager().getStatistic(player).getScore())
+                player.sendMessage("Not enough score to use this kit!");
+            else {
+                if (selectedKit.containsKey(player))
+                    selectedKit.remove(player);
+                selectedKit.put(player, reader.getString("kit-name"));
+                player.sendMessage("Selected kit: " + reader.getString("kit-name"));
+            }
             repaint();
             openedForPlayers.remove(player);
         }

@@ -1,6 +1,7 @@
 package nfn11.xpwars.listener;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -97,8 +98,8 @@ public class LevelSystemListener implements Listener {
                                         .replace("%max%", Integer.toString(max)));
                         return;
                     }
-                    event.getItem().remove();
                     player.setLevel(level + (res * picked.getAmount()));
+                    event.getItem().getItemStack().setType(Material.AIR);
                 }
             }
             if (!sound.equalsIgnoreCase("none"))

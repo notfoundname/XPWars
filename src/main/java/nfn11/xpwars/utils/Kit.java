@@ -10,12 +10,12 @@ public class Kit {
     private ItemStack icon;
     private List<ItemStack> items;
 
-    public Kit(String name, ItemStack icon, List<ItemStack> items/*, int price, String priceType*/) {
+    public Kit(String name, ItemStack icon, List<ItemStack> items, int price, String priceType) {
         this.name = name;
         this.icon = icon;
         this.items = items;
-        /*this.price = price;
-        this.priceType = priceType;*/
+        this.price = price;
+        this.priceType = priceType;
     }
 
     public String getName() {
@@ -29,7 +29,7 @@ public class Kit {
     public List<ItemStack> getItems() {
         return items;
     }
-/*
+
     public int getPrice() {
         return price;
     }
@@ -37,5 +37,5 @@ public class Kit {
     public String getPriceType() {
         return priceType;
     }
-*/
+
 }

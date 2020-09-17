@@ -233,6 +233,8 @@ public class Configurator {
                 add(new HashMap<String, Object>() {{
                     put("name", "example1");
                     put("display-icon", "IRON_SWORD;1;Example 1;It contains iron tools!");
+                    put("price", 100);
+                    put("price-type", "score");
                     put("items", new ArrayList<String>() {{
                         add("IRON_SWORD");
                         add("IRON_PICKAXE");
@@ -244,6 +246,8 @@ public class Configurator {
                 add(new HashMap<String, Object>() {{
                     put("name", "example2");
                     put("display-icon", "APPLE;3;Example 2;Everyone likes apples!; ;...right?");
+                    put("price", 50);
+                    put("price-type", "score");
                     put("items", new ArrayList<String>() {{
                         add("APPLE;64;Apples!");
                         add("CARROT;1;Not an apple.");
