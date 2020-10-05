@@ -25,44 +25,36 @@ public class LevelSystemListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onDeath(BedwarsPlayerKilledEvent event) {
         Player player = event.getPlayer();
+        String gamename = event.getGame().getName();
+        int player_level = player.getLevel();
 
-        if (XPWars.getConfigurator().config.getBoolean("features.level-system")) {
-            String gamename = event.getGame().getName();
+        ConfigurationSection arenaSettings = XPWars.getConfigurator().config.getConfigurationSection(
+                "level.per-arena-settings." + gamename);
+        ConfigurationSection globalSettings = XPWars.getConfigurator().config.getConfigurationSection("level");
 
-            int player_level = player.getLevel();
+        if (!arenaSettings.getBoolean("enable", true))
+            return;
 
-            ConfigurationSection arenaSettings = XPWars.getConfigurator().config.getConfigurationSection(
-                    "level.per-arena-settings." + gamename);
-            ConfigurationSection globalSettings = XPWars.getConfigurator().config.getConfigurationSection("level");
+        int keep_from_death_player = arenaSettings.getInt("percentage.keep-from-death",
+                globalSettings.getInt("percentage.keep-from-death",0));
+        int to_killer = arenaSettings.getInt("percentage.give-from-killed-player", 0);
+        int max = arenaSettings.getInt("maximum-xp", globalSettings.getInt("maximum-xp", 0));
 
-            if (!arenaSettings.getBoolean("enable", true))
-                return;
-
-            int keep_from_death_player = arenaSettings.getInt("percentage.keep-from-death",
-                    globalSettings.getInt("percentage.keep-from-death",0));
-            int to_killer = arenaSettings.getInt("percentage.give-from-killed-player", 0);
-            int max = arenaSettings.getInt("maximum-xp", globalSettings.getInt("maximum-xp", 0));
-
-            if (event.getKiller() != null) {
-                Player killer = event.getKiller();
-                int killer_level = killer.getLevel();
-                if (max != 0 && (killer_level + (player_level / 100) * to_killer) > max) {
-                    killer.setLevel(max);
-                } else
-                    killer.setLevel(killer_level + (player_level / 100) * to_killer);
-            }
-
-            if (max != 0 && ((player_level / 100) * keep_from_death_player) > max) {
-                player.setLevel(max);
+        if (event.getKiller() != null) {
+            Player killer = event.getKiller();
+            int killer_level = killer.getLevel();
+            if (max != 0 && (killer_level + (player_level / 100) * to_killer) > max) {
+                killer.setLevel(max);
             } else
-                player.setLevel((player_level / 100) * keep_from_death_player);
+                killer.setLevel(killer_level + (player_level / 100) * to_killer);
         }
+        if (max != 0 && ((player_level / 100) * keep_from_death_player) > max) {
+            player.setLevel(max);
+        } else player.setLevel((player_level / 100) * keep_from_death_player);
     }
 
     @EventHandler(priority = EventPriority.MONITOR) 
     public void onPickup(EntityPickupItemEvent event) {
-        if (!XPWars.getConfigurator().config.getBoolean("features.level-system"))
-            return;
         if (event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
             if (!Main.isPlayerInGame(player))

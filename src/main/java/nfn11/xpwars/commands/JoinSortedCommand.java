@@ -20,9 +20,7 @@ public class JoinSortedCommand extends BaseCommand {
 
     @Override
     public void completeTab(List<String> completion, CommandSender sender, List<String> args) {
-        if (args.size() == 1) {
-            completion.addAll(XPWarsUtils.getAllCategories());
-        }
+        if (args.size() == 1) completion.addAll(XPWarsUtils.getAllCategories());
     }
 
     @Override

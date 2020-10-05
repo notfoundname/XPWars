@@ -24,14 +24,11 @@ public class XPWarsUpdateChecker {
 
     public XPWarsUpdateChecker(CommandSender sender) {
         XPWarsUtils.xpwarsLog(sender, "Checking for updates...");
-        URL url = null;
+        URL url;
 
         try {
             url = new URL(XPWars.isSnapshotBuild() ? XPWARS_JENKINS_VER : XPWARS_SPIGOT_VER);
         } catch (MalformedURLException ignored) {
-        }
-
-        if (url == null) {
             XPWarsUtils.xpwarsLog(sender, XPWars.isSnapshotBuild() ? XPWARS_UPD_JENKINS_ERROR : XPWARS_UPD_SPIGOT_ERROR);
             return;
         }
@@ -40,7 +37,6 @@ public class XPWarsUpdateChecker {
 
     private void checkForNewVersion(CommandSender sender, URL url) {
         new BukkitRunnable() {
-            
             @Override
             public void run() {
                 float New;

@@ -2,6 +2,7 @@ package nfn11.xpwars;
 
 import java.util.HashMap;
 
+import nfn11.xpwars.inventories.DebugInventory;
 import nfn11.xpwars.inventories.KitSelectionInventory;
 import nfn11.xpwars.listener.ActionBarMessageListener;
 import nfn11.xpwars.special.listener.RegisterSpecialListeners;
@@ -33,24 +34,23 @@ public class XPWars extends JavaPlugin implements Listener {
     private LevelShopInventory levelShopInventory;
     private ShopInventory shopInventory;
     private KitSelectionInventory kitSelectionInventory;
+    private DebugInventory debugInventory;
 
     @Override
     public void onEnable() {
         instance = this;
         new XPWarsUtils();
         new XPWarsCommand();
+        debugInventory = new DebugInventory();
 
-        if (Main.getInstance() == null) {
-            XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(), "did you download wrong bedwars plugin?"); // does this even work?
+        if (Main.getInstance() == null)
             Bukkit.getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
+
         configurator = new Configurator(this);
         configurator.loadDefaults();
 
         InventoryListener.init(this);
         Bukkit.getPluginManager().registerEvents(this, this);
-        levelShopInventory = new LevelShopInventory();
 
         if (getConfigurator().config.getBoolean("features.action-bar-messages")) {
             new ActionBarMessageListener();
@@ -58,6 +58,7 @@ public class XPWars extends JavaPlugin implements Listener {
 
         if (getConfigurator().config.getBoolean("features.level-system")) {
             new LevelSystemListener();
+            levelShopInventory = new LevelShopInventory();
         }
 
         if (getConfigurator().config.getBoolean("features.games-gui")) {
@@ -111,7 +112,7 @@ public class XPWars extends JavaPlugin implements Listener {
         return instance.gamesInventory;
     }
 
-    public static LevelShopInventory getLevelShop() {
+    public static LevelShopInventory getLevelShopInventory() {
         return instance.levelShopInventory;
     }
 
@@ -119,6 +120,10 @@ public class XPWars extends JavaPlugin implements Listener {
         return instance.shopInventory;
     }
 
+    public static DebugInventory getDebugInventory() {
+        return instance.debugInventory;
+    }
+    
     public static KitSelectionInventory getKitSelectionInventory() {
         return instance.kitSelectionInventory;
     }

@@ -87,7 +87,6 @@ public class LevelShopInventory implements Listener {
         options.setGenericShopPriceTypeRequired(false);
         options.setPrefix(i18nonly("item_shop_name", "[BW] Shop"));
         options.setGenericShop(true);
-        options.setGenericShopPriceTypeRequired(true);
         options.setAnimationsEnabled(true);
 
         options.registerPlaceholder("team", (key, player, arguments) -> {
@@ -162,13 +161,8 @@ public class LevelShopInventory implements Listener {
 
     @EventHandler
     public void onShopOpen(BedwarsOpenShopEvent event) {
-        if (Main.getPlayerGameProfile(event.getPlayer()).isSpectator)
-            return;
-        if (XPWars.getConfigurator().config.getBoolean("features.level-system") || XPWars.getConfigurator()
-                .getBoolean("level.per-arena-settings." + event.getGame().getName() + "enable", true)) {
-            event.setResult(BedwarsOpenShopEvent.Result.DISALLOW_THIRD_PARTY_SHOP);
-            show(event.getPlayer(), event.getStore());
-        }
+        event.setResult(BedwarsOpenShopEvent.Result.DISALLOW_UNKNOWN);
+        show(event.getPlayer(), event.getStore());
     }
 
     public void show(Player player, GameStore store) {
@@ -197,7 +191,7 @@ public class LevelShopInventory implements Listener {
                 shopMap.get("default").openForPlayer(player);
             }
         } catch (Throwable ignored) {
-            player.sendMessage("Your shop.yml is invalid! Check it out or contact us on Discord.");
+            player.sendMessage("Your shop file is invalid! Check it out or contact us on Discord.");
         }
     }
 
@@ -211,74 +205,47 @@ public class LevelShopInventory implements Listener {
         Player player = event.getPlayer();
         Game game = Main.getPlayerGameProfile(player).getGame();
         MapReader reader = item.getReader();
+
         if (reader.containsKey("price")) {
             int price = reader.getInt("price");
             ItemStack stack = event.getStack();
 
-            if (!Main.isPlayerInGame(event.getPlayer())) {
-                ItemMeta meta = stack.getItemMeta();
-                List<String> newlore = new ArrayList<>();
-                List<String> lore = meta.getLore();
-                if (meta.hasLore()) {
-                    for (String s : lore) {
-                        newlore.add(s);
-                    }
+            boolean enabled = Main.getConfigurator().config.getBoolean("lore.generate-automatically", true);
+            enabled = reader.getBoolean("generate-lore", enabled);
+
+            List<String> loreText = reader.getStringList("generated-lore-text",
+                    Main.getConfigurator().config.getStringList("lore.text"));
+
+            if (enabled) {
+                ItemMeta stackMeta = stack.getItemMeta();
+                List<String> lore = new ArrayList<>();
+                if (stackMeta.hasLore())
+                    lore = stackMeta.getLore();
+
+                for (String s : loreText) {
+                    s = s.replaceAll("%price%", Integer.toString(price));
+                    s = s.replaceAll("%resource%",
+                            reader.containsKey("price-type") ? reader.getString("price-type") : "Level");
+                    s = s.replaceAll("%amount%", Integer.toString(stack.getAmount()));
+                    lore.add(s);
                 }
-                newlore.add(" ");
-                newlore.add(ChatColor.RESET + "Price: " + price + " "
-                        + (reader.containsKey("price-type") ? reader.getString("price-type") : "Levels"));
-                newlore.add(" ");
-                newlore.add(ChatColor.RESET + "Properties: " + (item.hasProperties() ? " " : "none"));
-                if (item.hasProperties()) {
-                    for (ItemProperty property : item.getProperties()) {
-                        if (property.hasName()) {
-                            newlore.add(property.getPropertyName());
-                        }
-                    }
-                }
-                meta.setLore(newlore);
-                stack.setItemMeta(meta);
-            } else {
-                boolean enabled = Main.getConfigurator().config.getBoolean("lore.generate-automatically", true);
-                enabled = reader.getBoolean("generate-lore", enabled);
+                stackMeta.setLore(lore);
+                stack.setItemMeta(stackMeta);
+                event.setStack(stack);
+            }
 
-                List<String> loreText = reader.getStringList("generated-lore-text",
-                        Main.getConfigurator().config.getStringList("lore.text"));
-
-                if (enabled) {
-
-                    ItemMeta stackMeta = stack.getItemMeta();
-                    List<String> lore = new ArrayList<>();
-                    if (stackMeta.hasLore()) {
-                        lore = stackMeta.getLore();
-                    }
-                    for (String s : loreText) {
-                        s = s.replaceAll("%price%", Integer.toString(price));
-                        s = s.replaceAll("%resource%",
-                                reader.containsKey("price-type") ? reader.getString("price-type") : "Level");
-                        s = s.replaceAll("%amount%", Integer.toString(stack.getAmount()));
-                        lore.add(s);
-                    }
-                    stackMeta.setLore(lore);
-                    stack.setItemMeta(stackMeta);
-                    event.setStack(stack);
-                }
-                if (item.hasProperties()) {
-                    for (ItemProperty property : item.getProperties()) {
-                        if (property.hasName()) {
-                            ItemStack newItem = event.getStack();
-                            BedwarsApplyPropertyToDisplayedItem applyEvent = new BedwarsApplyPropertyToDisplayedItem(
-                                    game, player, newItem, property.getReader(player).convertToMap());
-                            Main.getInstance().getServer().getPluginManager().callEvent(applyEvent);
-
-                            event.setStack(newItem);
-                        }
+            if (item.hasProperties()) {
+                for (ItemProperty property : item.getProperties()) {
+                    if (property.hasName()) {
+                        ItemStack newItem = event.getStack();
+                        BedwarsApplyPropertyToDisplayedItem applyEvent = new BedwarsApplyPropertyToDisplayedItem(
+                                game, player, newItem, property.getReader(player).convertToMap());
+                        Main.getInstance().getServer().getPluginManager().callEvent(applyEvent);
+                        event.setStack(newItem);
                     }
                 }
             }
-
         }
-
     }
 
     @EventHandler
@@ -337,7 +304,7 @@ public class LevelShopInventory implements Listener {
                 format.loadFromDataFolder(Main.getInstance().getDataFolder(), fileName);
             }
         } catch (Exception ignored) {
-            Bukkit.getLogger().severe("Wrong shop.yml configuration!");
+            Bukkit.getLogger().severe("Wrong shop file configuration!");
             Bukkit.getLogger().severe("Your villagers won't work, check validity of your YAML!");
         }
 
