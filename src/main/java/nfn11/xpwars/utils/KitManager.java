@@ -16,8 +16,8 @@ public class KitManager {
 
         XPWars.getConfigurator().config.getMapList("kits.list").forEach(map -> {
             list.add(new Kit(map.get("name").toString(), StackParser.parse(map.get("display-icon")),
-                    StackParser.parseAll((Collection<Object>) map.get("items")), // right now only score, later vault
-                    Integer.parseInt(map.get("price").toString()), "score"/*map.get("price-type").toString()*/));
+                    StackParser.parseAll((Collection<Object>) map.get("items")),
+                    Integer.parseInt(map.get("price").toString()), map.get("price-type").toString()));
         });
         return list;
     }
@@ -26,7 +26,7 @@ public class KitManager {
         for (Kit kit : getKits()) {
             if (name.equals(kit.getName()))
                 return kit;
-        };
+        }
         return null;
     }
 

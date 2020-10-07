@@ -21,6 +21,8 @@ import org.screamingsandals.bedwars.lib.sgui.inventory.GuiHolder;
 import org.screamingsandals.bedwars.lib.sgui.inventory.Options;
 import org.screamingsandals.bedwars.lib.sgui.utils.MapReader;
 import org.screamingsandals.bedwars.lib.sgui.utils.StackParser;
+import org.screamingsandals.bedwars.statistics.PlayerStatistic;
+import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 
 import java.util.*;
 
@@ -142,10 +144,27 @@ public class KitSelectionInventory implements Listener {
         MapReader reader = event.getItem().getReader();
         if (reader.containsKey("kit-name")) {
             player.closeInventory();
-
-            if (reader.getInt("kit-price") < Main.getPlayerStatisticsManager().getStatistic(player).getScore())
-                player.sendMessage("Not enough score to use this kit!");
-            else {
+            boolean pass = false;
+            switch (reader.getString("kit-price-type")) {
+                case "score":
+                    if (reader.getInt("kit-price") > Main.getPlayerStatisticsManager().getStatistic(player)
+                            .getCurrentScore())
+                        player.sendMessage("Not enough score to use this kit!");
+                    else pass = true;
+                    break;
+                case "vault":
+                    if (reader.getInt("kit-price") > XPWars.getEconomy().getBalance(player))
+                        player.sendMessage("Not enough money to buy this kit!");
+                    else pass = true;
+                    break;
+                default:
+                    player.sendMessage("This kit is temporary unavailable.");
+                    XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(), "&cPlayer tried to use kit "
+                            + reader.getString("kit-name") + ", but it has invalid price type!" +
+                            " Only score and vault are allowed.");
+                    break;
+            }
+            if (pass) {
                 if (selectedKit.containsKey(player))
                     selectedKit.remove(player);
                 selectedKit.put(player, reader.getString("kit-name"));
@@ -159,8 +178,20 @@ public class KitSelectionInventory implements Listener {
     @EventHandler
     public void onGameStart(BedwarsGameStartedEvent event) {
         event.getGame().getConnectedPlayers().forEach(player -> {
-            if (selectedKit.containsKey(player))
-                KitManager.giveKit(player, KitManager.getKit(selectedKit.get(player)));
+            if (selectedKit.containsKey(player)) {
+                KitManager.Kit kit = KitManager.getKit(selectedKit.get(player));
+                switch (kit.getPriceType().toLowerCase()) {
+                    case "score":
+                        PlayerStatistic stats = Main.getPlayerStatisticsManager().getStatistic(player);
+                        stats.setCurrentScore(stats.getCurrentScore() - kit.getPrice());
+                        break;
+                    case "vault":
+                        XPWars.getEconomy().withdrawPlayer(player, kit.getPrice());
+                        break;
+                }
+                KitManager.giveKit(player, kit);
+                selectedKit.remove(player);
+            }
         });
     }
 

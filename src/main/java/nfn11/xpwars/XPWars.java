@@ -2,6 +2,7 @@ package nfn11.xpwars;
 
 import java.util.HashMap;
 
+import net.milkbowl.vault.economy.Economy;
 import nfn11.xpwars.inventories.DebugInventory;
 import nfn11.xpwars.inventories.KitSelectionInventory;
 import nfn11.xpwars.listener.ActionBarMessageListener;
@@ -13,6 +14,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.commands.BaseCommand;
@@ -36,6 +38,7 @@ public class XPWars extends JavaPlugin implements Listener {
     private ShopInventory shopInventory;
     private KitSelectionInventory kitSelectionInventory;
     private DebugInventory debugInventory;
+    private static Economy econ = null;
 
     @Override
     public void onEnable() {
@@ -79,6 +82,16 @@ public class XPWars extends JavaPlugin implements Listener {
         if (getConfigurator().config.getBoolean("features.kits")) {
             kitSelectionInventory = new KitSelectionInventory(this);
             new KitManager();
+            try {
+                if (getServer().getPluginManager().getPlugin("Vault") == null) {
+                    RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+                    if (rsp != null)
+                        econ = rsp.getProvider();
+                }
+            } catch (Exception e) {
+                XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(),
+                        "&cUnable to register Vault economy, you won't be able to use it as price for kits!");
+            }
         }
 
         if (getConfigurator().config.getBoolean("features.specials"))
@@ -132,6 +145,10 @@ public class XPWars extends JavaPlugin implements Listener {
     
     public static KitSelectionInventory getKitSelectionInventory() {
         return instance.kitSelectionInventory;
+    }
+
+    public static Economy getEconomy() {
+        return econ;
     }
 
     public static boolean isSnapshotBuild() {

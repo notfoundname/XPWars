@@ -1,11 +1,12 @@
 name: XPWars
 version: ${project.version}
-description: '${BUILD_NUMBER}' # do not touch please, this is to make update checker working for snapshots
+description: '${BUILD_NUMBER}' # do not touch this line please, it's to make update checker working on snapshots
 main: nfn11.xpwars.XPWars
 api-version: 1.13
 depend:
 - BedWars
 softdepend:
 - PlaceholderAPI
+- Vault
 load: POSTWORLD
-author: notfoundname11, ConnorLinfoot (ActionBarAPI), ScreamingSandals (SimpleInventories)
+author: notfoundname11, ScreamingSandals (BedWars, SimpleInventories)
