@@ -1,6 +1,9 @@
 package nfn11.xpwars.listener;
 
+import me.clip.placeholderapi.PlaceholderAPI;
+import nfn11.xpwars.utils.XPWarsUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
@@ -37,20 +40,20 @@ public class LevelSystemListener implements Listener {
 
         int keep_from_death_player = arenaSettings.getInt("percentage.keep-from-death",
                 globalSettings.getInt("percentage.keep-from-death",0));
-        int to_killer = arenaSettings.getInt("percentage.give-from-killed-player", 0);
+        int to_killer = arenaSettings.getInt("percentage.give-from-killed-player",
+                globalSettings.getInt("percentage.give-from-killed-player", 0));
         int max = arenaSettings.getInt("maximum-xp", globalSettings.getInt("maximum-xp", 0));
 
         if (event.getKiller() != null) {
             Player killer = event.getKiller();
             int killer_level = killer.getLevel();
-            if (max != 0 && (killer_level + (player_level / 100) * to_killer) > max) {
+            if (max != 0 && (killer_level + (player_level / 100) * to_killer) > max)
                 killer.setLevel(max);
-            } else
-                killer.setLevel(killer_level + (player_level / 100) * to_killer);
+            else killer.setLevel(killer_level + (player_level / 100) * to_killer);
         }
-        if (max != 0 && ((player_level / 100) * keep_from_death_player) > max) {
+        if (max != 0 && ((player_level / 100) * keep_from_death_player) > max)
             player.setLevel(max);
-        } else player.setLevel((player_level / 100) * keep_from_death_player);
+        else player.setLevel((player_level / 100) * keep_from_death_player);
     }
 
     @EventHandler(priority = EventPriority.MONITOR) 
@@ -63,10 +66,8 @@ public class LevelSystemListener implements Listener {
             ConfigurationSection arenaSettings = XPWars.getConfigurator().config.getConfigurationSection(
                     "level.per-arena-settings." + Main.getPlayerGameProfile(player).getGame().getName());
             ConfigurationSection globalSettings = XPWars.getConfigurator().config.getConfigurationSection("level");
-            
-            if (arenaSettings == null) arenaSettings = globalSettings;
 
-            if (!arenaSettings.getBoolean("enable", true))
+            if (!arenaSettings.getBoolean("enable", globalSettings.getBoolean("enable", false)))
                 return;
 
             ItemStack picked = event.getItem().getItemStack();
@@ -85,9 +86,11 @@ public class LevelSystemListener implements Listener {
                 if (picked.isSimilar(type.getStack()) && picked.getItemMeta().equals(type.getStack().getItemMeta())) {
                     event.setCancelled(true);
                     if (max != 0 && (level + (res * picked.getAmount())) > max) {
-                        arenaSettings.getString("messages.maxreached", globalSettings.getString(
-                                "messages.maxreached","&cYou can't have more than %max% levels!")
-                                        .replace("%max%", Integer.toString(max)));
+                        String msg = ChatColor.translateAlternateColorCodes('&',
+                                arenaSettings.getString("messages.maxreached", globalSettings.getString(
+                                        "messages.maxreached","&cYou can't have more than %max% levels!")
+                                        .replace("%max%", Integer.toString(max))));
+                        XPWarsUtils.sendActionBar(player, msg);
                         return;
                     }
                     player.setLevel(level + (res * picked.getAmount()));

@@ -15,6 +15,11 @@ import nfn11.xpwars.XPWars;
 
 public class PlaceholderAPIHook extends me.clip.placeholderapi.expansion.PlaceholderExpansion {
 
+    private XPWars plugin;
+
+    public PlaceholderAPIHook(XPWars plugin) {
+        this.plugin = plugin;
+    }
     @Override
     public String getAuthor() {
         return "notfoundname11";
@@ -31,12 +36,12 @@ public class PlaceholderAPIHook extends me.clip.placeholderapi.expansion.Placeho
     }
 
     @Override
-    public boolean canRegister(){
+    public boolean canRegister() {
         return true;
     }
 
     @Override
-    public boolean persist(){
+    public boolean persist() {
         return true;
     }
 
@@ -99,22 +104,22 @@ public class PlaceholderAPIHook extends me.clip.placeholderapi.expansion.Placeho
             int gameTime = game.getGameTime();
             int countdown = game.getPauseCountdown();
 
-            if (status == GameStatus.WAITING && game.getMinPlayers() >= game.countConnectedPlayers()) {
-                return XPWars.getConfigurator().getString("placeholders.waiting", "waiting");
-            }
-            if (status == GameStatus.RUNNING) {
-                return XPWars.getConfigurator().getString("placeholders.running", "running").replace("%time%",
-                        game.getFormattedTimeLeft(gameTime - countdown).replace("%left%", game.getFormattedTimeLeft()));
-            }
-            if (status == GameStatus.WAITING && game.getMinPlayers() <= game.countConnectedPlayers()) {
-                return XPWars.getConfigurator().getString("placeholders.starting", "starting").replace("%left%",
-                        game.getFormattedTimeLeft());
-            }
-            if (status == GameStatus.GAME_END_CELEBRATING) {
-                return XPWars.getConfigurator().getString("placeholders.ended", "ended");
-            }
-            if (status == GameStatus.REBUILDING) {
-                return XPWars.getConfigurator().getString("placeholders.rebuilding", "rebuilding");
+            switch (status) {
+                case WAITING:
+                    if (game.getMinPlayers() >= game.countConnectedPlayers())
+                        return XPWars.getConfigurator().getString("placeholders.waiting", "waiting");
+                    if (game.getMinPlayers() <= game.countConnectedPlayers())
+                        return XPWars.getConfigurator().getString("placeholders.starting", "starting")
+                                .replace("%left%", game.getFormattedTimeLeft());
+                case RUNNING:
+                    return XPWars.getConfigurator().getString("placeholders.running", "running").replace("%time%",
+                            game.getFormattedTimeLeft(gameTime - countdown).replace("%left%", game.getFormattedTimeLeft()));
+                case GAME_END_CELEBRATING:
+                    return XPWars.getConfigurator().getString("placeholders.ended", "ended");
+                case REBUILDING:
+                    return XPWars.getConfigurator().getString("placeholders.rebuilding", "rebuilding");
+                default:
+                    return "null";
             }
         }
 
@@ -144,9 +149,7 @@ public class PlaceholderAPIHook extends me.clip.placeholderapi.expansion.Placeho
             Game game = Main.getGame(parsed);
             if (game == null)
                 return "";
-            int gameTime = game.getGameTime();
-            int countdown = game.getPauseCountdown();
-            return game.getFormattedTimeLeft(gameTime - countdown);
+            return game.getFormattedTimeLeft(game.getGameTime() - game.getPauseCountdown());
         }
 
         if (Main.isPlayerInGame(player)) {
@@ -156,45 +159,39 @@ public class PlaceholderAPIHook extends me.clip.placeholderapi.expansion.Placeho
             GameStatus status = game.getStatus();
             int gameTime = game.getGameTime();
             int pauseCountdown = game.getPauseCountdown();
+            int countdown = game.getPauseCountdown();
 
-            if (parsed.equals("color")) {
-                if (gPlayer.isSpectator)
-                    return ChatColor.GRAY + "";
-                if (team != null) {
-                    return team.teamInfo.color.chatColor + "";
-                }
-                return ChatColor.RESET + "";
-            }
-
-            if (parsed.equals("tl")) {
-                return Main.getPlayerGameProfile(player).getGame().getFormattedTimeLeft();
-            }
-
-            if (parsed.equals("tp")) {
-                return Main.getPlayerGameProfile(player).getGame().getFormattedTimeLeft(gameTime - pauseCountdown);
-            }
-
-            if (parsed.equals("state")) {
-                int countdown = game.getPauseCountdown();
-
-                if (status == GameStatus.WAITING && game.getMinPlayers() >= game.countConnectedPlayers()) {
-                    return XPWars.getConfigurator().getString("placeholders.waiting", "waiting");
-                }
-                if (status == GameStatus.RUNNING) {
-                    return XPWars.getConfigurator().getString("placeholders.running", "running").replace("%time%", game
-                            .getFormattedTimeLeft(gameTime - countdown).replace("%left%", game.getFormattedTimeLeft()));
-                }
-                if (status == GameStatus.WAITING
-                        && Main.getGame(parsed).getMinPlayers() <= Main.getGame(parsed).countConnectedPlayers()) {
-                    return XPWars.getConfigurator().getString("placeholders.starting", "starting").replace("%left%",
-                            Main.getGame(parsed).getFormattedTimeLeft());
-                }
-                if (status == GameStatus.GAME_END_CELEBRATING) {
-                    return XPWars.getConfigurator().getString("placeholders.ended", "ended");
-                }
-                if (status == GameStatus.REBUILDING) {
-                    return XPWars.getConfigurator().getString("placeholders.rebuilding", "rebuilding");
-                }
+            switch (parsed.toLowerCase()) {
+                case "color":
+                    if (gPlayer.isSpectator)
+                        return ChatColor.GRAY + "";
+                    if (team != null)
+                        return team.teamInfo.color.chatColor + "";
+                    return ChatColor.RESET + "";
+                case "tl":
+                    return Main.getPlayerGameProfile(player).getGame().getFormattedTimeLeft();
+                case "tp":
+                    return Main.getPlayerGameProfile(player).getGame().getFormattedTimeLeft(gameTime - pauseCountdown);
+                case "state":
+                    switch (status) {
+                        case WAITING:
+                            if (game.getMinPlayers() >= game.countConnectedPlayers())
+                                return XPWars.getConfigurator().getString("placeholders.waiting", "waiting");
+                            if (game.getMinPlayers() <= game.countConnectedPlayers())
+                                return XPWars.getConfigurator().getString("placeholders.starting", "starting")
+                                        .replace("%left%", game.getFormattedTimeLeft());
+                        case RUNNING:
+                            return XPWars.getConfigurator().getString("placeholders.running", "running").replace("%time%",
+                                    game.getFormattedTimeLeft(gameTime - countdown).replace("%left%", game.getFormattedTimeLeft()));
+                        case GAME_END_CELEBRATING:
+                            return XPWars.getConfigurator().getString("placeholders.ended", "ended");
+                        case REBUILDING:
+                            return XPWars.getConfigurator().getString("placeholders.rebuilding", "rebuilding");
+                        default:
+                            return "null";
+                    }
+                default:
+                    return "null";
             }
         }
         if (parsed.contains("_stats_")) {
@@ -231,7 +228,6 @@ public class PlaceholderAPIHook extends me.clip.placeholderapi.expansion.Placeho
 
                 PlayerStatistic stats = Main.getPlayerStatisticsManager().getStatistic(Bukkit.getPlayer(parsed));
                 return Integer.toString(stats.getCurrentLoses() + stats.getLoses());
-
             }
 
             if (parsed.endsWith("_score")) {

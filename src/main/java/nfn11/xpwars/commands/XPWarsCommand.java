@@ -54,17 +54,29 @@ public class XPWarsCommand extends BaseCommand {
     @Override
     public boolean execute(CommandSender sender, List<String> args) throws IndexOutOfBoundsException {
         switch (args.get(0).toLowerCase()) {
+            case "help":
+                XPWarsUtils.xpwarsLog(sender, "- Version " + XPWars.getInstance().getDescription().getVersion()
+                + (XPWars.isSnapshotBuild() ? XPWars.getBuildNumber() : "Stable"));
+                XPWarsUtils.xpwarsLog(sender, "by &enotfoundname11");
+                XPWarsUtils.xpwarsLog(sender, "Available commands:");
+                XPWarsUtils.xpwarsLog(sender, "- /bw xpwars help - &eShow this");
+                XPWarsUtils.xpwarsLog(sender, "- /bw xpwars reload (or /bw reload) - &eReload addon");
+                XPWarsUtils.xpwarsLog(sender, "- /bw xpwars updates - &eCheck for updates");
+                XPWarsUtils.xpwarsLog(sender, "- /bw xpwars kits - &eOpen Kits GUI if enabled");
+                XPWarsUtils.xpwarsLog(sender, "- /bw xpwars open <shop file> <debug/level> [player name] - " +
+                        "&eOpen shop file in debug mode or level (if enabled)");
+                XPWarsUtils.xpwarsLog(sender, " ");
             case "reload":
                 Bukkit.getServer().getPluginManager().disablePlugin(XPWars.getInstance());
                 Bukkit.getServer().getPluginManager().enablePlugin(XPWars.getInstance());
-                XPWarsUtils.xpwarsLog(sender, "Addon reloaded!");
+                XPWarsUtils.xpwarsLog(sender, "&aReloaded!");
                 break;
             case "updates":
                 new XPWarsUpdateChecker(sender);
                 break;
             case "kits":
                 if (!XPWars.getConfigurator().config.getBoolean("features.kits")) {
-                    XPWarsUtils.xpwarsLog(sender, i18n("unknown_usage"));
+                    sender.sendMessage(i18n("unknown_usage"));
                     break;
                 }
                 if (sender instanceof Player && Main.isPlayerInGame((Player) sender) &&
@@ -77,8 +89,10 @@ public class XPWarsCommand extends BaseCommand {
                     Player player = null;
                     if (args.size() == 4) {
                         player = Bukkit.getPlayer(args.get(3));
-                        if (player == null)
-                            sender.sendMessage("Invalid player: " + args.get(3));
+                        if (player == null) {
+                            XPWarsUtils.xpwarsLog(sender, "&cInvalid player: &4" + args.get(3));
+                            break;
+                        }
                     } else if (args.size() == 3 && sender instanceof Player)
                         player = (Player) sender;
                     if (args.get(2).equalsIgnoreCase("debug"))
@@ -88,10 +102,10 @@ public class XPWarsCommand extends BaseCommand {
                         XPWars.getLevelShopInventory().show(player, new GameStore(null, args.get(1),
                                 false, i18nonly("item_shop_name", "[BW] Shop"), false, false));
                     break;
-                } else XPWarsUtils.xpwarsLog(sender, "Invalid shop file: " + args.get(1));
+                } else XPWarsUtils.xpwarsLog(sender, "&cInvalid shop file: &4" + args.get(1));
                 break;
             default:
-                XPWarsUtils.xpwarsLog(sender, i18n("unknown_usage"));
+                sender.sendMessage(i18n("unknown_usage"));
                 break;
         }
         return true;

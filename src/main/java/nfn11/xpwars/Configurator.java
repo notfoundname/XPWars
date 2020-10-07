@@ -204,18 +204,13 @@ public class Configurator {
             checkOrSetConfig(modify, "specials.portable-shop.baby", false);
         }
 
-        if (config.getBoolean("features.placeholders")) {
-            if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-                try {
-                    new nfn11.xpwars.placeholderapi.PlaceholderAPIHook().register();
-
-                    checkOrSetConfig(modify, "placeholders.waiting", "&aWaiting...");
-                    checkOrSetConfig(modify, "placeholders.starting", "&eArena is starting in %time%!");
-                    checkOrSetConfig(modify, "placeholders.running", "&cRunning! Time left: %time%");
-                    checkOrSetConfig(modify, "placeholders.end-celebration", "&9Game ended!");
-                    checkOrSetConfig(modify, "placeholders.rebuilding", "&7Rebuilding...");
-                } catch (Throwable ignored) { }
-            }
+        if (config.getBoolean("features.placeholders")
+                && Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            checkOrSetConfig(modify, "placeholders.waiting", "&aWaiting...");
+            checkOrSetConfig(modify, "placeholders.starting", "&eArena is starting in %time%!");
+            checkOrSetConfig(modify, "placeholders.running", "&cRunning! Time left: %time%");
+            checkOrSetConfig(modify, "placeholders.end-celebration", "&9Game ended!");
+            checkOrSetConfig(modify, "placeholders.rebuilding", "&7Rebuilding...");
         }
 
         if (config.getBoolean("features.kits")) {

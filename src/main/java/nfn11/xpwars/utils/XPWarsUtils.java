@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -28,16 +29,15 @@ public class XPWarsUtils {
         File[] files = Main.getInstance().getDataFolder().listFiles();
 
         for (File file : files) {
-            if (file.isFile() && !notAllowed.contains(file.getName())) {
+            if (file.isFile() && !notAllowed.contains(file.getName()))
                 list.add(file.getName());
-            }
         }
         return list;
     }
 
     public static void xpwarsLog(CommandSender sender, String msg) {
+        msg = "[&eXPWars&r] " + msg;
         msg = ChatColor.translateAlternateColorCodes('&', msg);
-        msg = "[XPWars] " + msg;
         sender.sendMessage(msg);
     }
 
@@ -72,9 +72,8 @@ public class XPWarsUtils {
         List<Game> list = new ArrayList<>();
         for (String s : XPWars.getConfigurator().config.getConfigurationSection("games-gui.categories." + category)
                 .getStringList("arenas")) {
-            if (Main.isGameExists(s)) {
+            if (Main.isGameExists(s))
                 list.add(Main.getGame(s));
-            }
         }
         if (list.isEmpty())
             return null;
@@ -84,43 +83,36 @@ public class XPWarsUtils {
     public static org.screamingsandals.bedwars.api.game.Game getGameWithHighestPlayersInCategory(String category) {
         TreeMap<Integer, org.screamingsandals.bedwars.api.game.Game> gameList = new TreeMap<>();
         for (org.screamingsandals.bedwars.api.game.Game game : getGamesInCategory(category)) {
-            if (game.getStatus() != GameStatus.WAITING) {
+            if (game.getStatus() != GameStatus.WAITING
+                    || game.countConnectedPlayers() >= game.getMaxPlayers()
+                    || game.countConnectedPlayers() == 0)
                 continue;
-            }
-            if (game.countConnectedPlayers() >= game.getMaxPlayers()) {
-                continue;
-            }
-            if (game.countConnectedPlayers() == 0) {
-                continue;
-            }
             gameList.put(game.countConnectedPlayers(), game);
         }
         Map.Entry<Integer, org.screamingsandals.bedwars.api.game.Game> lastEntry = gameList.lastEntry();
-        if (lastEntry == null) {
+        if (lastEntry == null)
             return getFirstWaitingGameInCategory(category);
-        }
         return lastEntry.getValue();
     }
 
     public static org.screamingsandals.bedwars.api.game.Game getFirstWaitingGameInCategory(String category) {
         final TreeMap<Integer, Game> availableGames = new TreeMap<>();
         getGamesInCategory(category).forEach(game -> {
-            if (game.getStatus() != GameStatus.WAITING) {
+            if (game.getStatus() != GameStatus.WAITING)
                 return;
-            }
             availableGames.put(game.getConnectedPlayers().size(), game);
         });
-
-        if (availableGames.isEmpty()) {
+        if (availableGames.isEmpty())
             return null;
-        }
-
         return availableGames.lastEntry().getValue();
     }
 
     @SuppressWarnings("deprecation")
     public static void sendActionBar(Player player, String message) {
-        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message));
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null)
+            message = PlaceholderAPI.setPlaceholders(player, message);
+        player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
+                TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', message)));
     }
 
 }

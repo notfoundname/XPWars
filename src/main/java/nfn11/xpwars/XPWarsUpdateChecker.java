@@ -23,7 +23,7 @@ public class XPWarsUpdateChecker {
     private static final String XPWARS_UPD_NONE = "&eNo updates available.";
 
     public XPWarsUpdateChecker(CommandSender sender) {
-        XPWarsUtils.xpwarsLog(sender, "Checking for updates...");
+        XPWarsUtils.xpwarsLog(sender, "&aChecking for updates...");
         URL url;
 
         try {

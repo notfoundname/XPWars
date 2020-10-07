@@ -2,6 +2,7 @@ package nfn11.xpwars.utils;
 
 import nfn11.xpwars.XPWars;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.lib.sgui.utils.StackParser;
 
 import java.util.ArrayList;
@@ -33,6 +34,43 @@ public class KitManager {
         kit.getItems().forEach(itemStack -> {
             player.getInventory().addItem(itemStack);
         });
+    }
+
+    public static class Kit {
+
+        private String name, priceType;
+        private int price;
+        private ItemStack icon;
+        private List<ItemStack> items;
+
+        public Kit(String name, ItemStack icon, List<ItemStack> items, int price, String priceType) {
+            this.name = name;
+            this.icon = icon;
+            this.items = items;
+            this.price = price;
+            this.priceType = priceType;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public ItemStack getIcon() {
+            return icon;
+        }
+
+        public List<ItemStack> getItems() {
+            return items;
+        }
+
+        public int getPrice() {
+            return price;
+        }
+
+        public String getPriceType() {
+            return priceType;
+        }
+
     }
 
 }

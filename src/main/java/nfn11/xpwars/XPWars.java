@@ -5,6 +5,7 @@ import java.util.HashMap;
 import nfn11.xpwars.inventories.DebugInventory;
 import nfn11.xpwars.inventories.KitSelectionInventory;
 import nfn11.xpwars.listener.ActionBarMessageListener;
+import nfn11.xpwars.placeholderapi.PlaceholderAPIHook;
 import nfn11.xpwars.special.listener.RegisterSpecialListeners;
 import nfn11.xpwars.utils.KitManager;
 import org.bukkit.Bukkit;
@@ -52,9 +53,17 @@ public class XPWars extends JavaPlugin implements Listener {
         InventoryListener.init(this);
         Bukkit.getPluginManager().registerEvents(this, this);
 
-        if (getConfigurator().config.getBoolean("features.action-bar-messages")) {
-            new ActionBarMessageListener();
+        try {
+            if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null
+                    && XPWars.getConfigurator().config.getBoolean("features.placeholders"))
+                new PlaceholderAPIHook(this).register();
+        } catch (Exception e) {
+            XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(),
+                    "&cUnable to register PlaceholderAPI Expansion! Make sure you have PAPI correctly installed!");
         }
+
+        if (getConfigurator().config.getBoolean("features.action-bar-messages"))
+            new ActionBarMessageListener();
 
         if (getConfigurator().config.getBoolean("features.level-system")) {
             new LevelSystemListener();
@@ -72,9 +81,8 @@ public class XPWars extends JavaPlugin implements Listener {
             new KitManager();
         }
 
-        if (getConfigurator().config.getBoolean("features.specials")) {
+        if (getConfigurator().config.getBoolean("features.specials"))
             new RegisterSpecialListeners();
-        }
 
         XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(),
                 "&aLoaded XPWars &2" + XPWars.getInstance().getDescription().getVersion()
@@ -82,15 +90,13 @@ public class XPWars extends JavaPlugin implements Listener {
         XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(), "&aXPWars addon by &enotfoundname11");
         XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(), "&9https://github.com/notfoundname/XPWars/wiki");
 
-        if (configurator.config.getBoolean("check-for-updates")) {
+        if (configurator.config.getBoolean("check-for-updates"))
             new XPWarsUpdateChecker(Bukkit.getConsoleSender());
-        }
     }
 
     @EventHandler
     public void onBwReload(PluginEnableEvent event) {
-        Plugin plugin = event.getPlugin();
-        if (plugin.equals(Main.getInstance())) {
+        if (event.getPlugin().equals(Main.getInstance())) {
             Bukkit.getServer().getPluginManager().disablePlugin(XPWars.getInstance());
             Bukkit.getServer().getPluginManager().enablePlugin(XPWars.getInstance());
         }
