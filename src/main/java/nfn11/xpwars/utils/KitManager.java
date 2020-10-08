@@ -15,9 +15,13 @@ public class KitManager {
         List<Kit> list = new ArrayList<>();
 
         XPWars.getConfigurator().config.getMapList("kits.list").forEach(map -> {
-            list.add(new Kit(map.get("name").toString(), StackParser.parse(map.get("display-icon")),
+            list.add(new Kit(
+                    map.get("name").toString(),
+                    StackParser.parse(map.get("display-icon")),
                     StackParser.parseAll((Collection<Object>) map.get("items")),
-                    Integer.parseInt(map.get("price").toString()), map.get("price-type").toString()));
+                    Integer.parseInt(map.get("price").toString().split(":")[0]),
+                    map.get("price-type").toString().split(":")[1],
+                    Boolean.parseBoolean(map.get("give-on-respawn").toString())));
         });
         return list;
     }
@@ -42,13 +46,15 @@ public class KitManager {
         private int price;
         private ItemStack icon;
         private List<ItemStack> items;
+        private boolean giveOnRespawn;
 
-        public Kit(String name, ItemStack icon, List<ItemStack> items, int price, String priceType) {
+        public Kit(String name, ItemStack icon, List<ItemStack> items, int price, String priceType, boolean giveOnRespawn) {
             this.name = name;
             this.icon = icon;
             this.items = items;
             this.price = price;
             this.priceType = priceType;
+            this.giveOnRespawn = giveOnRespawn;
         }
 
         public String getName() {
@@ -71,6 +77,9 @@ public class KitManager {
             return priceType;
         }
 
+        public boolean isGiveOnRespawn() {
+            return giveOnRespawn;
+        }
     }
 
 }

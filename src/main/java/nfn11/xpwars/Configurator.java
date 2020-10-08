@@ -214,6 +214,10 @@ public class Configurator {
         }
 
         if (config.getBoolean("features.kits")) {
+            checkOrSetConfig(modify, "kits.messages.not-enough-score", "&cNot enough score to use this kit!");
+            checkOrSetConfig(modify, "kits.messages.not-enough-vault", "&cNot enough money to buy this kit!");
+            checkOrSetConfig(modify, "kits.messages.selected", "&aSelected kit: &4%kit%");
+
             checkOrSetConfig(modify, "kits.settings.title", "&4BW &rKits");
             checkOrSetConfig(modify, "kits.settings.rows", 4);
             checkOrSetConfig(modify, "kits.settings.render-actual-rows", 6);
@@ -228,8 +232,8 @@ public class Configurator {
                 add(new HashMap<String, Object>() {{
                     put("name", "example1");
                     put("display-icon", "IRON_SWORD;1;Example 1;It contains iron tools!");
-                    put("price", 100);
-                    put("price-type", "score");
+                    put("price", "100:score");
+                    put("give-on-respawn", false);
                     put("items", new ArrayList<String>() {{
                         add("IRON_SWORD");
                         add("IRON_PICKAXE");
@@ -240,9 +244,9 @@ public class Configurator {
                 }});
                 add(new HashMap<String, Object>() {{
                     put("name", "example2");
-                    put("display-icon", "APPLE;3;Example 2;Everyone likes apples!; ;...right?");
-                    put("price", 50);
-                    put("price-type", "score");
+                    put("display-icon", "APPLE;3;Example 2;Everyone like apples!;...;......right?");
+                    put("price", "50:vault");
+                    put("give-on-respawn", true);
                     put("items", new ArrayList<String>() {{
                         add("APPLE;64;Apples!");
                         add("CARROT;1;Not an apple.");

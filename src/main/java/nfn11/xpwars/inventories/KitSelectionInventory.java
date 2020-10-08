@@ -115,14 +115,16 @@ public class KitSelectionInventory implements Listener {
             String name = (String) kit.get("name");
             ItemStack icon = StackParser.parse(kit.get("display-icon"));
             List<ItemStack> items = StackParser.parseAll((Collection<Object>) kit.get("items"));
-            int price = Integer.parseInt(kit.get("price").toString());
-            String priceType = kit.get("price-type").toString();
+            int price = Integer.parseInt(kit.get("price").toString().split(":")[0]);
+            String priceType = kit.get("price").toString().split(":")[1].toLowerCase();
+            boolean giveOnRespawn = Boolean.parseBoolean(kit.get("give-on-respawm").toString());
 
             builder.add(icon)
                 .set("kit-items", items)
                 .set("kit-price", price)
                 .set("kit-price-type", priceType)
-                .set("kit-name", name);
+                .set("kit-name", name)
+                .set("kit-give-on-respawn", giveOnRespawn);
         }
 
         menu.load(builder);
