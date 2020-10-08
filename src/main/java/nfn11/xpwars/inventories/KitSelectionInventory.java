@@ -21,11 +21,7 @@ import org.screamingsandals.bedwars.lib.sgui.inventory.GuiHolder;
 import org.screamingsandals.bedwars.lib.sgui.inventory.Options;
 import org.screamingsandals.bedwars.lib.sgui.utils.MapReader;
 import org.screamingsandals.bedwars.lib.sgui.utils.StackParser;
-import org.screamingsandals.bedwars.statistics.PlayerStatistic;
-import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
-
 import java.util.*;
-
 import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
 public class KitSelectionInventory implements Listener {
@@ -112,7 +108,8 @@ public class KitSelectionInventory implements Listener {
         SimpleInventories menu = new SimpleInventories(options);
         FormatBuilder builder = new FormatBuilder();
 
-        List<HashMap<String, Object>> kits = (List<HashMap<String, Object>>) XPWars.getConfigurator().config.getList("kits.list");
+        List<HashMap<String, Object>> kits = (List<HashMap<String, Object>>)
+                XPWars.getConfigurator().config.getList("kits.list");
 
         for (HashMap<String, Object> kit : kits) {
             String name = (String) kit.get("name");
@@ -147,8 +144,9 @@ public class KitSelectionInventory implements Listener {
             boolean pass = false;
             switch (reader.getString("kit-price-type")) {
                 case "score":
-                    if (reader.getInt("kit-price") > Main.getPlayerStatisticsManager().getStatistic(player)
-                            .getCurrentScore())
+                    if (reader.getInt("kit-price") >
+                            (Main.getPlayerStatisticsManager().getStatistic(player).getCurrentScore()
+                                    + Main.getPlayerStatisticsManager().getStatistic(player).getScore()))
                         player.sendMessage("Not enough score to use this kit!");
                     else pass = true;
                     break;
@@ -180,15 +178,8 @@ public class KitSelectionInventory implements Listener {
         event.getGame().getConnectedPlayers().forEach(player -> {
             if (selectedKit.containsKey(player)) {
                 KitManager.Kit kit = KitManager.getKit(selectedKit.get(player));
-                switch (kit.getPriceType().toLowerCase()) {
-                    case "score":
-                        PlayerStatistic stats = Main.getPlayerStatisticsManager().getStatistic(player);
-                        stats.setCurrentScore(stats.getCurrentScore() - kit.getPrice());
-                        break;
-                    case "vault":
-                        XPWars.getEconomy().withdrawPlayer(player, kit.getPrice());
-                        break;
-                }
+                if (kit.getPriceType().equalsIgnoreCase("vault"))
+                    XPWars.getEconomy().withdrawPlayer(player, kit.getPrice());
                 KitManager.giveKit(player, kit);
                 selectedKit.remove(player);
             }
