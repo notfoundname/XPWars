@@ -1,9 +1,7 @@
 package nfn11.xpwars;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -14,57 +12,34 @@ import org.bukkit.scheduler.BukkitRunnable;
 import nfn11.xpwars.utils.XPWarsUtils;
 
 public class XPWarsUpdateChecker {
-    private static final String XPWARS_SPIGOT_VER = "https://api.spigotmc.org/legacy/update.php?resource=76895";
-    private static final String XPWARS_JENKINS_VER = "https://ci.screamingsandals.org/job/XPWars/lastSuccessfulBuild/buildNumber";
-    private static final String XPWARS_UPD_SPIGOT_ERROR = "&cUnable to check for new version.";
-    private static final String XPWARS_UPD_JENKINS_ERROR = "&cUnable to check for new snapshot version.";
-    private static final String XPWARS_UPD_FOUND_STABLE = "&a&lFOUND NEW STABLE VERSION: %ver%";
-    private static final String XPWARS_UPD_FOUND_SNAP = "&a&lFOUND NEW SNAPSHOT BUILD: %ver%";
+    private static final String XPWARS_UPD_FOUND_STABLE = "&a&lFound new stable version: ";
     private static final String XPWARS_UPD_NONE = "&eNo updates available.";
+    private static boolean hasUpdate = false;
 
-    public XPWarsUpdateChecker(CommandSender sender) {
+    public static boolean checkForUpdate(CommandSender sender) {
         XPWarsUtils.xpwarsLog(sender, "&aChecking for updates...");
-        URL url;
-
-        try {
-            url = new URL(XPWars.isSnapshotBuild() ? XPWARS_JENKINS_VER : XPWARS_SPIGOT_VER);
-        } catch (MalformedURLException ignored) {
-            XPWarsUtils.xpwarsLog(sender, XPWars.isSnapshotBuild() ? XPWARS_UPD_JENKINS_ERROR : XPWARS_UPD_SPIGOT_ERROR);
-            return;
-        }
-        checkForNewVersion(sender, url);
-    }
-
-    private void checkForNewVersion(CommandSender sender, URL url) {
         new BukkitRunnable() {
             @Override
             public void run() {
-                float New;
                 try {
+                    URL url = new URL("https://api.spigotmc.org/legacy/update.php?resource=76895");
                     final HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
                     connection.setRequestMethod("GET");
-                    New = Float.parseFloat(
+                    double newVersion = Float.parseFloat(
                             new BufferedReader(new InputStreamReader(connection.getInputStream())).readLine());
-                    if (New == (XPWars.isSnapshotBuild() ? XPWars.getBuildNumber() : XPWars.getVersion()) ||
-                            New <= (XPWars.isSnapshotBuild() ? XPWars.getBuildNumber() : XPWars.getVersion())) {
+                    if (newVersion <= XPWars.getVersion()) {
                         XPWarsUtils.xpwarsLog(sender, XPWARS_UPD_NONE);
-                        cancel();
-                        return;
                     }
-                } catch (IOException e) {
-                    XPWarsUtils.xpwarsLog(sender, XPWARS_UPD_NONE);
+                    else XPWarsUtils.xpwarsLog(sender, XPWARS_UPD_FOUND_STABLE + newVersion);
                     cancel();
-                    return;
+                    hasUpdate = true;
+                } catch (Exception e) {
+                    XPWarsUtils.xpwarsLog(sender, "&cUnable to check for new version.");
+                    cancel();
                 }
-                
-                XPWarsUtils.xpwarsLog(sender, (XPWars.isSnapshotBuild() ?
-                        XPWARS_UPD_FOUND_SNAP.replace("%ver%", Integer.toString((int) New))
-                        : XPWARS_UPD_FOUND_STABLE.replace("%ver%", Float.toString(New))));
-                cancel();
             }
-
         }.runTaskAsynchronously(XPWars.getInstance());
-
+        return hasUpdate;
     }
 
 }

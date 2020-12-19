@@ -13,10 +13,19 @@ public interface RemoteTNT extends SpecialItem {
      */
     int getFuseTicks();
 
+    /**
+     * @return Block
+     */
     Block getBlock();
-    
+
+    /**
+     * @return List of placed block locations
+     */
     List<Location> getLocations();
-    
+
+    /**
+     * @return add block to locations
+     */
     void addBlockToLocations();
     
 }

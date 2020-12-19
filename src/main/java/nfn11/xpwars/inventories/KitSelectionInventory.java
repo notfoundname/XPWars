@@ -38,8 +38,7 @@ public class KitSelectionInventory implements Listener {
 
         options = new Options(XPWars.getInstance());
         options.setPrefix(ChatColor.translateAlternateColorCodes('&',
-                XPWars.getConfigurator().getString("kits.settings.title", "kits")));
-        options.setShowPageNumber(true);
+                XPWars.getConfigurator().config.getString("kits.settings.title")));
 
         ItemStack backItem = Main.getConfigurator().readDefinedItem("shopback", "BARRIER");
         ItemMeta backItemMeta = backItem.getItemMeta();
@@ -62,21 +61,22 @@ public class KitSelectionInventory implements Listener {
         ItemStack cosmeticItem = Main.getConfigurator().readDefinedItem("shopcosmetic", "AIR");
         options.setCosmeticItem(cosmeticItem);
 
-        options.setRows(XPWars.getConfigurator().config.getInt("kits.settings.rows", 4));
+        options.setRows(XPWars.getConfigurator().config.getInt("kits.settings.rows"));
         options.setRender_actual_rows(
-                XPWars.getConfigurator().config.getInt("kits.settings.render-actual-rows", 6));
+                XPWars.getConfigurator().config.getInt("kits.settings.render-actual-rows"));
         options.setRender_offset(
-                XPWars.getConfigurator().config.getInt("kits.settings.render-offset", 9));
+                XPWars.getConfigurator().config.getInt("kits.settings.render-offset"));
         options.setRender_header_start(
-                XPWars.getConfigurator().config.getInt("kits.settings.render-header-start", 0));
+                XPWars.getConfigurator().config.getInt("kits.settings.render-header-start"));
         options.setRender_footer_start(
-                XPWars.getConfigurator().config.getInt("kits.settings.render-footer-start", 45));
-        options.setItems_on_row(XPWars.getConfigurator().config.getInt("kits.settings.items-on-row", 9));
+                XPWars.getConfigurator().config.getInt("kits.settings.render-footer-start"));
+        options.setItems_on_row(XPWars.getConfigurator().config.getInt("kits.settings.items-on-row"));
         options.setShowPageNumber(
-                XPWars.getConfigurator().config.getBoolean("kits.settings.show-page-numbers", true));
+                XPWars.getConfigurator().config.getBoolean("kits.settings.show-page-numbers"));
         options.setInventoryType(InventoryType.valueOf(
-                XPWars.getConfigurator().config.getString("kits.settings.inventory-type", "CHEST")));
+                XPWars.getConfigurator().config.getString("kits.settings.inventory-type")));
         Bukkit.getServer().getPluginManager().registerEvents(this, XPWars.getInstance());
+
         createData();
     }
 
@@ -119,12 +119,14 @@ public class KitSelectionInventory implements Listener {
             String priceType = kit.get("price").toString().split(":")[1].toLowerCase();
             boolean giveOnRespawn = Boolean.parseBoolean(kit.get("give-on-respawm").toString());
 
-            builder.add(icon)
-                .set("kit-items", items)
-                .set("kit-price", price)
-                .set("kit-price-type", priceType)
-                .set("kit-name", name)
-                .set("kit-give-on-respawn", giveOnRespawn);
+            for (Player player : openedForPlayers) {
+                builder.add(icon)
+                        .set("kit-items", items)
+                        .set("kit-price", price)
+                        .set("kit-price-type", priceType)
+                        .set("kit-name", name)
+                        .set("kit-give-on-respawn", giveOnRespawn);
+            }
         }
 
         menu.load(builder);
@@ -149,16 +151,19 @@ public class KitSelectionInventory implements Listener {
                     if (reader.getInt("kit-price") >
                             (Main.getPlayerStatisticsManager().getStatistic(player).getCurrentScore()
                                     + Main.getPlayerStatisticsManager().getStatistic(player).getScore()))
-                        player.sendMessage("Not enough score to use this kit!");
+                        XPWarsUtils.xpwarsLog(player,
+                                XPWars.getConfigurator().config.getString("kits.messages.not-enough-score"));
                     else pass = true;
                     break;
                 case "vault":
                     if (reader.getInt("kit-price") > XPWars.getEconomy().getBalance(player))
-                        player.sendMessage("Not enough money to buy this kit!");
+                        XPWarsUtils.xpwarsLog(player,
+                                XPWars.getConfigurator().config.getString("kits.messages.not-enough-vault"));
                     else pass = true;
                     break;
                 default:
-                    player.sendMessage("This kit is temporary unavailable.");
+                    player.sendMessage("Kit named " + reader.getString("kit-name")
+                            + " has invalid price type. Contact server staff.");
                     XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(), "&cPlayer tried to use kit "
                             + reader.getString("kit-name") + ", but it has invalid price type!" +
                             " Only score and vault are allowed.");
@@ -168,7 +173,7 @@ public class KitSelectionInventory implements Listener {
                 if (selectedKit.containsKey(player))
                     selectedKit.remove(player);
                 selectedKit.put(player, reader.getString("kit-name"));
-                player.sendMessage("Selected kit: " + reader.getString("kit-name"));
+                XPWarsUtils.xpwarsLog(player, XPWars.getConfigurator().config.getString("kits.messages.selected"));
             }
             repaint();
             openedForPlayers.remove(player);

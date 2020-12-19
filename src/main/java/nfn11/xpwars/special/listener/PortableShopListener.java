@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.APIUtils;
 import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
-import org.screamingsandals.bedwars.api.game.GameStore;
+import org.screamingsandals.bedwars.game.GameStore;
 import org.screamingsandals.bedwars.game.Game;
 
 import nfn11.xpwars.XPWars;
@@ -45,27 +45,25 @@ public class PortableShopListener implements Listener {
             ItemStack item = event.getItem();
             String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(item, PORTABLE_SHOP_PREFIX);
             if (unhidden != null) {
-                String shop_file = unhidden.split(":")[2];
-                boolean use_parent = Boolean.parseBoolean(unhidden.split(":")[3]);
-                String entity_type = unhidden.split(":")[4];
-                boolean enable_custom_name = Boolean.parseBoolean(unhidden.split(":")[5]);
-                String custom_name = unhidden.split(":")[6];
+                String shopFile = unhidden.split(":")[2];
+                boolean useParent = Boolean.parseBoolean(unhidden.split(":")[3]);
+                EntityType entityType = EntityType.valueOf(unhidden.split(":")[4]);
+                boolean hasCustomName = Boolean.parseBoolean(unhidden.split(":")[5]);
+                String customName = unhidden.split(":")[6];
                 int duration = Integer.parseInt(unhidden.split(":")[7]);
-                boolean is_baby = Boolean.parseBoolean(unhidden.split(":")[8]);
-
-                if (EntityType.valueOf(entity_type) == null)
-                    return;
+                boolean isBaby = Boolean.parseBoolean(unhidden.split(":")[8]);
+                String skinName = unhidden.split(":")[9];
 
                 if (duration < 3) {
-                    player.sendMessage("Duration can't be lower than 3 seconds!");
+                    player.sendMessage("Duration is be lower than 3 seconds. Tell this to server staff.");
                     return;
                 }
-                Location loc = event.getClickedBlock().getLocation();
-                GameStore store = new GameStore(new Location(loc.getWorld(), loc.getX(), loc.getY() + 1, loc.getZ()),
-                        shop_file, use_parent, EntityType.valueOf(entity_type), custom_name, enable_custom_name,
-                        is_baby);
 
-                PortableShop special = new PortableShop(game, player, game.getTeamOfPlayer(player), store, duration,item);
+                Location loc = new Location(event.getClickedBlock().getWorld(), event.getClickedBlock().getX(),
+                        event.getClickedBlock().getY() + 1, event.getClickedBlock().getZ());
+
+                PortableShop special = new PortableShop(game, player, game.getTeamOfPlayer(player), duration, item,
+                        new GameStore(loc, shopFile, useParent, entityType, customName, hasCustomName, isBaby, skinName));
                 special.run();
             }
         }
@@ -91,6 +89,8 @@ public class PortableShopListener implements Listener {
                 + SpecialItemUtils.getIntFromProperty("duration", XPWars.getConfigurator().config,
                         "specials.portable-shop.duration", event)
                 + ":" + SpecialItemUtils.getBooleanFromProperty("baby", XPWars.getConfigurator().config,
-                        "specials.portable-shop.baby", event);
+                        "specials.portable-shop.baby", event)
+                + ":" + SpecialItemUtils.getBooleanFromProperty("skin-name", XPWars.getConfigurator().config,
+                        "specials.portable-shop.skin-name", event);
     }
 }

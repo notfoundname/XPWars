@@ -1,31 +1,27 @@
 package nfn11.xpwars.special;
 
-import org.bukkit.Material;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import nfn11.xpwars.XPWars;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.game.Game;
-import org.screamingsandals.bedwars.api.game.GameStore;
-import org.screamingsandals.bedwars.lib.nms.entity.EntityUtils;
+import org.screamingsandals.bedwars.game.GameStore;
 import org.screamingsandals.bedwars.special.SpecialItem;
-
-import nfn11.xpwars.XPWars;
 
 public class PortableShop extends SpecialItem implements nfn11.xpwars.special.api.PortableShop {
     private int duration;
-    private ItemStack item;
+    private ItemStack stack;
+    private LivingEntity entity;
     private GameStore store;
 
-    public PortableShop(Game game, Player player, Team team, GameStore store, int duration, ItemStack item) {
+    public PortableShop(Game game, Player player, Team team, int duration, ItemStack stack, GameStore store) {
         super(game, player, team);
-        this.store = store;
         this.duration = duration;
-        this.item = item;
+        this.stack = stack;
+        this.store = store;
     }
-    
+
     @Override
     public GameStore getGameStore() {
         return store;
@@ -38,39 +34,21 @@ public class PortableShop extends SpecialItem implements nfn11.xpwars.special.ap
 
     @Override
     public ItemStack getItem() {
-        return item;
+        return stack;
     }
 
     @Override
     public void run() {
-        if (item.getAmount() > 1) {
-            item.setAmount(item.getAmount() - 1);
-        } else {
-            try {
-                if (player.getInventory().getItemInOffHand().equals(item)) {
-                    player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
-                } else {
-                    player.getInventory().remove(item);
-                }
-            } catch (Throwable e) {
-                player.getInventory().remove(item);
-            }
-        }
-        player.updateInventory();
-
-        LivingEntity entity = store.spawn();
-        EntityUtils.disableEntityAI(entity);
-        entity.setMetadata(player.getUniqueId().toString(), new FixedMetadataValue(XPWars.getInstance(), null));
-        entity.setMetadata("portable-shop", new FixedMetadataValue(XPWars.getInstance(), null));
-        
+        entity = store.spawn();
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (entity.isDead())
-                    return;
-                entity.remove();
+                if (!entity.isDead()) {
+                    entity = store.kill();
+                    entity = null;
+                } else this.cancel();
             }
-        }.runTaskLater(XPWars.getInstance(), duration * 20);
+        }.runTaskLaterAsynchronously(XPWars.getInstance(), duration * 20);
     }
-    
+
 }

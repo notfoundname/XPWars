@@ -8,17 +8,14 @@ import nfn11.xpwars.inventories.KitSelectionInventory;
 import nfn11.xpwars.listener.ActionBarMessageListener;
 import nfn11.xpwars.placeholderapi.PlaceholderAPIHook;
 import nfn11.xpwars.special.listener.RegisterSpecialListeners;
-import nfn11.xpwars.utils.KitManager;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginEnableEvent;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.commands.BaseCommand;
-import org.screamingsandals.bedwars.inventories.ShopInventory;
 import nfn11.xpwars.commands.GamesCommand;
 import nfn11.xpwars.commands.JoinSortedCommand;
 import nfn11.xpwars.commands.XPWarsCommand;
@@ -35,7 +32,6 @@ public class XPWars extends JavaPlugin implements Listener {
     private HashMap<String, BaseCommand> commands = new HashMap<>();
     private GamesInventory gamesInventory;
     private LevelShopInventory levelShopInventory;
-    private ShopInventory shopInventory;
     private KitSelectionInventory kitSelectionInventory;
     private DebugInventory debugInventory;
     private static Economy econ = null;
@@ -43,7 +39,6 @@ public class XPWars extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         instance = this;
-        new XPWarsUtils();
         new XPWarsCommand();
         debugInventory = new DebugInventory();
 
@@ -62,7 +57,7 @@ public class XPWars extends JavaPlugin implements Listener {
                 new PlaceholderAPIHook(this).register();
         } catch (Exception e) {
             XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(),
-                    "&cUnable to register PlaceholderAPI Expansion! Make sure you have PAPI correctly installed!");
+                    "&cUnable to find PlaceholderAPI! Make sure you correctly installed it!");
         }
 
         if (getConfigurator().config.getBoolean("features.action-bar-messages"))
@@ -81,7 +76,6 @@ public class XPWars extends JavaPlugin implements Listener {
 
         if (getConfigurator().config.getBoolean("features.kits")) {
             kitSelectionInventory = new KitSelectionInventory(this);
-            new KitManager();
             try {
                 if (getServer().getPluginManager().getPlugin("Vault") == null) {
                     RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
@@ -98,13 +92,12 @@ public class XPWars extends JavaPlugin implements Listener {
             new RegisterSpecialListeners();
 
         XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(),
-                "&aLoaded XPWars &2" + XPWars.getInstance().getDescription().getVersion()
-                        + (isSnapshotBuild() ? " " + getBuildNumber() + "&a!" : "&a!"));
+                "&aLoaded XPWars &2" + XPWars.getInstance().getDescription().getVersion() + "&a!");
         XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(), "&aXPWars addon by &enotfoundname11");
         XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(), "&9https://github.com/notfoundname/XPWars/wiki");
 
         if (configurator.config.getBoolean("check-for-updates"))
-            new XPWarsUpdateChecker(Bukkit.getConsoleSender());
+            XPWarsUpdateChecker.checkForUpdate(Bukkit.getConsoleSender());
     }
 
     @EventHandler
@@ -135,10 +128,6 @@ public class XPWars extends JavaPlugin implements Listener {
         return instance.levelShopInventory;
     }
 
-    public static ShopInventory getShopInventory() {
-        return instance.shopInventory;
-    }
-
     public static DebugInventory getDebugInventory() {
         return instance.debugInventory;
     }
@@ -151,23 +140,8 @@ public class XPWars extends JavaPlugin implements Listener {
         return econ;
     }
 
-    public static boolean isSnapshotBuild() {
-        return XPWars.getInstance().getDescription().getVersion().contains("-SNAPSHOT") && getBuildNumber() != 0;
-    }
-
     public static float getVersion() {
-        if (isSnapshotBuild()) {
-            return Float.parseFloat(XPWars.getInstance().getDescription().getVersion().replace("-SNAPSHOT", ""));
-        }
-        return Float.parseFloat(XPWars.getInstance().getDescription().getVersion());
-    }
-
-    public static int getBuildNumber() {
-        try {
-            return Integer.parseInt(XPWars.getInstance().getDescription().getDescription());
-        } catch (Throwable ignored) {
-            return 0;
-        }
+        return Float.parseFloat(XPWars.getInstance().getDescription().getVersion().replace("-SNAPSHOT", ""));
     }
 
 }

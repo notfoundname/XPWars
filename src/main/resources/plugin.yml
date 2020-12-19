@@ -1,6 +1,5 @@
 name: XPWars
 version: ${project.version}
-description: '${BUILD_NUMBER}' # do not touch this line please, it's to make update checker working on snapshots
 main: nfn11.xpwars.XPWars
 api-version: 1.13
 depend:

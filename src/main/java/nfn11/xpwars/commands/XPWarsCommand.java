@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.game.GameStatus;
-import org.screamingsandals.bedwars.api.game.GameStore;
+import org.screamingsandals.bedwars.game.GameStore;
 import org.screamingsandals.bedwars.commands.BaseCommand;
 
 import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
@@ -55,8 +55,7 @@ public class XPWarsCommand extends BaseCommand {
     public boolean execute(CommandSender sender, List<String> args) throws IndexOutOfBoundsException {
         switch (args.get(0).toLowerCase()) {
             case "help":
-                XPWarsUtils.xpwarsLog(sender, "- Version " + XPWars.getInstance().getDescription().getVersion()
-                + (XPWars.isSnapshotBuild() ? XPWars.getBuildNumber() : "Stable"));
+                XPWarsUtils.xpwarsLog(sender, "- Version " + XPWars.getInstance().getDescription().getVersion());
                 XPWarsUtils.xpwarsLog(sender, "by &enotfoundname11");
                 XPWarsUtils.xpwarsLog(sender, "Available commands:");
                 XPWarsUtils.xpwarsLog(sender, "- /bw xpwars help - &eShow this");
@@ -72,11 +71,10 @@ public class XPWarsCommand extends BaseCommand {
                 XPWarsUtils.xpwarsLog(sender, "&aReloaded!");
                 break;
             case "updates":
-                new XPWarsUpdateChecker(sender);
                 break;
             case "kits":
                 if (!XPWars.getConfigurator().config.getBoolean("features.kits")) {
-                    sender.sendMessage(i18n("unknown_usage"));
+                    XPWarsUtils.xpwarsLog(sender, i18n("unknown_usage"));
                     break;
                 }
                 if (sender instanceof Player && Main.isPlayerInGame((Player) sender) &&
@@ -105,7 +103,7 @@ public class XPWarsCommand extends BaseCommand {
                 } else XPWarsUtils.xpwarsLog(sender, "&cInvalid shop file: &4" + args.get(1));
                 break;
             default:
-                sender.sendMessage(i18n("unknown_usage"));
+                XPWarsUtils.xpwarsLog(sender, i18n("unknown_usage"));
                 break;
         }
         return true;

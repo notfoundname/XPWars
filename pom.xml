@@ -36,7 +36,7 @@
         <dependency>
             <groupId>com.destroystokyo.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.16.3-R0.1-SNAPSHOT</version>
+            <version>1.16.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
@@ -46,18 +46,18 @@
             <version>2.10.9</version>
             <scope>provided</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.screamingsandals.bedwars</groupId>
-            <artifactId>BedWars</artifactId>
-            <version>0.2.15-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
         
         <dependency>
             <groupId>org.screamingsandals.bedwars</groupId>
             <artifactId>BedWars-API</artifactId>
-            <version>0.2.15-SNAPSHOT</version>
+            <version>0.2.15</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.screamingsandals.bedwars</groupId>
+            <artifactId>BedWars-API</artifactId>
+            <version>0.2.15</version>
             <scope>provided</scope>
         </dependency>
 
@@ -98,10 +98,10 @@
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
+                <version>3.8.1</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>11</source>
+                    <target>11</target>
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>

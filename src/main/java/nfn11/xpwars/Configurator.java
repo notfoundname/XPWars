@@ -202,6 +202,7 @@ public class Configurator {
             checkOrSetConfig(modify, "specials.portable-shop.custom-name", "Portable Villager");
             checkOrSetConfig(modify, "specials.portable-shop.duration", 15);
             checkOrSetConfig(modify, "specials.portable-shop.baby", false);
+            checkOrSetConfig(modify, "specials.portable-shop.use-citizens", false);
         }
 
         if (config.getBoolean("features.placeholders")
@@ -216,7 +217,7 @@ public class Configurator {
         if (config.getBoolean("features.kits")) {
             checkOrSetConfig(modify, "kits.messages.not-enough-score", "&cNot enough score to use this kit!");
             checkOrSetConfig(modify, "kits.messages.not-enough-vault", "&cNot enough money to buy this kit!");
-            checkOrSetConfig(modify, "kits.messages.selected", "&aSelected kit: &4%kit%");
+            checkOrSetConfig(modify, "kits.messages.selected", "&aSelected kit: &e%item-name%(%raw-name%)");
 
             checkOrSetConfig(modify, "kits.settings.title", "&4BW &rKits");
             checkOrSetConfig(modify, "kits.settings.rows", 4);
@@ -244,7 +245,7 @@ public class Configurator {
                 }});
                 add(new HashMap<String, Object>() {{
                     put("name", "example2");
-                    put("display-icon", "APPLE;3;Example 2;Everyone like apples!;...;......right?");
+                    put("display-icon", "APPLE;3;Example 2;Everyone like apples!;...;             right?");
                     put("price", "50:vault");
                     put("give-on-respawn", true);
                     put("items", new ArrayList<String>() {{

@@ -1,12 +1,10 @@
 package nfn11.xpwars.placeholderapi;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.screamingsandals.bedwars.Main;
 
+import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.game.GameStatus;
-import org.screamingsandals.bedwars.api.statistics.PlayerStatistic;
 import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GamePlayer;
@@ -20,6 +18,7 @@ public class PlaceholderAPIHook extends me.clip.placeholderapi.expansion.Placeho
     public PlaceholderAPIHook(XPWars plugin) {
         this.plugin = plugin;
     }
+
     @Override
     public String getAuthor() {
         return "notfoundname11";
@@ -72,21 +71,6 @@ public class PlaceholderAPIHook extends me.clip.placeholderapi.expansion.Placeho
             return "0";
         }
 
-        if (parsed.endsWith("_inall")) {
-            parsed = parsed.replace("_inall", "");
-            Game game = Main.getGame(parsed);
-            if (game == null)
-                return "";
-            return Integer.toString(game.countConnectedPlayers());
-        }
-
-        if (parsed.endsWith("_gameworld")) {
-            parsed = parsed.replace("_gameworld", "");
-            if (Main.getGame(parsed) == null)
-                return "";
-            return Main.getGame(parsed).getGameWorld().getName();
-        }
-
         if (parsed.endsWith("_lobbyworld")) {
             parsed = parsed.replace("_lobbyworld", "");
             if (Main.getGame(parsed) == null)
@@ -107,34 +91,20 @@ public class PlaceholderAPIHook extends me.clip.placeholderapi.expansion.Placeho
             switch (status) {
                 case WAITING:
                     if (game.getMinPlayers() >= game.countConnectedPlayers())
-                        return XPWars.getConfigurator().getString("placeholders.waiting", "waiting");
+                        return XPWars.getConfigurator().getString("placeholders.WAITING", "waiting");
                     if (game.getMinPlayers() <= game.countConnectedPlayers())
                         return XPWars.getConfigurator().getString("placeholders.starting", "starting")
                                 .replace("%left%", game.getFormattedTimeLeft());
                 case RUNNING:
-                    return XPWars.getConfigurator().getString("placeholders.running", "running").replace("%time%",
+                    return XPWars.getConfigurator().getString("placeholders.RUNNING", "running").replace("%time%",
                             game.getFormattedTimeLeft(gameTime - countdown).replace("%left%", game.getFormattedTimeLeft()));
                 case GAME_END_CELEBRATING:
-                    return XPWars.getConfigurator().getString("placeholders.ended", "ended");
+                    return XPWars.getConfigurator().getString("placeholders.GAME_END_CELEBRATING", "ended");
                 case REBUILDING:
-                    return XPWars.getConfigurator().getString("placeholders.rebuilding", "rebuilding");
+                    return XPWars.getConfigurator().getString("placeholders.REBUILDING", "rebuilding");
                 default:
                     return "null";
             }
-        }
-
-        if (parsed.endsWith("_mxpl")) {
-            parsed = parsed.replace("_mxpl", "");
-            if (Main.getGame(parsed) == null)
-                return "";
-            return Integer.toString(Main.getGame(parsed).getMaxPlayers());
-        }
-
-        if (parsed.endsWith("_mnpl")) {
-            parsed = parsed.replace("_mnpl", "");
-            if (Main.getGame(parsed) == null)
-                return "";
-            return Integer.toString(Main.getGame(parsed).getMinPlayers());
         }
 
         if (parsed.endsWith("_tl")) {
@@ -168,102 +138,13 @@ public class PlaceholderAPIHook extends me.clip.placeholderapi.expansion.Placeho
                     if (team != null)
                         return team.teamInfo.color.chatColor + "";
                     return ChatColor.RESET + "";
-                case "tl":
-                    return Main.getPlayerGameProfile(player).getGame().getFormattedTimeLeft();
-                case "tp":
-                    return Main.getPlayerGameProfile(player).getGame().getFormattedTimeLeft(gameTime - pauseCountdown);
                 case "state":
-                    switch (status) {
-                        case WAITING:
-                            if (game.getMinPlayers() >= game.countConnectedPlayers())
-                                return XPWars.getConfigurator().getString("placeholders.waiting", "waiting");
-                            if (game.getMinPlayers() <= game.countConnectedPlayers())
-                                return XPWars.getConfigurator().getString("placeholders.starting", "starting")
-                                        .replace("%left%", game.getFormattedTimeLeft());
-                        case RUNNING:
-                            return XPWars.getConfigurator().getString("placeholders.running", "running").replace("%time%",
-                                    game.getFormattedTimeLeft(gameTime - countdown).replace("%left%", game.getFormattedTimeLeft()));
-                        case GAME_END_CELEBRATING:
-                            return XPWars.getConfigurator().getString("placeholders.ended", "ended");
-                        case REBUILDING:
-                            return XPWars.getConfigurator().getString("placeholders.rebuilding", "rebuilding");
-                        default:
-                            return "null";
-                    }
+                    if (status == GameStatus.WAITING && game.getMinPlayers() <= game.countConnectedPlayers())
+                        return XPWars.getConfigurator().getString("placeholders.starting", "starting")
+                                .replace("%left%", game.getFormattedTimeLeft());
+                    return XPWars.getConfigurator().getString("placeholders." + status.name(), "null");
                 default:
                     return "null";
-            }
-        }
-        if (parsed.contains("_stats_")) {
-            if (parsed.endsWith("_kills")) {
-                parsed = parsed.replace("_stats_kills", "");
-                if (!Main.isPlayerGameProfileRegistered(Bukkit.getPlayer(parsed)))
-                    return "";
-
-                PlayerStatistic stats = Main.getPlayerStatisticsManager().getStatistic(Bukkit.getPlayer(parsed));
-                return Integer.toString(stats.getCurrentKills() + stats.getKills());
-            }
-            if (parsed.endsWith("_deaths")) {
-                parsed = parsed.replace("_stats_deaths", "");
-                if (!Main.isPlayerGameProfileRegistered(Bukkit.getPlayer(parsed)))
-                    return "";
-
-                PlayerStatistic stats = Main.getPlayerStatisticsManager().getStatistic(Bukkit.getPlayer(parsed));
-                return Integer.toString(stats.getCurrentDeaths() + stats.getDeaths());
-            }
-
-            if (parsed.endsWith("_destroyed_beds")) {
-                parsed = parsed.replace("_stats_destroyed_beds", "");
-                if (!Main.isPlayerGameProfileRegistered(Bukkit.getPlayer(parsed)))
-                    return "";
-
-                PlayerStatistic stats = Main.getPlayerStatisticsManager().getStatistic(Bukkit.getPlayer(parsed));
-                return Integer.toString(stats.getCurrentDestroyedBeds() + stats.getDestroyedBeds());
-            }
-
-            if (parsed.endsWith("_loses")) {
-                parsed = parsed.replace("_stats_loses", "");
-                if (!Main.isPlayerGameProfileRegistered(Bukkit.getPlayer(parsed)))
-                    return "";
-
-                PlayerStatistic stats = Main.getPlayerStatisticsManager().getStatistic(Bukkit.getPlayer(parsed));
-                return Integer.toString(stats.getCurrentLoses() + stats.getLoses());
-            }
-
-            if (parsed.endsWith("_score")) {
-                parsed = parsed.replace("_stats_score", "");
-                if (!Main.isPlayerGameProfileRegistered(Bukkit.getPlayer(parsed)))
-                    return "";
-
-                PlayerStatistic stats = Main.getPlayerStatisticsManager().getStatistic(Bukkit.getPlayer(parsed));
-                return Integer.toString(stats.getCurrentScore() + stats.getScore());
-            }
-
-            if (parsed.endsWith("_wins")) {
-                parsed = parsed.replace("_stats_wins", "");
-                if (!Main.isPlayerGameProfileRegistered(Bukkit.getPlayer(parsed)))
-                    return "";
-
-                PlayerStatistic stats = Main.getPlayerStatisticsManager().getStatistic(Bukkit.getPlayer(parsed));
-                return Integer.toString(stats.getCurrentWins() + stats.getWins());
-            }
-
-            if (parsed.endsWith("_games")) {
-                parsed = parsed.replace("_stats_games", "");
-                if (!Main.isPlayerGameProfileRegistered(Bukkit.getPlayer(parsed)))
-                    return "";
-
-                PlayerStatistic stats = Main.getPlayerStatisticsManager().getStatistic(Bukkit.getPlayer(parsed));
-                return Integer.toString(stats.getCurrentGames() + stats.getGames());
-            }
-
-            if (parsed.endsWith("_kd")) {
-                parsed = parsed.replace("_stats_kd", "");
-                if (!Main.isPlayerGameProfileRegistered(Bukkit.getPlayer(parsed)))
-                    return "";
-
-                PlayerStatistic stats = Main.getPlayerStatisticsManager().getStatistic(Bukkit.getPlayer(parsed));
-                return Double.toString(stats.getCurrentKD());
             }
         }
         return null;

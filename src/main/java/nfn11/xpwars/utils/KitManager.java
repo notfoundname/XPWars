@@ -40,6 +40,14 @@ public class KitManager {
         });
     }
 
+    public static boolean hasBoughtKit(Player player, Kit kit) {
+        return false;
+    }
+
+    public static boolean hasBoughtKit(Player player, String kitName) {
+        return false;
+    }
+
     public static class Kit {
 
         private String name, priceType;
