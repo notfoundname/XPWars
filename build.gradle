@@ -1,0 +1,46 @@
+defaultTasks 'clean', 'screamCompile'
+
+group = 'nfn11'
+version = '1.6-SNAPSHOT'
+
+
+buildscript {
+    repositories {
+        maven { url 'https://repo.screamingsandals.org/public' }
+    }
+    dependencies {
+        classpath 'org.screamingsandals.gradle.builder:screaming-plugin-builder:1.0.31'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'org.screamingsandals.gradle.builder'
+
+repositories {
+    mavenLocal() // if you wish to use artifacts from <your user directory>/.m2
+    // our plugin adds lot of repositories, so repos like paper and screaming sandals and placeholder api are redundant to define here
+    vault()
+}
+
+dependencies{
+    compileOnly paper("1.16.4")
+    compileOnly 'org.screamingsandals.bedwars:BedWars:0.2.15'
+    compileOnly 'org.screamingsandals.bedwars:BedWars-API:0.2.15'
+    compileOnly placeholder_api()
+    compileOnly vault()
+}
+
+sourceCompatibility = 11.0
+
+enableSpigradleSpigot()
+
+spigot {
+    name = 'XPWars'
+    apiVersion = '1.13'
+    load = POST_WORLD
+    depends = ['BedWars']
+    softDepends = [
+            'PlaceholderAPI',
+            'Vault'
+    ]
+}

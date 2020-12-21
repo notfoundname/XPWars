@@ -6,3 +6,6 @@ dependency-reduced-pom.xml
 .settings/*
 .idea/*
 XPWars.iml
+*.properties
+build/*
+.gradle/

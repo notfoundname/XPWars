@@ -36,6 +36,7 @@ public class XPWars extends JavaPlugin implements Listener {
     private DebugInventory debugInventory;
     private static Economy econ = null;
 
+
     @Override
     public void onEnable() {
         instance = this;
