@@ -5,7 +5,10 @@ hs_err_pid*
 dependency-reduced-pom.xml
 .settings/*
 .idea/*
-XPWars.iml
+*.iml
 *.properties
 build/*
 .gradle/
+gradle-app.setting
+!gradle-wrapper.jar
+.gradletasknamecache
