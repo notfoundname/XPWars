@@ -8,14 +8,8 @@ public interface PortableShop extends SpecialItem {
 
     GameStore getGameStore();
 
-    /**
-     * @return int duration
-     */
     int getDuration();
 
-    /**
-     * @return ItemStack
-     */
     ItemStack getItem();
 
     void run();
