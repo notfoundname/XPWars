@@ -10,7 +10,6 @@ import org.screamingsandals.bedwars.commands.BaseCommand;
 
 import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
 
-import nfn11.xpwars.XPWars;
 import nfn11.xpwars.utils.XPWarsUtils;
 
 public class JoinSortedCommand extends BaseCommand {

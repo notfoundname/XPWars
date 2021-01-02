@@ -14,7 +14,6 @@ import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
 import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
 
 import nfn11.xpwars.XPWars;
-import nfn11.xpwars.XPWarsUpdateChecker;
 import nfn11.xpwars.utils.XPWarsUtils;
 
 public class XPWarsCommand extends BaseCommand {

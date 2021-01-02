@@ -110,8 +110,10 @@ public class XPWarsUtils {
     public static void sendActionBar(Player player, String message) {
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null)
             message = PlaceholderAPI.setPlaceholders(player, message);
-        player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
-                TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', message)));
+        if (Main.isSpigot())
+            player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
+                    TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', message)));
+        else player.sendMessage(message);
     }
 
 }

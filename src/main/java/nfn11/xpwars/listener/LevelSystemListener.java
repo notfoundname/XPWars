@@ -1,23 +1,21 @@
 package nfn11.xpwars.listener;
 
-import me.clip.placeholderapi.PlaceholderAPI;
 import nfn11.xpwars.utils.XPWarsUtils;
+import nfn11.xpwars.XPWars;
+
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
+
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.events.*;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
-
-import nfn11.xpwars.XPWars;
 
 public class LevelSystemListener implements Listener {
 
@@ -27,78 +25,79 @@ public class LevelSystemListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onDeath(BedwarsPlayerKilledEvent event) {
-        Player player = event.getPlayer();
-        String gamename = event.getGame().getName();
-        int player_level = player.getLevel();
+        final Player player = event.getPlayer();
+        final int playerLevel = player.getLevel();
+        String gameName = event.getGame().getName();
 
         ConfigurationSection arenaSettings = XPWars.getConfigurator().config.getConfigurationSection(
-                "level.per-arena-settings." + gamename);
+                "level.per-arena-settings." + gameName);
         ConfigurationSection globalSettings = XPWars.getConfigurator().config.getConfigurationSection("level");
+
+        assert globalSettings != null;
+        if (arenaSettings == null) arenaSettings = globalSettings;
 
         if (!arenaSettings.getBoolean("enable", true))
             return;
 
-        int keep_from_death_player = arenaSettings.getInt("percentage.keep-from-death",
-                globalSettings.getInt("percentage.keep-from-death",0));
-        int to_killer = arenaSettings.getInt("percentage.give-from-killed-player",
-                globalSettings.getInt("percentage.give-from-killed-player", 0));
-        int max = arenaSettings.getInt("maximum-xp", globalSettings.getInt("maximum-xp", 0));
+        int keepFromDeathPercentage = arenaSettings.getInt("percentage.keep-from-death",
+                globalSettings.getInt("percentage.keep-from-death")) / 100;
+        int giveToKillerPercentage = arenaSettings.getInt("percentage.give-from-killed-player",
+                globalSettings.getInt("percentage.give-from-killed-player")) / 100;
+        int maximumLevel = arenaSettings.getInt("maximum-xp");
+
+        player.setLevel(playerLevel * keepFromDeathPercentage);
 
         if (event.getKiller() != null) {
-            Player killer = event.getKiller();
-            int killer_level = killer.getLevel();
-            if (max != 0 && (killer_level + (player_level / 100) * to_killer) > max)
-                killer.setLevel(max);
-            else killer.setLevel(killer_level + (player_level / 100) * to_killer);
+            final Player killer = event.getKiller();
+            int killerLevel = killer.getLevel();
+            if (maximumLevel != 0 && killerLevel + (playerLevel * giveToKillerPercentage) > maximumLevel)
+                killer.setLevel(maximumLevel);
+            else killer.setLevel(killerLevel + (playerLevel * giveToKillerPercentage));
         }
-        if (max != 0 && ((player_level / 100) * keep_from_death_player) > max)
-            player.setLevel(max);
-        else player.setLevel((player_level / 100) * keep_from_death_player);
     }
 
-    @EventHandler(priority = EventPriority.MONITOR) 
+    @EventHandler
     public void onPickup(EntityPickupItemEvent event) {
         if (event.getEntity() instanceof Player) {
-            Player player = (Player) event.getEntity();
+            final Player player = (Player) event.getEntity();
+
             if (!Main.isPlayerInGame(player))
                 return;
 
-            ConfigurationSection arenaSettings = XPWars.getConfigurator().config.getConfigurationSection(
-                    "level.per-arena-settings." + Main.getPlayerGameProfile(player).getGame().getName());
+            String gameName = Main.getPlayerGameProfile(player).getGame().getName();
+            int playerLevel = player.getLevel();
+            ItemStack itemStack = event.getItem().getItemStack();
+
             ConfigurationSection globalSettings = XPWars.getConfigurator().config.getConfigurationSection("level");
+            ConfigurationSection arenaSettings = XPWars.getConfigurator().config.getConfigurationSection(
+                    "level.per-arena-settings." + gameName);
 
-            if (!arenaSettings.getBoolean("enable", globalSettings.getBoolean("enable", false)))
-                return;
+            assert globalSettings != null;
+            if (arenaSettings == null) arenaSettings = globalSettings;
 
-            ItemStack picked = event.getItem().getItemStack();
-            int level = player.getLevel();
+            String sound = arenaSettings.getString("sound.sound","ENTITY_EXPERIENCE_ORB_PICKUP");
+            float volume = (float) arenaSettings.getDouble("sound.volume", 0.5);
+            float pitch = (float) arenaSettings.getDouble("sound.pitch", 1.0);
+            int maximumLevel = arenaSettings.getInt("maximum-xp", 0);
+            boolean pickupItemLogic = arenaSettings.getBoolean("dev-different-pickup-item-logic", false);
 
-            String sound = arenaSettings.getString("sound.sound", globalSettings.getString
-                    ("sound.sound","ENTITY_EXPERIENCE_ORB_PICKUP"));
-            double volume = arenaSettings.getDouble("sound.volume", globalSettings.getDouble("sound.volume", 1));
-            double pitch = arenaSettings.getDouble("sound.pitch", globalSettings.getDouble("sound.pitch", 1));
-            
-            int max = arenaSettings.getInt("maximum-xp", globalSettings.getInt("maximum-xp", 0));
-            
             for (ItemSpawnerType type : Main.getInstance().getItemSpawnerTypes()) {
-                int res = arenaSettings.getInt("spawners." + type.getConfigKey(), globalSettings.getInt
-                        ("spawners." + type.getConfigKey()));
-                if (picked.isSimilar(type.getStack()) && picked.getItemMeta().equals(type.getStack().getItemMeta())) {
+                int spawnerLevel = arenaSettings.getInt("spawners." + type.getConfigKey());
+                if (itemStack.isSimilar(type.getStack()) && itemStack.getItemMeta() == type.getStack().getItemMeta()) {
                     event.setCancelled(true);
-                    if (max != 0 && (level + (res * picked.getAmount())) > max) {
-                        String msg = ChatColor.translateAlternateColorCodes('&',
-                                arenaSettings.getString("messages.maxreached", globalSettings.getString(
-                                        "messages.maxreached","&cYou can't have more than %max% levels!")
-                                        .replace("%max%", Integer.toString(max))));
-                        XPWarsUtils.sendActionBar(player, msg);
+                    if (maximumLevel != 0 && (playerLevel + (spawnerLevel * itemStack.getAmount()) > maximumLevel)) {
+                        XPWarsUtils.sendActionBar(player, arenaSettings.getString("messages.maxreached")
+                                .replace("%max%", Integer.toString(maximumLevel)));
                         return;
                     }
-                    player.setLevel(level + (res * picked.getAmount()));
-                    event.getItem().getItemStack().setType(Material.AIR);
+                    player.setLevel(playerLevel + (spawnerLevel * itemStack.getAmount()));
+                    if (pickupItemLogic)
+                        event.getItem().getItemStack().setType(Material.AIR);
+                    else event.getItem().remove();
                 }
             }
-            if (!sound.equalsIgnoreCase("none"))
-                player.playSound(player.getLocation(), Sound.valueOf(sound), (float) volume, (float) pitch);
+            if (sound != null && !sound.equals("none"))
+                player.playSound(player.getLocation(), sound, volume, pitch);
         }
     }
 

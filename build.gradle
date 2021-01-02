@@ -17,8 +17,6 @@ apply plugin: 'java'
 apply plugin: 'org.screamingsandals.gradle.builder'
 
 repositories {
-    mavenLocal() // if you wish to use artifacts from <your user directory>/.m2
-    // our plugin adds lot of repositories, so repos like paper and screaming sandals and placeholder api are redundant to define here
     vault()
 }
 

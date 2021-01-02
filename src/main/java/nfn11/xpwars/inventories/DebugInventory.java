@@ -1,19 +1,14 @@
 package nfn11.xpwars.inventories;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.screamingsandals.bedwars.Main;
-import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.events.*;
-import org.screamingsandals.bedwars.api.game.GameStore;
-import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
 import org.screamingsandals.bedwars.api.upgrades.Upgrade;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeRegistry;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeStorage;
@@ -23,25 +18,18 @@ import org.screamingsandals.bedwars.game.GamePlayer;
 import org.screamingsandals.bedwars.lib.sgui.SimpleInventories;
 import org.screamingsandals.bedwars.lib.sgui.builder.FormatBuilder;
 import org.screamingsandals.bedwars.lib.sgui.events.GenerateItemEvent;
-import org.screamingsandals.bedwars.lib.sgui.events.PreActionEvent;
-import org.screamingsandals.bedwars.lib.sgui.events.ShopTransactionEvent;
 import org.screamingsandals.bedwars.lib.sgui.inventory.Options;
 import org.screamingsandals.bedwars.lib.sgui.item.ItemProperty;
 import org.screamingsandals.bedwars.lib.sgui.item.PlayerItemInfo;
 import org.screamingsandals.bedwars.lib.sgui.utils.MapReader;
-import org.screamingsandals.bedwars.utils.Debugger;
-import org.screamingsandals.bedwars.utils.Sounds;
 
 import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
 import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
 
 import nfn11.xpwars.XPWars;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @SuppressWarnings("deprecation")
 public class DebugInventory implements Listener {
