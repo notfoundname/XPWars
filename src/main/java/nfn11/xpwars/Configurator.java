@@ -2,18 +2,9 @@ package nfn11.xpwars;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import nfn11.xpwars.commands.GamesCommand;
-import nfn11.xpwars.commands.JoinSortedCommand;
-import nfn11.xpwars.inventories.KitSelectionInventory;
-import nfn11.xpwars.listener.ActionBarMessageListener;
-import nfn11.xpwars.listener.LevelSystemListener;
-import nfn11.xpwars.special.listener.RegisterSpecialListeners;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
@@ -40,7 +31,6 @@ public class Configurator {
         this.main = main;
     }
 
-    @SuppressWarnings("serial")
     public void loadDefaults() {
         dataFolder.mkdirs();
 
@@ -48,21 +38,23 @@ public class Configurator {
 
         config = new YamlConfiguration();
 
-        if (!file.exists()) {
-            try {
+        if (!file.exists()) try {
                 file.createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
+
+
         try {
             config.load(file);
         } catch (IOException | InvalidConfigurationException e) {
+            backupConfig(null, "&eYour configuration file is broken. It was backed up as config-backup.yml");
             e.printStackTrace();
-            file.renameTo(new File(dataFolder, "config_backup.yml"));
-            XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(),
-                    "[XPWars] &aYour XPWars configuration file was broken and plugin backed it up.");
-            loadDefaults();
+            return;
+        }
+
+        if (config.contains("version")) {
+            backupConfig("config_legacy.yml", "&aYour old config.yml was backed up as config_legacy.yml");
             return;
         }
 
@@ -70,18 +62,8 @@ public class Configurator {
 
         ConfigurationSection resources = Main.getConfigurator().config.getConfigurationSection("resources");
 
-        checkOrSetConfig(modify, "version", 4);
-
-        if (config.getInt("version") != 4) {
-            file.renameTo(new File(dataFolder, "config_backup.yml"));
-            Bukkit.getServer().getLogger()
-                    .info("[XPWars] Your XPWars configuration file was backed up. Please transfer values.");
-            loadDefaults();
-            return;
-        }
-        
         checkOrSetConfig(modify, "check-for-updates", true);
-        
+
         checkOrSetConfig(modify, "features.level-system", false);
         checkOrSetConfig(modify, "features.games-gui", false);
         checkOrSetConfig(modify, "features.action-bar-messages", false);
@@ -94,14 +76,8 @@ public class Configurator {
             checkOrSetConfig(modify, "permission-to-join-game.message",
                     "You don't have permission %perm% to join arena %arena%!");
             checkOrSetConfig(modify, "permission-to-join-game.arenas", new HashMap<String, Object>() {{
-                put("[xpwars.example]", new ArrayList<String>() {{
-                    add("ArenaName");
-                    add("CaseSensetive");
-                }});
-                put("[bw.vip.game]", new ArrayList<String>() {{
-                    add("Пихайте_чё_хотите_сюда");
-                    add("abvaoiuobaoinoyaAvylbygbkYI");
-                }});
+                put("ArenaName1;ArenaName2;ArenaName3", "xpwars.arenas");
+                put("ExampleName", "bedwars.games");
             }});
         }
 
@@ -120,25 +96,19 @@ public class Configurator {
             checkOrSetConfig(modify, "level.sound.volume", 1);
             checkOrSetConfig(modify, "level.sound.pitch", 1);
 
-            checkOrSetConfig(modify, "level.per-arena-settings", new HashMap<String, HashMap<String, Object>>() {{
-                put("ArenaNameCaseSensetive", new HashMap<String, Object>() {{
-                    put("enable", true);
-                    put("percentage.give-from-killed-player", 100);
-                    put("percentage.keep-from-death", 0);
-                    put("maximum-xp", 0);
-                    put("messages.maxreached", "&loof");
-                    put("sound.sound", "none");
-                    put("sound.volume", 1);
-                    put("sound.pitch", 2);
-                    for (String key : resources.getKeys(false)) {
-                        put("spawners." + key, 10);
-                    }
-                }});
+            checkOrSetConfig(modify, "level.per-arena-settings", new HashMap<String, Object>() {{
+                put("ArenaNameCaseSensetive.enable", true);
+                put("ArenaNameCaseSensetive.percentage.give-from-killed-player", 100);
+                put("ArenaNameCaseSensetive.percentage.keep-from-death", 0);
+                put("ArenaNameCaseSensetive.maximum-xp", 0);
+                put("ArenaNameCaseSensetive.messages.maxreached", "&loof");
+                put("ArenaNameCaseSensetive.sound.sound", "none");
+                put("ArenaNameCaseSensetive.sound.volume", 1);
+                put("ArenaNameCaseSensetive.sound.pitch", 2);
+                resources.getKeys(false).forEach(key -> put("ArenaNameCaseSensetivespawners." + key, 10));
             }});
 
-            checkOrSetConfig(modify, "level.spawners", new HashMap<String, Object>() {{
-                for (String key : resources.getKeys(false)) put(key, 3);
-            }});
+            resources.getKeys(false).forEach(key -> checkOrSetConfig(modify, "level.spawners." + key, 3));
         }
 
         if (config.getBoolean("features.games-gui")) {
@@ -155,15 +125,10 @@ public class Configurator {
             checkOrSetConfig(modify, "games-gui.inventory-settings.inventory-type", "CHEST");
             
             checkOrSetConfig(modify, "games-gui.enable-categories", false);
-            checkOrSetConfig(modify, "games-gui.categories", new HashMap<String, HashMap<String, Object>>() {{
-                put("example", new HashMap<String, Object>() {{
-                    put("stack", (XPWarsUtils.isNewVersion() ? "BLACK_CONCRETE" : "CONCRETE") + ";1;&rDuos");
-                    put("skip", 3);
-                    put("arenas", new ArrayList<String>() {{
-                        add("ArenaName");
-                        add("привет");
-                    }});
-                }});
+            checkOrSetConfig(modify, "games-gui.categories", new HashMap<String, Object>() {{
+                put("example.stack", (XPWarsUtils.isNewVersion() ? "BLACK_CONCRETE" : "CONCRETE") + ";1;&rDuos");
+                put("example.skip", 3);
+                put("example.arenas", Arrays.asList("Arena9", "привет"));
             }});
 
             checkOrSetConfig(modify, "games-gui.itemstack.WAITING", (XPWarsUtils.isNewVersion() ? "GREEN_WOOL" : "WOOL")
@@ -229,31 +194,19 @@ public class Configurator {
             checkOrSetConfig(modify, "kits.settings.show-page-numbers", true);
             checkOrSetConfig(modify, "kits.settings.inventory-type", "CHEST");
 
-            checkOrSetConfig(modify,"kits.list", new ArrayList<Object>() {{
-                add(new HashMap<String, Object>() {{
-                    put("name", "example1");
-                    put("display-icon", "IRON_SWORD;1;Example 1;It contains iron tools!");
-                    put("price", "100:score");
-                    put("give-on-respawn", false);
-                    put("items", new ArrayList<String>() {{
-                        add("IRON_SWORD");
-                        add("IRON_PICKAXE");
-                        add("IRON_AXE");
-                        add("IRON_SHOVEL");
-                        add("IRON_HOE");
-                    }});
-                }});
-                add(new HashMap<String, Object>() {{
-                    put("name", "example2");
-                    put("display-icon", "APPLE;3;Example 2;Everyone like apples!;...;             right?");
-                    put("price", "50:vault");
-                    put("give-on-respawn", true);
-                    put("items", new ArrayList<String>() {{
-                        add("APPLE;64;Apples!");
-                        add("CARROT;1;Not an apple.");
-                    }});
-                }});
-            }});
+            checkOrSetConfig(modify,"kits.list", Arrays.asList(new HashMap<String, Object>() {{
+                put("name", "example1");
+                put("display-icon", "IRON_SWORD;1;Example 1;It contains iron tools!");
+                put("price", "100:score");
+                put("give-on-respawn", false);
+                put("items", Arrays.asList("IRON_SWORD", "IRON_PICKAXE", "IRON_AXE"));
+            }}, new HashMap<String, Object>() {{
+                put("name", "example2");
+                put("display-icon", "APPLE;3;Example 2;Everyone like apples!;...;             right?");
+                put("price", "50:vault");
+                put("give-on-respawn", true);
+                put("items", Arrays.asList("APPLE;64;Apples!", "CARROT;1;Not an apple."));
+            }}));
         }
 
         saveConfig();
@@ -267,6 +220,13 @@ public class Configurator {
         }
     }
 
+    private void backupConfig(String fileName, String message) {
+        fileName = fileName == null ? "config_backup.yml" : fileName;
+        file.renameTo(new File(dataFolder, fileName));
+        XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(), message);
+        loadDefaults();
+    }
+
     public String getString(String string, String defaultString) {
         return ChatColor.translateAlternateColorCodes('&',
                 XPWars.getConfigurator().config.getString(string, defaultString));
@@ -274,10 +234,10 @@ public class Configurator {
 
     public List<String> getStringList(String string) {
         List<String> list = new ArrayList<>();
-        for (String s : XPWars.getConfigurator().config.getStringList(string)) {
+        XPWars.getConfigurator().config.getStringList(string).forEach(s -> {
             s = ChatColor.translateAlternateColorCodes('&', s);
             list.add(s);
-        }
+        });
         return list;
     }
 

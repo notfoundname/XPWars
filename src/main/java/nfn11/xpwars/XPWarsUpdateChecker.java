@@ -29,13 +29,12 @@ public class XPWarsUpdateChecker {
                             new BufferedReader(new InputStreamReader(connection.getInputStream())).readLine());
                     if (newVersion <= XPWars.getVersion()) {
                         XPWarsUtils.xpwarsLog(sender, XPWARS_UPD_NONE);
+                        cancel();
                     }
                     else XPWarsUtils.xpwarsLog(sender, XPWARS_UPD_FOUND_STABLE + newVersion);
-                    cancel();
                     hasUpdate = true;
                 } catch (Exception e) {
                     XPWarsUtils.xpwarsLog(sender, "&cUnable to check for new version.");
-                    cancel();
                 }
             }
         }.runTaskAsynchronously(XPWars.getInstance());

@@ -22,9 +22,9 @@ public class XPWarsDatabaseManager {
     }
 
     public void openConnection() throws SQLException, ClassNotFoundException {
-        if (connection != null && !connection.isClosed()) {
+        if (connection != null && !connection.isClosed())
             return;
-        }
+
         Class.forName("com.mysql.jdbc.Driver");
         connection = DriverManager.getConnection("jdbc:mysql://"
                         + this.host + ":" + this.port + "/" + this.database,

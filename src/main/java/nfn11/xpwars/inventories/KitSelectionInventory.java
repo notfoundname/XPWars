@@ -10,10 +10,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.events.BedwarsGameStartedEvent;
+import org.screamingsandals.bedwars.api.events.BedwarsPlayerKilledEvent;
 import org.screamingsandals.bedwars.lib.sgui.SimpleInventories;
 import org.screamingsandals.bedwars.lib.sgui.builder.FormatBuilder;
 import org.screamingsandals.bedwars.lib.sgui.events.PostActionEvent;
@@ -104,30 +106,22 @@ public class KitSelectionInventory implements Listener {
         });
     }
 
+    @SuppressWarnings("unchecked")
     private void createData() {
         SimpleInventories menu = new SimpleInventories(options);
         FormatBuilder builder = new FormatBuilder();
 
         List<HashMap<String, Object>> kits = (List<HashMap<String, Object>>)
-                XPWars.getConfigurator().config.getList("kits.list");
+                XPWars.getConfigurator().config.get("kits.list");
+        assert kits != null;
 
-        for (HashMap<String, Object> kit : kits) {
-            String name = (String) kit.get("name");
-            ItemStack icon = StackParser.parse(kit.get("display-icon"));
-            List<ItemStack> items = StackParser.parseAll((Collection<Object>) kit.get("items"));
-            int price = Integer.parseInt(kit.get("price").toString().split(":")[0]);
-            String priceType = kit.get("price").toString().split(":")[1].toLowerCase();
-            boolean giveOnRespawn = Boolean.parseBoolean(kit.get("give-on-respawm").toString());
-
-            for (Player player : openedForPlayers) {
-                builder.add(icon)
-                        .set("kit-items", items)
-                        .set("kit-price", price)
-                        .set("kit-price-type", priceType)
-                        .set("kit-name", name)
-                        .set("kit-give-on-respawn", giveOnRespawn);
-            }
-        }
+        kits.forEach(kit -> openedForPlayers.forEach(player ->
+                builder.add(StackParser.parse(kit.get("display-icon")))
+                        .set("kit-items", StackParser.parseAll((Collection<Object>) kit.get("items")))
+                        .set("kit-price", Integer.parseInt(kit.get("price").toString().split(":")[0]))
+                        .set("kit-price-type", kit.get("price").toString().split(":")[1].toLowerCase())
+                        .set("kit-name", kit.get("name"))
+                        .set("kit-give-on-respawn", kit.get("give-on-respawn"))));
 
         menu.load(builder);
         menu.generateData();
@@ -137,20 +131,18 @@ public class KitSelectionInventory implements Listener {
 
     @EventHandler
     public void onPostAction(PostActionEvent event) {
-        if (event.getFormat() != menu) {
+        if (event.getFormat() != menu)
             return;
-        }
 
         Player player = event.getPlayer();
         MapReader reader = event.getItem().getReader();
+        
         if (reader.containsKey("kit-name")) {
             player.closeInventory();
             boolean pass = false;
             switch (reader.getString("kit-price-type")) {
                 case "score":
-                    if (reader.getInt("kit-price") >
-                            (Main.getPlayerStatisticsManager().getStatistic(player).getCurrentScore()
-                                    + Main.getPlayerStatisticsManager().getStatistic(player).getScore()))
+                    if (reader.getInt("kit-price") > Main.getPlayerStatisticsManager().getStatistic(player).getScore())
                         XPWarsUtils.xpwarsLog(player,
                                 XPWars.getConfigurator().config.getString("kits.messages.not-enough-score"));
                     else pass = true;
@@ -188,9 +180,21 @@ public class KitSelectionInventory implements Listener {
                 if (kit.getPriceType().equalsIgnoreCase("vault"))
                     XPWars.getEconomy().withdrawPlayer(player, kit.getPrice());
                 KitManager.giveKit(player, kit);
-                selectedKit.remove(player);
+
+                if (!KitManager.getKit(selectedKit.get(player)).giveOnRespawn())
+                    selectedKit.remove(player);
             }
         });
+    }
+
+    @EventHandler
+    public void onDeath(PlayerRespawnEvent event) {
+        final Player player = event.getPlayer();
+        if (!Main.isPlayerInGame(player))
+            return;
+
+        if (selectedKit.containsKey(player))
+            KitManager.giveKit(player, KitManager.getKit(selectedKit.get(player)));
     }
 
 }

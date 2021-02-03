@@ -29,7 +29,6 @@ public class XPWars extends JavaPlugin implements Listener {
 
     private static XPWars instance;
     private Configurator configurator;
-    private HashMap<String, BaseCommand> commands = new HashMap<>();
     private GamesInventory gamesInventory;
     private LevelShopInventory levelShopInventory;
     private KitSelectionInventory kitSelectionInventory;
@@ -38,17 +37,19 @@ public class XPWars extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-        instance = this;
-        new XPWarsCommand();
-        debugInventory = new DebugInventory();
 
         if (Main.getInstance() == null)
             Bukkit.getServer().getPluginManager().disablePlugin(this);
+
+        instance = this;
+
+        new XPWarsCommand();
 
         configurator = new Configurator(this);
         configurator.loadDefaults();
 
         InventoryListener.init(this);
+        debugInventory = new DebugInventory();
         Bukkit.getPluginManager().registerEvents(this, this);
 
         try {
@@ -74,27 +75,27 @@ public class XPWars extends JavaPlugin implements Listener {
             new JoinSortedCommand();
         }
 
-        if (getConfigurator().config.getBoolean("features.kits")) {
-            kitSelectionInventory = new KitSelectionInventory(this);
-            try {
-                if (getServer().getPluginManager().getPlugin("Vault") == null) {
-                    RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-                    if (rsp != null)
-                        econ = rsp.getProvider();
-                }
-            } catch (Exception e) {
-                XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(),
-                        "&cUnable to register Vault economy, you won't be able to use it as price for kits!");
-            }
-        }
-
         if (getConfigurator().config.getBoolean("features.specials"))
             new RegisterSpecialListeners();
+
+        if (getConfigurator().config.getBoolean("features.kits")) {
+            kitSelectionInventory = new KitSelectionInventory(this);
+                if (getServer().getPluginManager().getPlugin("Vault") != null) {
+                    try {
+                        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+                        if (rsp != null)
+                            econ = rsp.getProvider();
+                    } catch (Exception e) {
+                    XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(),
+                            "&cUnable to register Vault economy, you won't be able to use it as price for kits!");
+                }
+            }
+        }
 
         XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(),
                 "&aLoaded XPWars &2" + XPWars.getInstance().getDescription().getVersion() + "&a!");
         XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(), "&aXPWars addon by &enotfoundname11");
-        XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(), "&9https://github.com/notfoundname/XPWars/wiki");
+        XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(), "&9Visit https://github.com/notfoundname/XPWars/wiki");
 
         if (configurator.config.getBoolean("check-for-updates"))
             XPWarsUpdateChecker.checkForUpdate(Bukkit.getConsoleSender());
@@ -114,10 +115,6 @@ public class XPWars extends JavaPlugin implements Listener {
 
     public static XPWars getInstance() {
         return instance;
-    }
-
-    public static HashMap<String, BaseCommand> getCommands() {
-        return instance.commands;
     }
 
     public static GamesInventory getGamesInventory() {

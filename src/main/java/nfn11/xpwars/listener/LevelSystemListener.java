@@ -23,7 +23,7 @@ public class LevelSystemListener implements Listener {
         Bukkit.getServer().getPluginManager().registerEvents(this, XPWars.getInstance());
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler
     public void onDeath(BedwarsPlayerKilledEvent event) {
         final Player player = event.getPlayer();
         final int playerLevel = player.getLevel();

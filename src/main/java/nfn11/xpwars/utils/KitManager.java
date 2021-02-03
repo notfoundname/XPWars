@@ -11,33 +11,31 @@ import java.util.List;
 
 public class KitManager {
 
+    @SuppressWarnings("unchecked")
     public static List<Kit> getKits() {
         List<Kit> list = new ArrayList<>();
 
-        XPWars.getConfigurator().config.getMapList("kits.list").forEach(map -> {
-            list.add(new Kit(
+        XPWars.getConfigurator().config.getMapList("kits.list").forEach(map ->
+                list.add(new Kit(
                     map.get("name").toString(),
                     StackParser.parse(map.get("display-icon")),
                     StackParser.parseAll((Collection<Object>) map.get("items")),
                     Integer.parseInt(map.get("price").toString().split(":")[0]),
                     map.get("price-type").toString().split(":")[1],
-                    Boolean.parseBoolean(map.get("give-on-respawn").toString())));
-        });
+                    Boolean.parseBoolean(map.get("give-on-respawn").toString())))
+        );
         return list;
     }
 
     public static Kit getKit(String name) {
-        for (Kit kit : getKits()) {
+        for (Kit kit : getKits())
             if (name.equals(kit.getName()))
                 return kit;
-        }
         return null;
     }
 
     public static void giveKit(Player player, Kit kit) {
-        kit.getItems().forEach(itemStack -> {
-            player.getInventory().addItem(itemStack);
-        });
+        kit.getItems().forEach(itemStack -> player.getInventory().addItem(itemStack));
     }
 
     public static boolean hasBoughtKit(Player player, Kit kit) {
@@ -85,7 +83,7 @@ public class KitManager {
             return priceType;
         }
 
-        public boolean isGiveOnRespawn() {
+        public boolean giveOnRespawn() {
             return giveOnRespawn;
         }
     }
