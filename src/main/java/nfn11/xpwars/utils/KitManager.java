@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.lib.sgui.utils.StackParser;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -14,7 +15,6 @@ public class KitManager {
     @SuppressWarnings("unchecked")
     public static List<Kit> getKits() {
         List<Kit> list = new ArrayList<>();
-
         XPWars.getConfigurator().config.getMapList("kits.list").forEach(map ->
                 list.add(new Kit(
                     map.get("name").toString(),
@@ -22,11 +22,11 @@ public class KitManager {
                     StackParser.parseAll((Collection<Object>) map.get("items")),
                     Integer.parseInt(map.get("price").toString().split(":")[0]),
                     map.get("price-type").toString().split(":")[1],
-                    Boolean.parseBoolean(map.get("give-on-respawn").toString())))
-        );
+                    Boolean.parseBoolean(map.get("give-on-respawn").toString()))));
         return list;
     }
 
+    @Nullable
     public static Kit getKit(String name) {
         for (Kit kit : getKits())
             if (name.equals(kit.getName()))

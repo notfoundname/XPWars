@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.google.gson.Gson;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
@@ -20,7 +21,7 @@ import nfn11.xpwars.utils.XPWarsUtils;
  */
 public class Configurator {
 
-    public File file;
+    public File file, kitOwnersFile;
     public FileConfiguration config;
 
     public final File dataFolder;
@@ -35,26 +36,34 @@ public class Configurator {
         dataFolder.mkdirs();
 
         file = new File(dataFolder, "config.yml");
+        kitOwnersFile = new File(dataFolder, "kitOwners.yml");
 
         config = new YamlConfiguration();
 
         if (!file.exists()) try {
-                file.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            file.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+        if (!kitOwnersFile.exists()) try {
+            kitOwnersFile.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         try {
             config.load(file);
         } catch (IOException | InvalidConfigurationException e) {
-            backupConfig(null, "&eYour configuration file is broken. It was backed up as config-backup.yml");
+            backupConfig(null);
+            XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(), "&eYour configuration file is broken. It was backed up as config-backup.yml");
             e.printStackTrace();
             return;
         }
 
         if (config.contains("version")) {
-            backupConfig("config_legacy.yml", "&aYour old config.yml was backed up as config_legacy.yml");
+            backupConfig("config_legacy.yml");
+            XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(), "&aYour old config.yml was backed up as config_legacy.yml");
             return;
         }
 
@@ -71,6 +80,7 @@ public class Configurator {
         checkOrSetConfig(modify, "features.placeholders", false);
         checkOrSetConfig(modify, "features.specials", false);
         checkOrSetConfig(modify, "features.kits", false);
+        checkOrSetConfig(modify, "features.hide-enemy-nametags", false);
 
         if (config.getBoolean("features.permission-to-join-game")) {
             checkOrSetConfig(modify, "permission-to-join-game.message",
@@ -105,7 +115,7 @@ public class Configurator {
                 put("ArenaNameCaseSensetive.sound.sound", "none");
                 put("ArenaNameCaseSensetive.sound.volume", 1);
                 put("ArenaNameCaseSensetive.sound.pitch", 2);
-                resources.getKeys(false).forEach(key -> put("ArenaNameCaseSensetivespawners." + key, 10));
+                resources.getKeys(false).forEach(key -> put("ArenaNameCaseSensetive.spawners." + key, 10));
             }});
 
             resources.getKeys(false).forEach(key -> checkOrSetConfig(modify, "level.spawners." + key, 3));
@@ -220,33 +230,10 @@ public class Configurator {
         }
     }
 
-    private void backupConfig(String fileName, String message) {
+    private void backupConfig(String fileName) {
         fileName = fileName == null ? "config_backup.yml" : fileName;
         file.renameTo(new File(dataFolder, fileName));
-        XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(), message);
         loadDefaults();
-    }
-
-    public String getString(String string, String defaultString) {
-        return ChatColor.translateAlternateColorCodes('&',
-                XPWars.getConfigurator().config.getString(string, defaultString));
-    }
-
-    public List<String> getStringList(String string) {
-        List<String> list = new ArrayList<>();
-        XPWars.getConfigurator().config.getStringList(string).forEach(s -> {
-            s = ChatColor.translateAlternateColorCodes('&', s);
-            list.add(s);
-        });
-        return list;
-    }
-
-    public boolean getBoolean(String string, boolean defaultBoolean) {
-        return XPWars.getConfigurator().config.getBoolean(string, defaultBoolean);
-    }
-
-    public int getInt(String string, int defaultInt) {
-        return XPWars.getConfigurator().config.getInt(string, defaultInt);
     }
 
     private void checkOrSetConfig(AtomicBoolean modify, String path, Object value) {
@@ -263,4 +250,5 @@ public class Configurator {
             modify.set(true);
         }
     }
+
 }

@@ -147,6 +147,7 @@ public class DebugInventory implements Listener {
         try {
             format.loadFromDataFolder(Main.getInstance().getDataFolder(), "shop.yml");
         } catch (Exception e) {
+            e.printStackTrace();
             FormatBuilder builder = new FormatBuilder();
             builder.add("BARRIER;1;OOPS;Your shop file is broken!");
         }
@@ -157,7 +158,8 @@ public class DebugInventory implements Listener {
     public void show(Player player, String fileName) {
         try {
             format.loadFromDataFolder(Main.getInstance().getDataFolder(), fileName);
-        } catch (Throwable ignored) {
+        } catch (Exception e) {
+            e.printStackTrace();
             player.sendMessage("Your shop file is invalid!");
             FormatBuilder builder = new FormatBuilder();
             builder.add("BARRIER;1;OOPS;Your shop file is broken!");
@@ -168,9 +170,8 @@ public class DebugInventory implements Listener {
 
     @EventHandler
     public void onGeneratingItem(GenerateItemEvent event) {
-        if (event.getFormat() != format) {
+        if (event.getFormat() != format)
             return;
-        }
 
         PlayerItemInfo item = event.getInfo();
         Player player = event.getPlayer();

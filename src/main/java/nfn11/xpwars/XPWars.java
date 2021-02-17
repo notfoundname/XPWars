@@ -1,11 +1,10 @@
 package nfn11.xpwars;
 
-import java.util.HashMap;
-
 import net.milkbowl.vault.economy.Economy;
 import nfn11.xpwars.inventories.DebugInventory;
 import nfn11.xpwars.inventories.KitSelectionInventory;
 import nfn11.xpwars.listener.ActionBarMessageListener;
+import nfn11.xpwars.listener.EnemyHideNametagsListener;
 import nfn11.xpwars.placeholderapi.PlaceholderAPIHook;
 import nfn11.xpwars.special.listener.RegisterSpecialListeners;
 import org.bukkit.Bukkit;
@@ -15,7 +14,6 @@ import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.Main;
-import org.screamingsandals.bedwars.commands.BaseCommand;
 import nfn11.xpwars.commands.GamesCommand;
 import nfn11.xpwars.commands.JoinSortedCommand;
 import nfn11.xpwars.commands.XPWarsCommand;
@@ -38,8 +36,11 @@ public class XPWars extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
 
-        if (Main.getInstance() == null)
+        if (Main.getInstance() == null) {
+            Bukkit.getServer().getLogger().warning("Addon won't start without ScreamingBedwars.");
             Bukkit.getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
 
         instance = this;
 
@@ -54,12 +55,11 @@ public class XPWars extends JavaPlugin implements Listener {
 
         try {
             if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null
-                    && XPWars.getConfigurator().config.getBoolean("features.placeholders"))
+                    && XPWars.getConfigurator().config.getBoolean("features.placeholders")) {
                 new PlaceholderAPIHook(this).register();
-        } catch (Exception e) {
-            XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(),
-                    "&cUnable to find PlaceholderAPI! Make sure you correctly installed it!");
-        }
+                XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(), "&aFound PlaceholderAPI");
+            }
+        } catch (Exception ignored) {}
 
         if (getConfigurator().config.getBoolean("features.action-bar-messages"))
             new ActionBarMessageListener();
@@ -78,18 +78,20 @@ public class XPWars extends JavaPlugin implements Listener {
         if (getConfigurator().config.getBoolean("features.specials"))
             new RegisterSpecialListeners();
 
+        if (getConfigurator().config.getBoolean("features.hide-enemy-nametags"))
+            new EnemyHideNametagsListener();
+
         if (getConfigurator().config.getBoolean("features.kits")) {
             kitSelectionInventory = new KitSelectionInventory(this);
+
+            try {
                 if (getServer().getPluginManager().getPlugin("Vault") != null) {
-                    try {
-                        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-                        if (rsp != null)
-                            econ = rsp.getProvider();
-                    } catch (Exception e) {
-                    XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(),
-                            "&cUnable to register Vault economy, you won't be able to use it as price for kits!");
+                    RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+                    if (rsp != null)
+                        econ = rsp.getProvider();
+                    XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(), "&aFound Vault");
                 }
-            }
+            } catch (Exception ignored) {}
         }
 
         XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(),

@@ -7,7 +7,10 @@ import java.sql.Statement;
 
 /*
     https://www.spigotmc.org/wiki/connecting-to-databases-mysql/
+
+    not finished
 */
+
 public class XPWarsDatabaseManager {
     String host, database, user, password;
     static Connection connection;

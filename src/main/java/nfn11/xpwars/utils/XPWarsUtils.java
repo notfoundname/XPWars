@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -17,6 +16,9 @@ import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameStatus;
+import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
+import org.screamingsandals.bedwars.utils.MiscUtils;
+import javax.annotation.Nonnull;
 
 import nfn11.xpwars.XPWars;
 
@@ -27,17 +29,14 @@ public class XPWarsUtils {
         List<String> notAllowed = Arrays.asList("config.yml", "sign.yml", "record.yml");
         File[] files = Main.getInstance().getDataFolder().listFiles();
 
-        for (File file : files) {
+        for (File file : files)
             if (file.isFile() && !notAllowed.contains(file.getName()))
                 list.add(file.getName());
-        }
         return list;
     }
 
     public static void xpwarsLog(CommandSender sender, String msg) {
-        msg = "[&eXPWars&r] " + msg;
-        msg = ChatColor.translateAlternateColorCodes('&', msg);
-        sender.sendMessage(msg);
+        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "[&eXPWars&r] " + msg));
     }
 
     public static List<String> getOnlinePlayers() {
@@ -54,33 +53,29 @@ public class XPWarsUtils {
 
     public static int getFreeGamesInt() {
         int i = 0;
-        for (Game game : Main.getInstance().getGames()) {
+        for (Game game : Main.getInstance().getGames())
             if (game.getStatus() == GameStatus.WAITING)
                 i++;
-        }
         return i;
     }
 
+    @Nonnull
     public static List<String> getAllCategories() {
-        List<String> list = new ArrayList<>();
-        list.addAll(XPWars.getConfigurator().config.getConfigurationSection("games-gui.categories").getValues(false).keySet());
-        return list;
+        return new ArrayList<>(XPWars.getConfigurator().config.getConfigurationSection("games-gui.categories").getValues(false).keySet());
     }
 
     public static List<Game> getGamesInCategory(String category) {
         List<Game> list = new ArrayList<>();
         for (String s : XPWars.getConfigurator().config.getConfigurationSection("games-gui.categories." + category)
-                .getStringList("arenas")) {
+                .getStringList("arenas"))
             if (Main.isGameExists(s))
                 list.add(Main.getGame(s));
-        }
-        if (list.isEmpty())
-            return null;
-        return list;
+        return list.isEmpty() ? null : list;
     }
 
     public static org.screamingsandals.bedwars.api.game.Game getGameWithHighestPlayersInCategory(String category) {
         TreeMap<Integer, org.screamingsandals.bedwars.api.game.Game> gameList = new TreeMap<>();
+
         for (org.screamingsandals.bedwars.api.game.Game game : getGamesInCategory(category)) {
             if (game.getStatus() != GameStatus.WAITING
                     || game.countConnectedPlayers() >= game.getMaxPlayers()
@@ -88,10 +83,10 @@ public class XPWarsUtils {
                 continue;
             gameList.put(game.countConnectedPlayers(), game);
         }
-        Map.Entry<Integer, org.screamingsandals.bedwars.api.game.Game> lastEntry = gameList.lastEntry();
-        if (lastEntry == null)
-            return getFirstWaitingGameInCategory(category);
-        return lastEntry.getValue();
+
+        return gameList.lastEntry() == null ?
+                getFirstWaitingGameInCategory(category)
+                : gameList.lastEntry().getValue();
     }
 
     public static org.screamingsandals.bedwars.api.game.Game getFirstWaitingGameInCategory(String category) {
@@ -101,19 +96,20 @@ public class XPWarsUtils {
                 return;
             availableGames.put(game.getConnectedPlayers().size(), game);
         });
-        if (availableGames.isEmpty())
-            return null;
-        return availableGames.lastEntry().getValue();
+        return availableGames.isEmpty() ? null : availableGames.lastEntry().getValue();
     }
 
     @SuppressWarnings("deprecation")
     public static void sendActionBar(Player player, String message) {
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null)
             message = PlaceholderAPI.setPlaceholders(player, message);
-        if (Main.isSpigot())
+
+        if (ClassStorage.IS_PAPER_SERVER && isNewVersion()) player.sendActionBar('&', message);
+        else if (ClassStorage.IS_SPIGOT_SERVER)
             player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
                     TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', message)));
-        else player.sendMessage(message);
+        else MiscUtils.sendActionBarMessage(player, message);
+
     }
 
 }

@@ -8,6 +8,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.screamingsandals.bedwars.api.events.BedwarsPlayerJoinEvent;
 
+import java.util.Arrays;
+
 public class JoinGameListener implements Listener {
 
     public JoinGameListener() {
@@ -16,22 +18,23 @@ public class JoinGameListener implements Listener {
 
     @EventHandler
     public void onJoinGame(BedwarsPlayerJoinEvent event) {
-        if (event.isCancelled())
-            return;
-        ConfigurationSection sec = XPWars.getConfigurator().config.getConfigurationSection("permission-to-join-game");
-        if (sec == null)
-            return;
-        for (String permission : sec.getConfigurationSection("arenas").getValues(false).keySet()) {
-            if (sec.getStringList("arenas." + permission).contains(event.getGame().getName()) && !event.getPlayer()
-                    .hasPermission(permission.replace("[", "").replace("]", ""))) {
+
+        assert !event.isCancelled();
+
+        ConfigurationSection section = XPWars.getConfigurator().config.getConfigurationSection("permission-to-join-game");
+        assert section != null;
+
+        section.getConfigurationSection("arenas").getKeys(false).forEach(key -> {
+            String[] arenas = key.split(";");
+            if (Arrays.toString(arenas).contains(event.getGame().getName())) {
                 event.setCancelled(true);
-                String message = sec.getString("permission-to-join-game.message",
+                String message = section.getString("permission-to-join-game.message",
                         "You don't have permission %perm% to join arena %arena%!")
-                        .replace("%perm%", permission)
+                        .replace("%perm%", section.getString("arenas." + key))
                         .replace("%arena%", event.getGame().getName());
                 XPWarsUtils.sendActionBar(event.getPlayer(), message);
-                return;
             }
-        }
+        });
     }
+
 }

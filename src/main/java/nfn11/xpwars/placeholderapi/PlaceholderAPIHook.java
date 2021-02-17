@@ -31,7 +31,7 @@ public class PlaceholderAPIHook extends me.clip.placeholderapi.expansion.Placeho
 
     @Override
     public String getVersion() {
-        return XPWars.getInstance().getDescription().getVersion();
+        return Float.toString(XPWars.getVersion());
     }
 
     @Override
@@ -51,39 +51,29 @@ public class PlaceholderAPIHook extends me.clip.placeholderapi.expansion.Placeho
             return "";
 
         if (parsed.endsWith("_ingame")) {
-            parsed = parsed.replace("_ingame", "");
-            Game game = Main.getGame(parsed);
-            if (game == null)
-                return "";
-            GameStatus status = game.getStatus();
-            if (status == GameStatus.RUNNING || status == GameStatus.GAME_END_CELEBRATING)
-                return Integer.toString(Main.getGame(parsed).countConnectedPlayers());
-            return "0";
+            Game game = Main.getGame(parsed.replace("_ingame", ""));
+            return game != null ?
+                    game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING ?
+                            Integer.toString(Main.getGame(parsed).countConnectedPlayers()) : "0" : "";
         }
 
         if (parsed.endsWith("_inlobby")) {
-            parsed = parsed.replace("_inlobby", "");
-            Game game = Main.getGame(parsed);
-            if (game == null)
-                return "";
-            if (game.getStatus() == GameStatus.WAITING)
-                return Integer.toString(game.countConnectedPlayers());
-            return "0";
+            Game game = Main.getGame(parsed.replace("_inlobby", ""));
+            return game != null ?
+                    game.getStatus() == GameStatus.WAITING ?
+                            Integer.toString(game.countConnectedPlayers()) : "" : "";
         }
 
         if (parsed.endsWith("_lobbyworld")) {
             parsed = parsed.replace("_lobbyworld", "");
-            if (Main.getGame(parsed) == null)
-                return "";
-            return Main.getGame(parsed).getLobbyWorld().getName();
+            return Main.getGame(parsed) != null ?
+                    Main.getGame(parsed).getLobbyWorld().getName() : "";
         }
 
         if (parsed.endsWith("_state")) {
-            parsed = parsed.replace("_state", "");
+            Game game = Main.getGame(parsed.replace("_state", ""));
+            assert game != null;
 
-            Game game = Main.getGame(parsed);
-            if (game == null)
-                return "";
             GameStatus status = game.getStatus();
             int gameTime = game.getGameTime();
             int countdown = game.getPauseCountdown();
@@ -109,17 +99,12 @@ public class PlaceholderAPIHook extends me.clip.placeholderapi.expansion.Placeho
 
         if (parsed.endsWith("_tl")) {
             parsed = parsed.replace("_tl", "");
-            if (Main.getGame(parsed) == null)
-                return "";
-            return Main.getGame(parsed).getFormattedTimeLeft();
+            return Main.getGame(parsed) != null ? Main.getGame(parsed).getFormattedTimeLeft() : "";
         }
 
         if (parsed.endsWith("_tp")) {
-            parsed = parsed.replace("_tp", "");
-            Game game = Main.getGame(parsed);
-            if (game == null)
-                return "";
-            return game.getFormattedTimeLeft(game.getGameTime() - game.getPauseCountdown());
+            Game game = Main.getGame(parsed.replace("_tp", ""));
+            return game != null ? game.getFormattedTimeLeft(game.getGameTime() - game.getPauseCountdown()) : "";
         }
 
         if (Main.isPlayerInGame(player)) {
@@ -127,24 +112,19 @@ public class PlaceholderAPIHook extends me.clip.placeholderapi.expansion.Placeho
             Game game = gPlayer.getGame();
             CurrentTeam team = game.getPlayerTeam(gPlayer);
             GameStatus status = game.getStatus();
-            int gameTime = game.getGameTime();
-            int pauseCountdown = game.getPauseCountdown();
-            int countdown = game.getPauseCountdown();
 
             switch (parsed.toLowerCase()) {
                 case "color":
-                    if (gPlayer.isSpectator)
-                        return ChatColor.GRAY + "";
-                    if (team != null)
-                        return team.teamInfo.color.chatColor + "";
-                    return ChatColor.RESET + "";
+                    return gPlayer.isSpectator ?
+                            ChatColor.GRAY + "" : team != null ?
+                            team.teamInfo.color.chatColor + "" : ChatColor.RESET + "";
                 case "state":
                     if (status == GameStatus.WAITING && game.getMinPlayers() <= game.countConnectedPlayers())
                         return XPWars.getConfigurator().getString("placeholders.starting", "starting")
                                 .replace("%left%", game.getFormattedTimeLeft());
                     return XPWars.getConfigurator().getString("placeholders." + status.name(), "null");
                 default:
-                    return "null";
+                    return "";
             }
         }
         return null;
