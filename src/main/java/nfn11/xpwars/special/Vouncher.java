@@ -31,18 +31,15 @@ public class Vouncher extends SpecialItem implements nfn11.xpwars.special.api.Vo
 
     @Override
     public void setLevel() {
-        int defmax = XPWars.getConfigurator().getInt("level.maximum-xp", 0);
-        int max = XPWars.getConfigurator().getInt("level.games." + game.getName() + ".maximum-xp", defmax);
+        int defmax = XPWars.getConfigurator().config.getInt("level.maximum-xp", 0);
+        int max = XPWars.getConfigurator().config.getInt("level.games." + game.getName() + ".maximum-xp", defmax);
 
-        if ((player.getLevel() + levels) > max) {
-            XPWarsUtils.sendActionBar(player,
-                    XPWars.getConfigurator().config
-                            .getString("level.per-arena-settings." + game.getName() + ".messages.maxreached",
-                                    XPWars.getConfigurator().config.getString("level.messages.maxreached"))
-                            .replace("%max%", Integer.toString(max)));
-        } else {
-            player.setLevel(player.getLevel() + levels);
-        }
+        if ((player.getLevel() + levels) > max) XPWarsUtils.sendActionBar(player, XPWars.getConfigurator().config
+                .getString("level.per-arena-settings." + game.getName() + ".messages.maxreached",
+                        XPWars.getConfigurator().config.getString("level.messages.maxreached"))
+                .replace("%max%", Integer.toString(max)));
+        else player.setLevel(player.getLevel() + levels);
+
     }
 
 }
