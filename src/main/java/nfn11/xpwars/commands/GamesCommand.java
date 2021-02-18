@@ -1,5 +1,6 @@
 package nfn11.xpwars.commands;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -12,32 +13,26 @@ import nfn11.xpwars.utils.XPWarsUtils;
 
 public class GamesCommand extends BaseCommand {
     public GamesCommand() {
-        super("games", null, true, true);
+        super("games", Collections.singletonList("xpwars.gamesgui"), true, true);
     }
 
     @Override
     public void completeTab(List<String> completion, CommandSender sender, List<String> args) {
-        if (!sender.isOp() || BaseCommand.hasPermission(sender, ADMIN_PERMISSION, false) || !sender
-                .hasPermission(XPWars.getConfigurator().getString("games-gui.permission", "xpwars.gamesgui"))) {
+        if (!sender.isOp() || BaseCommand.hasPermission(sender, ADMIN_PERMISSION, false))
             return;
-        }
-        if (args.size() == 1) {
+        if (args.size() == 1)
             completion.addAll(XPWarsUtils.getOnlinePlayers());
-        }
     }
 
     @Override
     public boolean execute(CommandSender sender, List<String> args) {
         if (args.size() == 1) {
-            Player player = Bukkit.getServer().getPlayer(args.get(0));
-            if (player != null) {
-                XPWars.getGamesInventory().openForPlayer(player);
-                return true;
-            }
+            if (Bukkit.getServer().getPlayer(args.get(0)) != null)
+                XPWars.getGamesInventory().openForPlayer(Bukkit.getServer().getPlayer(args.get(0)));
+            return true;
         }
-        if (sender instanceof Player) {
+        if (sender instanceof Player)
             XPWars.getGamesInventory().openForPlayer((Player) sender);
-        }
         return true;
     }
     

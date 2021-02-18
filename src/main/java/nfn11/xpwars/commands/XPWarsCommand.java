@@ -36,7 +36,7 @@ public class XPWarsCommand extends BaseCommand {
                     break;
                 case 3:
                     completion.add("debug");
-                    if (XPWars.getConfigurator().getBoolean("features.level-system", false))
+                    if (XPWars.getConfigurator().config.getBoolean("features.level-system", false))
                         completion.add("level");
                     break;
                 case 4:
@@ -95,7 +95,7 @@ public class XPWarsCommand extends BaseCommand {
                     if (args.get(2).equalsIgnoreCase("debug"))
                         XPWars.getDebugInventory().show(player, args.get(1));
                     if (args.get(2).equalsIgnoreCase("level") &&
-                            XPWars.getConfigurator().getBoolean("features.level-system", false))
+                            XPWars.getConfigurator().config.getBoolean("features.level-system", false))
                         XPWars.getLevelShopInventory().show(player, new GameStore(null, args.get(1),
                                 false, i18nonly("item_shop_name", "[BW] Shop"), false, false));
                     break;

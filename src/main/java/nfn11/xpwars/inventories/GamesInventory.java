@@ -40,7 +40,7 @@ public class GamesInventory implements Listener {
         
         options = new Options(XPWars.getInstance());
         options.setPrefix(ChatColor.translateAlternateColorCodes('&',
-                XPWars.getConfigurator().getString("games-gui.title", "games")
+                XPWars.getConfigurator().config.getString("games-gui.title", "games")
                         .replace("%free%", Integer.toString(XPWarsUtils.getFreeGamesInt()))
                         .replace("%total%", Integer.toString(Main.getGameNames().size()))));
         options.setShowPageNumber(true);
@@ -103,8 +103,8 @@ public class GamesInventory implements Listener {
         FormatBuilder builder = new FormatBuilder();
 
         if (XPWars.getConfigurator().config.getBoolean("games-gui.enable-categories")) {
-            XPWars.getConfigurator().config.getConfigurationSection("games-gui.categories")
-            .getValues(false).keySet().forEach(s -> {
+            XPWars.getConfigurator().config.getConfigurationSection("games-gui.categories").getValues(false)
+                    .keySet().forEach(s -> {
                 ItemStack category = StackParser.parseNullable(XPWars.getConfigurator().config
                         .getConfigurationSection("games-gui.categories." + s).get("stack"));
                 if (category == null)
