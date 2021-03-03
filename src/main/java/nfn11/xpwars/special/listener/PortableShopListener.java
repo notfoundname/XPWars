@@ -1,5 +1,6 @@
 package nfn11.xpwars.special.listener;
 
+import nfn11.xpwars.utils.XPWarsUtils;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -24,24 +25,22 @@ public class PortableShopListener implements Listener {
 
     @EventHandler
     public void onPortableShopBuy(BedwarsApplyPropertyToBoughtItem event) {
-        if (event.getPropertyName().equalsIgnoreCase("portableshop")) {
-            ItemStack stack = event.getStack();
-            APIUtils.hashIntoInvisibleString(stack, applyProperty(event));
-        }
+        if (event.getPropertyName().equalsIgnoreCase("portableshop"))
+            APIUtils.hashIntoInvisibleString(event.getStack(), applyProperty(event));
     }
 
     @EventHandler
     public void onUse(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        if (!Main.isPlayerInGame(player))
-            return;
+        assert Main.isPlayerInGame(player);
         Game game = Main.getPlayerGameProfile(player).getGame();
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             event.setCancelled(true);
-            for (Entity ent : player.getWorld().getEntities()) {
-                if (ent.hasMetadata(player.getUniqueId().toString()) && ent.hasMetadata("portable-shop"))
+
+            for (Entity entity : player.getWorld().getEntities())
+                if (entity.hasMetadata(player.getUniqueId().toString()) && entity.hasMetadata("portable-shop"))
                     return;
-            }
+
             ItemStack item = event.getItem();
             String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(item, PORTABLE_SHOP_PREFIX);
             if (unhidden != null) {
@@ -55,7 +54,7 @@ public class PortableShopListener implements Listener {
                 String skinName = unhidden.split(":")[9];
 
                 if (duration < 3) {
-                    player.sendMessage("Duration is be lower than 3 seconds. Tell this to server staff.");
+                    XPWarsUtils.xpwarsLog(player, "Duration is be lower than 3 seconds. Tell this to server staff.");
                     return;
                 }
 
@@ -88,9 +87,11 @@ public class PortableShopListener implements Listener {
                 + ":"
                 + SpecialItemUtils.getIntFromProperty("duration", XPWars.getConfigurator().config,
                         "specials.portable-shop.duration", event)
-                + ":" + SpecialItemUtils.getBooleanFromProperty("baby", XPWars.getConfigurator().config,
+                + ":"
+                + SpecialItemUtils.getBooleanFromProperty("baby", XPWars.getConfigurator().config,
                         "specials.portable-shop.baby", event)
-                + ":" + SpecialItemUtils.getBooleanFromProperty("skin-name", XPWars.getConfigurator().config,
+                + ":"
+                + SpecialItemUtils.getBooleanFromProperty("skin-name", XPWars.getConfigurator().config,
                         "specials.portable-shop.skin-name", event);
     }
 }

@@ -5,7 +5,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
-import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.APIUtils;
 import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
@@ -20,10 +19,8 @@ public class RideableProjectileListener implements Listener {
 
     @EventHandler
     public void onProjectileRegister(BedwarsApplyPropertyToBoughtItem event) {
-        if (event.getPropertyName().equalsIgnoreCase("RideableProjectile")) {
-            ItemStack stack = event.getStack();
-            APIUtils.hashIntoInvisibleString(stack, applyProperty(event));
-        }
+        if (event.getPropertyName().equalsIgnoreCase("RideableProjectile"))
+            APIUtils.hashIntoInvisibleString(event.getStack(), applyProperty(event));
     }
 
     @SuppressWarnings("deprecation")
@@ -31,19 +28,18 @@ public class RideableProjectileListener implements Listener {
     public void onThrow(ProjectileLaunchEvent event) {
         if (event.getEntity().getShooter() instanceof Player) {
             Player player = (Player) event.getEntity().getShooter();
-            if (!Main.isPlayerInGame(player))
-                return;
+            assert Main.isPlayerInGame(player);
             GamePlayer gamePlayer = Main.getPlayerGameProfile(player);
             Game game = gamePlayer.getGame();
-            ItemStack stack = player.getInventory().getItemInHand();
 
-            String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack, RIDEABLE_PROJECTILE_PREFIX);
+            String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(player.getInventory().getItemInHand(),
+                    RIDEABLE_PROJECTILE_PREFIX);
             if (unhidden != null) {
-                boolean allow_leave = Boolean.getBoolean(unhidden.split(":")[2]);
-                boolean remove_on_leave = Boolean.getBoolean(unhidden.split(":")[3]);
+                boolean allowLeave = Boolean.getBoolean(unhidden.split(":")[2]);
+                boolean removeOnLeave = Boolean.getBoolean(unhidden.split(":")[3]);
 
                 RideableProjectile special = new RideableProjectile(game, player, game.getTeamOfPlayer(player),
-                        allow_leave, remove_on_leave, event.getEntity());
+                        allowLeave, removeOnLeave, event.getEntity());
                 special.run(event.getEntity());
             }
         }
@@ -56,11 +52,8 @@ public class RideableProjectileListener implements Listener {
                 event.setCancelled(true);
                 event.getVehicle().removePassenger(event.getExited());
                 event.getVehicle().addPassenger(event.getExited());
-            } else {
-                if (event.getVehicle().hasMetadata("remove-on-leave")) {
-                    event.getVehicle().remove();
-                }
-            }
+            } else if (event.getVehicle().hasMetadata("remove-on-leave"))
+                event.getVehicle().remove();
         }
     }
 

@@ -33,18 +33,14 @@ public class RemoteTNTListener implements Listener {
 
     @EventHandler
     public void onRemoteTntBuy(BedwarsApplyPropertyToBoughtItem event) {
-        if (event.getPropertyName().equalsIgnoreCase("remotetnt")) {
-            ItemStack stack = event.getStack();
-            APIUtils.hashIntoInvisibleString(stack, applyProperty(event));
-        }
+        if (event.getPropertyName().equalsIgnoreCase("remotetnt"))
+            APIUtils.hashIntoInvisibleString(event.getStack(), applyProperty(event));
     }
 
     @EventHandler
     public void onTntPlace(BedwarsPlayerBuildBlock event) {
         Player player = event.getPlayer();
-
-        if (event.isCancelled())
-            return;
+        assert !event.isCancelled();
 
         ItemStack tnt = event.getItemInHand();
         String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(tnt, REMOTE_TNT_PREFIX);
@@ -54,50 +50,41 @@ public class RemoteTNTListener implements Listener {
             RemoteTNT special = new RemoteTNT(event.getGame(), player, event.getTeam(), fuse_ticks, block, locations);
             special.addBlockToLocations();
             ItemStack detonator = detonator();
-            if (!player.getInventory().contains(detonator)) {
+            if (!player.getInventory().contains(detonator))
                 player.getInventory().addItem(detonator);
-            }
         }
     }
 
     @EventHandler
     public void onDetonatorUsage(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        if (!Main.isPlayerInGame(player))
-            return;
         ItemStack detonator = detonator();
-        if (!(event.getItem() == null)) {
-            if (event.getItem().equals(detonator)
-                    && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
-                for (Location location : locations) {
-                    int ticks = location.getBlock().getMetadata("ticks").get(0).asInt();
-                    location.getBlock().setType(Material.AIR);
-                    TNTPrimed tnt = location.getWorld().spawn(location.add(0.5, 0.0, 0.5), TNTPrimed.class);
-                    for (Player players : Main.getPlayerGameProfile(player).getGame().getConnectedPlayers()) {
-                        if (ticks >= 30) {
-                            players.playSound(tnt.getLocation(), Sound.ENTITY_TNT_PRIMED, 1.0F, 1.0F);
-                        }
-                    }
-                    Main.registerGameEntity(tnt, Main.getPlayerGameProfile(player).getGame());
-                    tnt.setFuseTicks(ticks);
-                    tnt.setMetadata("owner",
-                            new FixedMetadataValue(XPWars.getInstance(), player.getUniqueId().toString()));
-                    location.getBlock().setType(Material.AIR);
-                    locations.remove(location);
-                }
-                event.setCancelled(true);
-                player.getInventory().remove(detonator);
+        assert Main.isPlayerInGame(player) && event.getItem() != null && event.getItem().equals(detonator);
+        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            for (Location location : locations) {
+                int ticks = location.getBlock().getMetadata("ticks").get(0).asInt();
+                location.getBlock().setType(Material.AIR);
+                TNTPrimed tnt = location.getWorld().spawn(location.add(0.5, 0.0, 0.5), TNTPrimed.class);
+                Main.getPlayerGameProfile(player).getGame().getConnectedPlayers().forEach(players -> {
+                    if (ticks >= 30)
+                        players.playSound(tnt.getLocation(), Sound.ENTITY_TNT_PRIMED, 1.0F, 1.0F);
+                });
+                Main.registerGameEntity(tnt, Main.getPlayerGameProfile(player).getGame());
+                tnt.setFuseTicks(ticks);
+                tnt.setMetadata("owner",
+                        new FixedMetadataValue(XPWars.getInstance(), player.getUniqueId().toString()));
+                location.getBlock().setType(Material.AIR);
+                locations.remove(location);
             }
+            event.setCancelled(true);
+            player.getInventory().remove(detonator);
         }
     }
 
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent event) {
-        if (!(event.getEntity() instanceof Player))
-            return;
-        Player player = (Player) event.getEntity();
-        if (!Main.isPlayerInGame(player))
-            return;
+        Player player = event.getEntity() instanceof Player ? (Player) event.getEntity() : null;
+        assert player != null && Main.isPlayerInGame(player);
         if (event.getDamager() instanceof TNTPrimed) {
             TNTPrimed tnt = (TNTPrimed) event.getDamager();
             if (tnt.hasMetadata("owner")) {

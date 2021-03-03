@@ -21,10 +21,8 @@ public class ThrowableTNTListener implements Listener {
 
     @EventHandler
     public void onThrowableTntBuy(BedwarsApplyPropertyToBoughtItem event) {
-        if (event.getPropertyName().equalsIgnoreCase("throwabletnt")) {
-            ItemStack stack = event.getStack();
-            APIUtils.hashIntoInvisibleString(stack, applyProperty(event));
-        }
+        if (event.getPropertyName().equalsIgnoreCase("throwabletnt"))
+            APIUtils.hashIntoInvisibleString(event.getStack(), applyProperty(event));
     }
 
     @SuppressWarnings("deprecation")
@@ -33,14 +31,7 @@ public class ThrowableTNTListener implements Listener {
         Player player = event.getPlayer();
         ItemStack item = event.getItem();
 
-        if (!Main.isPlayerInGame(player))
-            return;
-
-        if (event.isCancelled())
-            return;
-
-        if (item == null)
-            return;
+        assert Main.isPlayerInGame(player) && !event.isCancelled() && item != null;
 
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(item, THROWABLE_TNT_PREFIX);

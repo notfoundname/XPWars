@@ -15,7 +15,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.events.BedwarsGameStartedEvent;
-import org.screamingsandals.bedwars.api.events.BedwarsPlayerKilledEvent;
 import org.screamingsandals.bedwars.lib.sgui.SimpleInventories;
 import org.screamingsandals.bedwars.lib.sgui.builder.FormatBuilder;
 import org.screamingsandals.bedwars.lib.sgui.events.PostActionEvent;
@@ -148,7 +147,7 @@ public class KitSelectionInventory implements Listener {
                     else pass = true;
                     break;
                 case "vault":
-                    if (reader.getInt("kit-price") > XPWars.getEconomy().getBalance(player))
+                    if (reader.getInt("kit-price") > XPWars.getBalance(player))
                         XPWarsUtils.xpwarsLog(player,
                                 XPWars.getConfigurator().config.getString("kits.messages.not-enough-vault"));
                     else pass = true;
@@ -177,11 +176,10 @@ public class KitSelectionInventory implements Listener {
         event.getGame().getConnectedPlayers().forEach(player -> {
             if (selectedKit.containsKey(player)) {
                 KitManager.Kit kit = KitManager.getKit(selectedKit.get(player));
-                if (kit.getPriceType().equalsIgnoreCase("vault"))
-                    XPWars.getEconomy().withdrawPlayer(player, kit.getPrice());
-                KitManager.giveKit(player, kit);
-
-                if (!KitManager.getKit(selectedKit.get(player)).giveOnRespawn())
+                if (kit.getPriceType().equalsIgnoreCase("vault")
+                        && XPWars.withdrawPlayer(player, kit.getPrice()))
+                    KitManager.giveKit(player, kit);
+                if (!kit.giveOnRespawn())
                     selectedKit.remove(player);
             }
         });

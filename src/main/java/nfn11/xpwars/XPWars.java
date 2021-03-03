@@ -1,13 +1,15 @@
 package nfn11.xpwars;
 
 import net.milkbowl.vault.economy.Economy;
-import nfn11.xpwars.inventories.DebugInventory;
+import net.milkbowl.vault.economy.EconomyResponse;
 import nfn11.xpwars.inventories.KitSelectionInventory;
+import nfn11.xpwars.inventories.XPWarsInventory;
 import nfn11.xpwars.listener.ActionBarMessageListener;
 import nfn11.xpwars.listener.EnemyHideNametagsListener;
 import nfn11.xpwars.placeholderapi.PlaceholderAPIHook;
 import nfn11.xpwars.special.listener.RegisterSpecialListeners;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginEnableEvent;
@@ -18,7 +20,6 @@ import nfn11.xpwars.commands.GamesCommand;
 import nfn11.xpwars.commands.JoinSortedCommand;
 import nfn11.xpwars.commands.XPWarsCommand;
 import nfn11.xpwars.inventories.GamesInventory;
-import nfn11.xpwars.inventories.LevelShopInventory;
 import nfn11.xpwars.listener.LevelSystemListener;
 import nfn11.xpwars.utils.XPWarsUtils;
 import org.screamingsandals.bedwars.lib.sgui.listeners.InventoryListener;
@@ -28,10 +29,9 @@ public class XPWars extends JavaPlugin implements Listener {
     private static XPWars instance;
     private Configurator configurator;
     private GamesInventory gamesInventory;
-    private LevelShopInventory levelShopInventory;
+    private XPWarsInventory xpWarsInventory;
     private KitSelectionInventory kitSelectionInventory;
-    private DebugInventory debugInventory;
-    private static Economy econ = null;
+    private Economy economy = null;
 
     @Override
     public void onEnable() {
@@ -50,24 +50,21 @@ public class XPWars extends JavaPlugin implements Listener {
         configurator.loadDefaults();
 
         InventoryListener.init(this);
-        debugInventory = new DebugInventory();
+        xpWarsInventory = new XPWarsInventory();
         Bukkit.getPluginManager().registerEvents(this, this);
 
         try {
             if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null
                     && XPWars.getConfigurator().config.getBoolean("features.placeholders")) {
                 new PlaceholderAPIHook(this).register();
-                XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(), "&aFound PlaceholderAPI");
-            }
-        } catch (Exception ignored) {}
+            } else XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(), "&cYou don't have PlaceholderAPI installed.");
+        } catch (Throwable ignored) {}
 
         if (getConfigurator().config.getBoolean("features.action-bar-messages"))
             new ActionBarMessageListener();
-
-        if (getConfigurator().config.getBoolean("features.level-system")) {
+        
+        if (getConfigurator().config.getBoolean("features.level-system"))
             new LevelSystemListener();
-            levelShopInventory = new LevelShopInventory();
-        }
 
         if (getConfigurator().config.getBoolean("features.games-gui")) {
             gamesInventory = new GamesInventory(this);
@@ -83,17 +80,14 @@ public class XPWars extends JavaPlugin implements Listener {
 
         if (getConfigurator().config.getBoolean("features.kits")) {
             kitSelectionInventory = new KitSelectionInventory(this);
-
-            try {
-                if (getServer().getPluginManager().getPlugin("Vault") != null) {
+            if (Main.isVault()) {
+                try {
                     RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-                    if (rsp != null)
-                        econ = rsp.getProvider();
-                    XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(), "&aFound Vault");
-                }
-            } catch (Exception ignored) {}
+                    assert rsp != null;
+                    economy = rsp.getProvider();
+                } catch (Throwable ignored) { }
+            }
         }
-
         XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(),
                 "&aLoaded XPWars &2" + XPWars.getInstance().getDescription().getVersion() + "&a!");
         XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(), "&aXPWars addon by &enotfoundname11");
@@ -123,24 +117,42 @@ public class XPWars extends JavaPlugin implements Listener {
         return instance.gamesInventory;
     }
 
-    public static LevelShopInventory getLevelShopInventory() {
-        return instance.levelShopInventory;
-    }
-
-    public static DebugInventory getDebugInventory() {
-        return instance.debugInventory;
+    public static XPWarsInventory getXPWarsInventory() {
+        return instance.xpWarsInventory;
     }
     
     public static KitSelectionInventory getKitSelectionInventory() {
         return instance.kitSelectionInventory;
     }
 
-    public static Economy getEconomy() {
-        return econ;
-    }
-
     public static float getVersion() {
         return Float.parseFloat(XPWars.getInstance().getDescription().getVersion().replace("-SNAPSHOT", ""));
+    }
+
+    public static boolean depositPlayer(Player player, double coins) {
+        if (Main.isVault()) {
+            try {
+                EconomyResponse response = instance.economy.depositPlayer(player, coins);
+                return response.transactionSuccess();
+            } catch (Throwable ignored) { }
+        } return false;
+    }
+
+    public static boolean withdrawPlayer(Player player, double coins) {
+        if (Main.isVault()) {
+            try {
+                EconomyResponse response = instance.economy.withdrawPlayer(player, coins);
+                return response.transactionSuccess();
+            } catch (Throwable ignored) { }
+        } return false;
+    }
+
+    public static double getBalance(Player player) {
+        if (Main.isVault()) {
+            try {
+                return instance.economy.getBalance(player);
+            } catch (Throwable ignored) { }
+        } return 0.0;
     }
 
 }
