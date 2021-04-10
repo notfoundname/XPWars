@@ -21,7 +21,8 @@ public class KitUtils {
                     StackParser.parse(map.get("display-icon")),
                     StackParser.parseAll((Collection<Object>) map.get("items")),
                     Integer.parseInt(map.get("price").toString().split(":")[0]),
-                    map.get("price-type").toString().split(":")[1])));
+                    map.get("price-type").toString().split(":")[1],
+                    Boolean.parseBoolean(map.get("give-on-respawn").toString()))));
         return list;
     }
 
@@ -51,15 +52,15 @@ public class KitUtils {
         private int price;
         private ItemStack icon;
         private List<ItemStack> items;
-        //private boolean giveOnRespawn;
+        private boolean giveOnRespawn;
 
-        public Kit(String name, ItemStack icon, List<ItemStack> items, int price, String priceType/*, boolean giveOnRespawn*/) {
+        public Kit(String name, ItemStack icon, List<ItemStack> items, int price, String priceType, boolean giveOnRespawn) {
             this.name = name;
             this.icon = icon;
             this.items = items;
             this.price = price;
             this.priceType = priceType;
-            //this.giveOnRespawn = giveOnRespawn;
+            this.giveOnRespawn = giveOnRespawn;
         }
 
         public String getName() {
@@ -82,9 +83,9 @@ public class KitUtils {
             return priceType;
         }
 
-        /*public boolean giveOnRespawn() {
+        public boolean giveOnRespawn() {
             return giveOnRespawn;
-        }*/
+        }
     }
 
 }
