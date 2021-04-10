@@ -1,8 +1,7 @@
 defaultTasks 'clean', 'screamCompile'
 
-group = 'nfn11'
+group = 'io.github.notfoundname'
 version = '1.6-SNAPSHOT'
-
 
 buildscript {
     repositories {
@@ -22,10 +21,10 @@ repositories {
 
 dependencies{
     compileOnly paper("1.16.5")
-    compileOnly 'org.screamingsandals.bedwars:BedWars:0.2.15'
-    compileOnly 'org.screamingsandals.bedwars:BedWars-API:0.2.15'
     compileOnly placeholder_api()
     compileOnly vault()
+    compileOnly 'org.screamingsandals.bedwars:BedWars:0.2.15'
+    compileOnly 'org.screamingsandals.bedwars:BedWars-API:0.2.15'
 }
 
 sourceCompatibility = 11.0
