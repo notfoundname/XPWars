@@ -39,7 +39,6 @@ public class Vouncher extends SpecialItem implements io.github.notfoundname.xpwa
                         XPWars.getConfigurator().config.getString("level.messages.maxreached"))
                 .replace("%max%", Integer.toString(max)));
         else player.setLevel(player.getLevel() + levels);
-
     }
 
 }

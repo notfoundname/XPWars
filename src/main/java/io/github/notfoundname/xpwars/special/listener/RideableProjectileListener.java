@@ -37,9 +37,10 @@ public class RideableProjectileListener implements Listener {
             if (unhidden != null) {
                 boolean allowLeave = Boolean.getBoolean(unhidden.split(":")[2]);
                 boolean removeOnLeave = Boolean.getBoolean(unhidden.split(":")[3]);
+                boolean spectatorMode = Boolean.getBoolean(unhidden.split(":")[4]);
 
                 RideableProjectile special = new RideableProjectile(game, player, game.getTeamOfPlayer(player),
-                        allowLeave, removeOnLeave, event.getEntity());
+                        allowLeave, removeOnLeave, spectatorMode, event.getEntity());
                 special.run(event.getEntity());
             }
         }
@@ -62,6 +63,8 @@ public class RideableProjectileListener implements Listener {
                 + SpecialItemUtils.getBooleanFromProperty("allow-leave", XPWars.getConfigurator().config,
                         "specials.rideable-projectile.allow-leave", event)
                 + ":" + SpecialItemUtils.getBooleanFromProperty("remove-on-leave", XPWars.getConfigurator().config,
-                        "specials.rideable-projectile.remove-on-leave", event);
+                        "specials.rideable-projectile.remove-on-leave", event)
+                + ":" + SpecialItemUtils.getBooleanFromProperty("spectator-mode", XPWars.getConfigurator().config,
+                        "specials.rideable-projectile.spectator-mode", event);
     }
 }

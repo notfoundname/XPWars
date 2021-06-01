@@ -41,28 +41,22 @@ public class PortableShopListener implements Listener {
                 if (entity.hasMetadata(player.getUniqueId().toString()) && entity.hasMetadata("portable-shop"))
                     return;
 
-            ItemStack item = event.getItem();
-            String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(item, PORTABLE_SHOP_PREFIX);
+            ItemStack itemStack = event.getItem();
+            String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(itemStack, PORTABLE_SHOP_PREFIX);
             if (unhidden != null) {
-                String shopFile = unhidden.split(":")[2];
-                boolean useParent = Boolean.parseBoolean(unhidden.split(":")[3]);
-                EntityType entityType = EntityType.valueOf(unhidden.split(":")[4]);
-                boolean hasCustomName = Boolean.parseBoolean(unhidden.split(":")[5]);
-                String customName = unhidden.split(":")[6];
-                int duration = Integer.parseInt(unhidden.split(":")[7]);
+                int duration = Integer.parseInt(unhidden.split(":")[2]);
+                EntityType entityType = EntityType.valueOf(unhidden.split(":")[3]);
+                String shopFile = unhidden.split(":")[4];
+                boolean isEnabledCustomName = Boolean.parseBoolean(unhidden.split(":")[5]);
+                String shopName = unhidden.split(":")[6];
+                boolean isAllowedKilling = Boolean.parseBoolean(unhidden.split(":")[7]);
                 boolean isBaby = Boolean.parseBoolean(unhidden.split(":")[8]);
-                String skinName = unhidden.split(":")[9];
 
-                if (duration < 3) {
-                    XPWarsUtils.xpwarsLog(player, "Duration is be lower than 3 seconds. Tell this to server staff.");
-                    return;
-                }
-
-                Location loc = new Location(event.getClickedBlock().getWorld(), event.getClickedBlock().getX(),
+                Location shopLocation = new Location(event.getClickedBlock().getWorld(), event.getClickedBlock().getX(),
                         event.getClickedBlock().getY() + 1, event.getClickedBlock().getZ());
 
-                PortableShop special = new PortableShop(game, player, game.getTeamOfPlayer(player), duration, item,
-                        new GameStore(loc, shopFile, useParent, entityType, customName, hasCustomName, isBaby, skinName));
+                PortableShop special = new PortableShop(game, player, game.getTeamOfPlayer(player), itemStack, duration, entityType,
+                        shopFile, isEnabledCustomName, shopName, isAllowedKilling, isBaby, shopLocation);
                 special.run();
             }
         }
@@ -70,28 +64,25 @@ public class PortableShopListener implements Listener {
 
     private String applyProperty(BedwarsApplyPropertyToBoughtItem event) {
         return PORTABLE_SHOP_PREFIX
-                + SpecialItemUtils.getStringFromProperty("shop-file", XPWars.getConfigurator().config,
-                        "specials.portable-shop.shop-file", event)
-                + ":"
-                + SpecialItemUtils.getBooleanFromProperty("use-parent", XPWars.getConfigurator().config,
-                        "specials.portable-shop.use-parent", event)
-                + ":"
-                + SpecialItemUtils.getStringFromProperty(
-                        "entity-type", XPWars.getConfigurator().config, "specials.portable-shop.entity-type", event)
-                + ":"
-                + SpecialItemUtils.getBooleanFromProperty("enable-custom-name", XPWars.getConfigurator().config,
-                        "specials.portable-shop.enable-custom-name", event)
-                + ":"
-                + SpecialItemUtils.getStringFromProperty(
-                        "custom-name", XPWars.getConfigurator().config, "specials.portable-shop.custom-name", event)
-                + ":"
                 + SpecialItemUtils.getIntFromProperty("duration", XPWars.getConfigurator().config,
-                        "specials.portable-shop.duration", event)
+                "specials.portable-shop.duration", event)
                 + ":"
-                + SpecialItemUtils.getBooleanFromProperty("baby", XPWars.getConfigurator().config,
-                        "specials.portable-shop.baby", event)
+                + SpecialItemUtils.getStringFromProperty("entityType", XPWars.getConfigurator().config,
+                "specials.portable-shop.entityType", event)
                 + ":"
-                + SpecialItemUtils.getBooleanFromProperty("skin-name", XPWars.getConfigurator().config,
-                        "specials.portable-shop.skin-name", event);
+                + SpecialItemUtils.getStringFromProperty("shopFile", XPWars.getConfigurator().config,
+                "specials.portable-shop.shop-file", event)
+                + ":"
+                + SpecialItemUtils.getBooleanFromProperty("isEnabledCustomName", XPWars.getConfigurator().config,
+                        "specials.portable-shop.isEnabledCustomName", event)
+                + ":"
+                + SpecialItemUtils.getStringFromProperty("shopName", XPWars.getConfigurator().config,
+                "specials.portable-shop.shopName", event)
+                + ":"
+                + SpecialItemUtils.getBooleanFromProperty("isAllowedKilling", XPWars.getConfigurator().config,
+                "specials.portable-shop.isAllowedKilling", event)
+                + ":"
+                + SpecialItemUtils.getBooleanFromProperty("isBaby", XPWars.getConfigurator().config,
+                        "specials.portable-shop.isBaby", event);
     }
 }

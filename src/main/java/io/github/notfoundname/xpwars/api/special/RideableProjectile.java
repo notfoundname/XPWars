@@ -9,6 +9,8 @@ public interface RideableProjectile extends SpecialItem {
 
     boolean isRemoveOnLeave();
 
+    boolean isSpectatorMode();
+
     void run(Entity entity);
 
     Entity getEntity();

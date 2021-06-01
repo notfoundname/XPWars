@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.events.BedwarsPlayerJoinEvent;
 
 import java.util.Arrays;
@@ -27,11 +28,11 @@ public class JoinGameListener implements Listener {
         section.getConfigurationSection("arenas").getKeys(false).forEach(key -> {
             String[] arenas = key.split(";");
             if (Arrays.toString(arenas).contains(event.getGame().getName())) {
-                event.setCancelled(true);
+                Main.getPlayerGameProfile(event.getPlayer()).changeGame(null);
                 String message = section.getString("permission-to-join-game.message",
-                        "You don't have permission %perm% to join arena %arena%!")
-                        .replace("%perm%", section.getString("arenas." + key))
-                        .replace("%arena%", event.getGame().getName());
+                        "You don't have permission {perm} to join arena {arena}!")
+                        .replace("{perm}", section.getString("arenas." + key))
+                        .replace("{arena}", event.getGame().getName());
                 XPWarsUtils.sendActionBar(event.getPlayer(), message);
             }
         });

@@ -12,7 +12,6 @@ import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.commands.BaseCommand;
 
 import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
-import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
 
 import io.github.notfoundname.xpwars.XPWars;
 import io.github.notfoundname.xpwars.utils.XPWarsUtils;

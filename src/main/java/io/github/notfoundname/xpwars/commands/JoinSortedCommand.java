@@ -13,42 +13,47 @@ import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
 import io.github.notfoundname.xpwars.utils.XPWarsUtils;
 
 public class JoinSortedCommand extends BaseCommand {
-    // /bw xpwars connect example [PlayerName]
+    // /bw xpwars connect <category> [PlayerName]
     public JoinSortedCommand() {
         super("connect", null, true, true);
     }
 
     @Override
     public void completeTab(List<String> completion, CommandSender sender, List<String> args) {
-        if (args.size() == 1) completion.addAll(XPWarsUtils.getAllCategories());
-        if (args.size() == 2) completion.addAll(XPWarsUtils.getOnlinePlayers());
+        switch(args.size()) {
+            case 1:
+                completion.addAll(XPWarsUtils.getAllCategories());
+                break;
+            case 2:
+                completion.addAll(XPWarsUtils.getOnlinePlayers());
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
     public boolean execute(CommandSender sender, List<String> args) {
-        Player player;
-        if (args.size() == 1 && sender instanceof Player) {
-            player = (Player) sender;
-            if (Main.isPlayerInGame(player)) {
-                player.sendMessage(i18n("you_are_already_in_some_game"));
-                return true;
-            }
-            if (XPWarsUtils.getAllCategories().size() == 0 || !XPWarsUtils.getAllCategories().contains(args.get(0)))
-                return true;
-            XPWarsUtils.getGameWithHighestPlayersInCategory(args.get(0)).joinToGame(player);
-        } else if (args.size() == 2) {
-            player = Bukkit.getPlayer(args.get(1));
-            if (player == null) {
-                XPWarsUtils.xpwarsLog(sender, "Invalid player: " + args.get(3));
-                return true;
-            }
-            if (Main.isPlayerInGame(player)) {
-                player.sendMessage(i18n("you_are_already_in_some_game"));
-                return true;
-            }
-            if (XPWarsUtils.getAllCategories().size() == 0 || !XPWarsUtils.getAllCategories().contains(args.get(0)))
-                return true;
-            XPWarsUtils.getGameWithHighestPlayersInCategory(args.get(0)).joinToGame(player);
+        switch (args.size()) {
+            case 1:
+                if (sender instanceof Player) {
+                    if (Main.isPlayerInGame((Player) sender)) {
+                        sender.sendMessage(i18n("you_are_already_in_some_game"));
+                        break;
+                    }
+                    if (XPWarsUtils.getAllCategories().size() == 0 || !XPWarsUtils.getAllCategories().contains(args.get(0)))
+                        break;
+                    XPWarsUtils.getGameWithHighestPlayersInCategory(args.get(0)).joinToGame((Player) sender);
+                } else break;
+                break;
+            case 2:
+                if (Bukkit.getPlayer(args.get(1)) == null || Main.isPlayerInGame(Bukkit.getPlayer(args.get(1)))) {
+                    XPWarsUtils.xpwarsLog(sender, "Cannot connect this player: " + args.get(3));
+                    break;
+                }
+                if (XPWarsUtils.getAllCategories().size() == 0 || !XPWarsUtils.getAllCategories().contains(args.get(0)))
+                    break;
+                XPWarsUtils.getGameWithHighestPlayersInCategory(args.get(0)).joinToGame((Bukkit.getPlayer(args.get(1))));
         }
         return true;
     }

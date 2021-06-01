@@ -1,30 +1,49 @@
 package io.github.notfoundname.xpwars.special;
 
 import io.github.notfoundname.xpwars.XPWars;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.*;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.game.Game;
-import org.screamingsandals.bedwars.game.GameStore;
 import org.screamingsandals.bedwars.special.SpecialItem;
 
 public class PortableShop extends SpecialItem implements io.github.notfoundname.xpwars.api.special.PortableShop {
     private int duration;
-    private ItemStack stack;
+    private ItemStack itemStack;
     private LivingEntity entity;
-    private GameStore store;
+    private Location shopLocation;
+    private String shopFile, shopName;
+    private boolean isEnabledCustomName, isBaby, isAllowedKilling;
+    private EntityType entityType;
 
-    public PortableShop(Game game, Player player, Team team, int duration, ItemStack stack, GameStore store) {
+
+    public PortableShop(Game game, Player player, Team team, ItemStack itemStack, int duration,
+                        EntityType entityType, String shopFile, boolean isEnabledCustomName, String shopName, boolean isAllowedKilling, boolean isBaby,
+                        Location shopLocation) {
         super(game, player, team);
         this.duration = duration;
-        this.stack = stack;
-        this.store = store;
+        this.entityType = entityType;
+        this.itemStack = itemStack;
+        this.shopFile = shopFile;
+        this.shopName = shopName;
+        this.isEnabledCustomName = isEnabledCustomName;
+        this.isAllowedKilling = isAllowedKilling;
+        this.isBaby = isBaby;
+        this.shopLocation = shopLocation;
     }
 
     @Override
-    public GameStore getGameStore() {
-        return store;
+    public EntityType getEntityType() {
+        return entityType;
+    }
+
+    @Override
+    public Location getShopLocation() {
+        return shopLocation;
     }
 
     @Override
@@ -33,22 +52,56 @@ public class PortableShop extends SpecialItem implements io.github.notfoundname.
     }
 
     @Override
-    public ItemStack getItem() {
-        return stack;
+    public ItemStack getItemStack() {
+        return itemStack;
+    }
+
+    @Override
+    public String getShopFile() {
+        return shopFile;
+    }
+
+    @Override
+    public String getShopName() {
+        return shopName;
+    }
+
+    @Override
+    public boolean isEnabledCustomName() {
+        return isEnabledCustomName;
+    }
+
+    @Override
+    public boolean isAllowedKilling() {
+        return isAllowedKilling;
+    }
+
+    @Override
+    public boolean isBaby() {
+        return isBaby;
     }
 
     @Override
     public void run() {
-        entity = store.spawn();
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (!entity.isDead()) {
-                    entity = store.kill();
-                    entity = null;
-                } else this.cancel();
-            }
-        }.runTaskLaterAsynchronously(XPWars.getInstance(), duration * 20);
+        try {
+            entity = (LivingEntity) shopLocation.getWorld().spawnEntity(shopLocation, entityType, CreatureSpawnEvent.SpawnReason.CUSTOM);
+        } catch (Throwable throwable) {
+            entity = (LivingEntity) shopLocation.getWorld().spawnEntity(shopLocation, entityType);
+        }
+        entity.setInvulnerable(isAllowedKilling);
+        entity.setCustomNameVisible(isEnabledCustomName);
+        entity.setCustomName(shopName);
+        entity.setSilent(true);
+        entity.setRemoveWhenFarAway(false);
+        entity.setAI(false);
+        if (entity instanceof Ageable && isBaby)
+            ((Ageable) entity).setBaby();
+
+        Bukkit.getScheduler().runTaskLaterAsynchronously(XPWars.getInstance(), task -> {
+            if (!entity.isDead())
+                entity.remove();
+            else task.cancel();
+        }, duration * 20);
     }
 
 }

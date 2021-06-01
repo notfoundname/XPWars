@@ -16,6 +16,7 @@ public class GamesCommand extends BaseCommand {
         super("games", Collections.singletonList("xpwars.gamesgui"), true, true);
     }
 
+    // /bw xpwars games [playername]
     @Override
     public void completeTab(List<String> completion, CommandSender sender, List<String> args) {
         if (!sender.isOp() || BaseCommand.hasPermission(sender, ADMIN_PERMISSION, false))

@@ -21,7 +21,7 @@ public class PlaceholderAPIHook extends me.clip.placeholderapi.expansion.Placeho
 
     @Override
     public String getAuthor() {
-        return "notfoundname11";
+        return "notfoundname";
     }
 
     @Override
@@ -82,21 +82,21 @@ public class PlaceholderAPIHook extends me.clip.placeholderapi.expansion.Placeho
                 case WAITING:
                     if (game.getMinPlayers() >= game.countConnectedPlayers())
                         return ChatColor.translateAlternateColorCodes
-                                ('&', XPWars.getConfigurator().config.getString("placeholders.WAITING", "waiting"));
+                                ('&', XPWars.getConfigurator().config.getString("placeholderapi.WAITING", "waiting"));
                     if (game.getMinPlayers() <= game.countConnectedPlayers())
                         return ChatColor.translateAlternateColorCodes('&',
-                                XPWars.getConfigurator().config.getString("placeholders.starting", "starting")
+                                XPWars.getConfigurator().config.getString("placeholderapi.starting", "starting")
                                 .replace("%left%", game.getFormattedTimeLeft()));
                 case RUNNING:
                     return ChatColor.translateAlternateColorCodes('&',
-                            XPWars.getConfigurator().config.getString("placeholders.RUNNING", "running")
+                            XPWars.getConfigurator().config.getString("placeholderapi.RUNNING", "running")
                                     .replace("%time%",
                                             game.getFormattedTimeLeft(gameTime - countdown).replace("%left%", game.getFormattedTimeLeft())));
                 case GAME_END_CELEBRATING:
                     return ChatColor.translateAlternateColorCodes
-                            ('&', XPWars.getConfigurator().config.getString("placeholders.GAME_END_CELEBRATING", "ended"));
+                            ('&', XPWars.getConfigurator().config.getString("placeholderapi.GAME_END_CELEBRATING", "ended"));
                 case REBUILDING:
-                    return XPWars.getConfigurator().config.getString("placeholders.REBUILDING", "rebuilding");
+                    return XPWars.getConfigurator().config.getString("placeholderapi.REBUILDING", "rebuilding");
                 default:
                     return "null";
             }
@@ -126,10 +126,10 @@ public class PlaceholderAPIHook extends me.clip.placeholderapi.expansion.Placeho
                 case "state":
                     if (status == GameStatus.WAITING && game.getMinPlayers() <= game.countConnectedPlayers())
                         return ChatColor.translateAlternateColorCodes('&',
-                                XPWars.getConfigurator().config.getString("placeholders.starting", "starting")
+                                XPWars.getConfigurator().config.getString("placeholderapi.starting", "starting")
                                         .replace("%left%", game.getFormattedTimeLeft()));
                     return ChatColor.translateAlternateColorCodes('&',
-                            XPWars.getConfigurator().config.getString("placeholders." + status.name(), "null"));
+                            XPWars.getConfigurator().config.getString("placeholderapi." + status.name(), "null"));
                 default:
                     return "";
             }
