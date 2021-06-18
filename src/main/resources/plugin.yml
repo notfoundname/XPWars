@@ -1,7 +1,7 @@
 name: XPWars
 author: 'notfoundname'
 main: io.github.notfoundname.XPWars
-version: '@version@'
+version: '1.6-SNAPSHOT'
 apiVersion: 1.16
 
 load: POSTWORLD

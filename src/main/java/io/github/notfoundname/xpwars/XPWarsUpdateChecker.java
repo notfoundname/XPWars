@@ -32,7 +32,6 @@ public class XPWarsUpdateChecker {
         } catch (Exception e) {
             XPWarsUtils.xpwarsLog(sender, "&cUnable to check for new version.");
         }
-
         return hasUpdate;
     }
 
