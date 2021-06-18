@@ -45,6 +45,7 @@ public class XPWarsCommand extends BaseCommand {
                         completion.addAll(XPWarsUtils.getOnlinePlayers());
                     break;
                 default:
+                    XPWarsUtils.xpwarsLog(sender, "&cNot enough arguments.");
                     break;
             }
         }

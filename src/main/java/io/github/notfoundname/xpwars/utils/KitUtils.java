@@ -6,36 +6,40 @@ import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.lib.sgui.utils.StackParser;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class KitUtils {
 
+    private static HashMap<String, Kit> kitMap;
+
     @SuppressWarnings("unchecked")
-    public static List<Kit> getKits() {
-        List<Kit> list = new ArrayList<>();
+    public static void updateKits() {
         XPWars.getConfigurator().config.getMapList("kits.list").forEach(map ->
-                list.add(new Kit(
-                    map.get("name").toString(),
-                    StackParser.parse(map.get("display-icon")),
-                    StackParser.parseAll((Collection<Object>) map.get("items")),
-                    Integer.parseInt(map.get("price").toString().split(":")[0]),
-                    map.get("price-type").toString().split(":")[1],
-                    Boolean.parseBoolean(map.get("give-on-respawn").toString()))));
-        return list;
+                kitMap.put( (String) map.get("name"), new Kit(
+                        (String) map.get("name"),
+                        StackParser.parse(map.get("kit-icon")),
+                        StackParser.parseAll((Collection<Object>) map.get("items")),
+                        (int) map.get("price"),
+                        (String) map.get("price-type"),
+                        (boolean) map.get("return-on-respawn")
+                )));
+    }
+
+    public static HashMap<String, Kit> getKits() {
+        return kitMap;
     }
 
     @Nullable
     public static Kit getKit(String name) {
-        for (Kit kit : getKits())
-            if (name.equals(kit.getName()))
-                return kit;
-        return null;
+        return kitMap.get(name);
     }
 
     public static void giveKit(Player player, Kit kit) {
         kit.getItems().forEach(itemStack -> player.getInventory().addItem(itemStack));
+    }
+
+    public static void addKitToPlayer(Player player, Kit kit) {
+        XPWars.getConfigurator().kitConfig.set(player.getUniqueId().toString(), kit);
     }
 
     public static boolean hasBoughtKit(Player player, Kit kit) {

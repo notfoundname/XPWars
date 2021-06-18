@@ -6,9 +6,11 @@ version = '1.6-SNAPSHOT'
 buildscript {
     repositories {
         maven { url 'https://repo.screamingsandals.org/public' }
+        maven { url 'https://plugins.gradle.org/m2' }
     }
     dependencies {
-        classpath 'org.screamingsandals.gradle.builder:screaming-plugin-builder:1.0.31'
+        classpath 'org.screamingsandals.gradle.builder:screaming-plugin-builder:1.0.43'
+        classpath "com.github.gmazzo:gradle-buildconfig-plugin:3.0.0"
     }
 }
 
@@ -16,28 +18,16 @@ apply plugin: 'java'
 apply plugin: 'org.screamingsandals.gradle.builder'
 
 repositories {
-    vault()
+    maven { url 'https://jitpack.io' }
+    maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
 }
 
-dependencies{
+dependencies {
     compileOnly paper("1.16.5")
-    compileOnly placeholder_api()
-    compileOnly vault()
-    compileOnly 'org.screamingsandals.bedwars:BedWars:0.2.15'
-    compileOnly 'org.screamingsandals.bedwars:BedWars-API:0.2.15'
+    compileOnly 'me.clip:placeholderapi:2.10.9'
+    compileOnly 'com.github.MilkBowl:VaultAPI:1.7'
+    compileOnly 'org.screamingsandals.bedwars:BedWars:0.2.16-SNAPSHOT'
+    compileOnly 'org.screamingsandals.bedwars:BedWars-API:0.2.16-SNAPSHOT'
 }
 
-sourceCompatibility = 11.0
-
-enableSpigradleSpigot()
-
-spigot {
-    name = 'XPWars'
-    apiVersion = '1.13'
-    load = POST_WORLD
-    depends = ['BedWars']
-    softDepends = [
-            'PlaceholderAPI',
-            'Vault'
-    ]
-}
+sourceCompatibility = 11

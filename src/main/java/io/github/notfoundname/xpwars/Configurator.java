@@ -19,7 +19,7 @@ import org.screamingsandals.bedwars.Main;
 public class Configurator {
 
     public File file, kitOwnersFile;
-    public FileConfiguration config;
+    public FileConfiguration config, kitConfig;
 
     public final File dataFolder;
     public final XPWars main;
@@ -36,6 +36,7 @@ public class Configurator {
         kitOwnersFile = new File(dataFolder, "kitOwners.yml");
 
         config = new YamlConfiguration();
+        kitConfig = new YamlConfiguration();
 
         if (!file.exists()) try {
             file.createNewFile();
@@ -56,6 +57,12 @@ public class Configurator {
             XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(), "&eYour configuration file is broken. It was backed up as config-backup.yml");
             e.printStackTrace();
             return;
+        }
+
+        try {
+            kitConfig.load(file);
+        } catch (IOException | InvalidConfigurationException e) {
+            e.printStackTrace();
         }
 
         if (config.contains("version")) {
@@ -185,19 +192,9 @@ public class Configurator {
         checkOrSetConfig(modify, "kits.settings.show-page-numbers", true);
         checkOrSetConfig(modify, "kits.settings.inventory-type", "CHEST");
 
-        checkOrSetConfig(modify,"kits.list", Arrays.asList(
-            Map.of(
-                "name", "example1",
-                "display-icon", "IRON_SWORD;1;Example 1;It contains iron tools!",
-                "price", "100:score",
-                "give-on-respawn", false,
-                "items", Arrays.asList("IRON_SWORD", "IRON_PICKAXE", "IRON_AXE")),
-            Map.of(
-                "name", "example2",
-                "display-icon", "APPLE;3;Example 2;Everyone like apples!;...;             right?",
-                "price", "50:vault",
-                "give-on-respawn", true,
-                "items", Arrays.asList("APPLE;64;Apples!", "CARROT;1;Not an apple."))));
+        checkOrSetConfig(modify,"kits.list",
+                Map.of("example_kit", Map.of(
+                        "", "")));
 
         saveConfig();
     }

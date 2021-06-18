@@ -50,88 +50,55 @@ public class PlaceholderAPIHook extends me.clip.placeholderapi.expansion.Placeho
         if (player == null)
             return "";
 
-        if (parsed.endsWith("_ingame")) {
-            Game game = Main.getGame(parsed.replace("_ingame", ""));
-            return game != null ?
-                    game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING ?
-                            Integer.toString(Main.getGame(parsed).countConnectedPlayers()) : "0" : "";
-        }
+        Game game = Main.getGame(parsed.split("_")[1]);
+        if (game == null) {
+            if (Main.isPlayerInGame(player)) {
+                GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+                game = gPlayer.getGame();
+                CurrentTeam team = game.getPlayerTeam(gPlayer);
+                GameStatus status = game.getStatus();
 
-        if (parsed.endsWith("_inlobby")) {
-            Game game = Main.getGame(parsed.replace("_inlobby", ""));
-            return game != null ?
-                    game.getStatus() == GameStatus.WAITING ?
-                            Integer.toString(game.countConnectedPlayers()) : "" : "";
-        }
-
-        if (parsed.endsWith("_lobbyworld")) {
-            parsed = parsed.replace("_lobbyworld", "");
-            return Main.getGame(parsed) != null ?
-                    Main.getGame(parsed).getLobbyWorld().getName() : "";
-        }
-
-        if (parsed.endsWith("_state")) {
-            Game game = Main.getGame(parsed.replace("_state", ""));
-            assert game != null;
-
+                switch (parsed.toLowerCase()) {
+                    case "color":
+                        return gPlayer.isSpectator ?
+                                ChatColor.GRAY + "" : team != null ?
+                                team.teamInfo.color.chatColor + "" : ChatColor.RESET + "";
+                    case "state":
+                        if (status == GameStatus.WAITING && game.getMinPlayers() <= game.countConnectedPlayers())
+                            return ChatColor.translateAlternateColorCodes('&',
+                                    XPWars.getConfigurator().config.getString("placeholderapi.STARTING", "starting")
+                                            .replace("%left%", game.getFormattedTimeLeft()));
+                        return ChatColor.translateAlternateColorCodes('&',
+                                XPWars.getConfigurator().config.getString("placeholderapi." + status.name(), "null"));
+                    default:
+                        return "";
+                }
+            }
+        } else {
             GameStatus status = game.getStatus();
             int gameTime = game.getGameTime();
             int countdown = game.getPauseCountdown();
-
-            switch (status) {
-                case WAITING:
-                    if (game.getMinPlayers() >= game.countConnectedPlayers())
-                        return ChatColor.translateAlternateColorCodes
-                                ('&', XPWars.getConfigurator().config.getString("placeholderapi.WAITING", "waiting"));
-                    if (game.getMinPlayers() <= game.countConnectedPlayers())
-                        return ChatColor.translateAlternateColorCodes('&',
-                                XPWars.getConfigurator().config.getString("placeholderapi.starting", "starting")
-                                .replace("%left%", game.getFormattedTimeLeft()));
-                case RUNNING:
-                    return ChatColor.translateAlternateColorCodes('&',
-                            XPWars.getConfigurator().config.getString("placeholderapi.RUNNING", "running")
-                                    .replace("%time%",
-                                            game.getFormattedTimeLeft(gameTime - countdown).replace("%left%", game.getFormattedTimeLeft())));
-                case GAME_END_CELEBRATING:
-                    return ChatColor.translateAlternateColorCodes
-                            ('&', XPWars.getConfigurator().config.getString("placeholderapi.GAME_END_CELEBRATING", "ended"));
-                case REBUILDING:
-                    return XPWars.getConfigurator().config.getString("placeholderapi.REBUILDING", "rebuilding");
-                default:
-                    return "null";
-            }
-        }
-
-        if (parsed.endsWith("_tl")) {
-            parsed = parsed.replace("_tl", "");
-            return Main.getGame(parsed) != null ? Main.getGame(parsed).getFormattedTimeLeft() : "";
-        }
-
-        if (parsed.endsWith("_tp")) {
-            Game game = Main.getGame(parsed.replace("_tp", ""));
-            return game != null ? game.getFormattedTimeLeft(game.getGameTime() - game.getPauseCountdown()) : "";
-        }
-
-        if (Main.isPlayerInGame(player)) {
-            GamePlayer gPlayer = Main.getPlayerGameProfile(player);
-            Game game = gPlayer.getGame();
-            CurrentTeam team = game.getPlayerTeam(gPlayer);
-            GameStatus status = game.getStatus();
-
-            switch (parsed.toLowerCase()) {
-                case "color":
-                    return gPlayer.isSpectator ?
-                            ChatColor.GRAY + "" : team != null ?
-                            team.teamInfo.color.chatColor + "" : ChatColor.RESET + "";
-                case "state":
+            switch (parsed.split("_")[0].toLowerCase()) {
+                case "ingame":
+                    return status == GameStatus.RUNNING || status == GameStatus.GAME_END_CELEBRATING
+                            ? Integer.toString(game.countConnectedPlayers()) : "0";
+                case "inlobby":
+                    return game.getStatus() == GameStatus.WAITING ? Integer.toString(game.countConnectedPlayers()) : "";
+                case "lobbyworld":
+                    return game.getLobbyWorld().getName();
+                case "stateformatted":
                     if (status == GameStatus.WAITING && game.getMinPlayers() <= game.countConnectedPlayers())
                         return ChatColor.translateAlternateColorCodes('&',
-                                XPWars.getConfigurator().config.getString("placeholderapi.starting", "starting")
+                                XPWars.getConfigurator().config.getString("placeholderapi.STARTING", "starting")
                                         .replace("%left%", game.getFormattedTimeLeft()));
                     return ChatColor.translateAlternateColorCodes('&',
                             XPWars.getConfigurator().config.getString("placeholderapi." + status.name(), "null"));
+                case "timeleft":
+                    return game.getFormattedTimeLeft();
+                case "timepassed":
+                    return game.getFormattedTimeLeft(gameTime - countdown);
                 default:
-                    return "";
+                    break;
             }
         }
         return null;

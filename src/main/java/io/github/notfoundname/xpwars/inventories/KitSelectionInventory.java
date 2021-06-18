@@ -10,11 +10,15 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.events.BedwarsGameStartedEvent;
+import org.screamingsandals.bedwars.api.events.BedwarsPlayerJoinEvent;
+import org.screamingsandals.bedwars.api.events.BedwarsPlayerJoinedEvent;
+import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.lib.sgui.SimpleInventories;
 import org.screamingsandals.bedwars.lib.sgui.builder.FormatBuilder;
 import org.screamingsandals.bedwars.lib.sgui.events.PostActionEvent;
@@ -135,7 +139,7 @@ public class KitSelectionInventory implements Listener {
 
         Player player = event.getPlayer();
         MapReader reader = event.getItem().getReader();
-        
+
         if (reader.containsKey("kit-name")) {
             player.closeInventory();
             boolean pass = false;
@@ -193,6 +197,30 @@ public class KitSelectionInventory implements Listener {
 
         if (selectedKit.containsKey(player))
             KitUtils.giveKit(player, KitUtils.getKit(selectedKit.get(player)));
+    }
+
+    @EventHandler
+    public void onJoinGame(BedwarsPlayerJoinEvent event) {
+        if (event.getGame().getStatus() == GameStatus.WAITING) {
+            int kitItemPosition = XPWars.getConfigurator().config.getInt("kits.item-hotbar-position", 4);
+            if (kitItemPosition >= 0 && kitItemPosition <= 8) {
+                ItemStack kitItem = StackParser.parseShortStack(ChatColor.translateAlternateColorCodes('&',
+                        XPWars.getConfigurator().config.getString("kits.item-hotbar", "CHEST;1;&eKitSelector")));
+                ItemMeta kitItemMeta = kitItem.getItemMeta();
+                kitItemMeta.setDisplayName(i18n("leave_from_game_item", false));
+                kitItem.setItemMeta(kitItemMeta);
+                event.getPlayer().getInventory().setItem(kitItemPosition, kitItem);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onKitItemUsage(PlayerInteractEvent event) {
+        assert Main.isPlayerInGame(event.getPlayer()) && !Main.getPlayerGameProfile(event.getPlayer()).isSpectator;
+        if (event.getItem().equals(StackParser.parseShortStack(ChatColor.translateAlternateColorCodes('&',
+                XPWars.getConfigurator().config.getString("kits.item-hotbar", "CHEST;1;&eKitSelector")))))
+            if (Main.getPlayerGameProfile(event.getPlayer()).getGame().getStatus() == GameStatus.WAITING)
+                XPWars.getKitSelectionInventory().openForPlayer(event.getPlayer());
     }
 
 }

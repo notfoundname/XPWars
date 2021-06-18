@@ -15,6 +15,8 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import io.github.notfoundname.xpwars.listener.EnemyHideNametagsListener;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -55,30 +57,32 @@ public class XPWars extends JavaPlugin implements Listener {
 
         try {
             if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null
-                    && XPWars.getConfigurator().config.getBoolean("features.placeholders")) {
+                    && configurator.config.getBoolean("features.placeholders")) {
                 new PlaceholderAPIHook(this).register();
-            } else XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(), "&cYou don't have PlaceholderAPI installed.");
-        } catch (Throwable ignored) {}
+            }
+        } catch (Throwable ignored) {
+            XPWarsUtils.xpwarsLog(Bukkit.getConsoleSender(), "&cYou don't have PlaceholderAPI installed.");
+        }
 
-        if (getConfigurator().config.getBoolean("features.action-bar-messages"))
+        if (configurator.config.getBoolean("features.action-bar-messages"))
             new ActionBarMessageListener();
         
-        if (getConfigurator().config.getBoolean("features.level-system"))
+        if (configurator.config.getBoolean("features.level-system"))
             new LevelSystemListener();
 
-        if (getConfigurator().config.getBoolean("features.games-gui")) {
+        if (configurator.config.getBoolean("features.games-gui")) {
             gamesInventory = new GamesInventory(this);
             new GamesCommand();
             new JoinSortedCommand();
         }
 
-        if (getConfigurator().config.getBoolean("features.specials"))
+        if (configurator.config.getBoolean("features.specials"))
             new RegisterSpecialListeners();
 
-        if (getConfigurator().config.getBoolean("features.hide-enemy-nametags"))
+        if (configurator.config.getBoolean("features.hide-enemy-nametags"))
             new EnemyHideNametagsListener();
 
-        if (getConfigurator().config.getBoolean("features.kits")) {
+        if (configurator.config.getBoolean("features.kits")) {
             kitSelectionInventory = new KitSelectionInventory(this);
             if (Main.isVault()) {
                 try {
@@ -107,6 +111,10 @@ public class XPWars extends JavaPlugin implements Listener {
 
     public static Configurator getConfigurator() {
         return instance.configurator;
+    }
+
+    public static FileConfiguration getConfiguration() {
+        return instance.configurator.config;
     }
 
     public static XPWars getInstance() {

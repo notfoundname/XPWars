@@ -26,7 +26,7 @@ public class XPWarsUtils {
 
     public static List<String> getShopFileNames() {
         List<String> list = new ArrayList<>();
-        List<String> notAllowed = Arrays.asList("config.yml", "sign.yml", "record.yml");
+        List<String> notAllowed = Arrays.asList("config.yml", "sign.yml", "record.yml", "holodb.yml");
         File[] files = Main.getInstance().getDataFolder().listFiles();
 
         for (File file : files)
@@ -35,8 +35,12 @@ public class XPWarsUtils {
         return list;
     }
 
-    public static void xpwarsLog(CommandSender sender, String msg) {
-        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "[&eXPWars&r] " + msg));
+    public static void xpwarsLog(CommandSender sender, String message) {
+        try {
+            if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null && sender instanceof Player)
+                message = PlaceholderAPI.setPlaceholders((Player) sender, message);
+        } catch (Throwable ignored) { }
+        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "[&eXPWars&r] " + message));
     }
 
     public static List<String> getOnlinePlayers() {
@@ -109,7 +113,6 @@ public class XPWarsUtils {
             player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
                     TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', message)));
         else MiscUtils.sendActionBarMessage(player, message);
-
     }
 
 }

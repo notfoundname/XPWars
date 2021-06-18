@@ -1,7 +1,8 @@
 package io.github.notfoundname.xpwars.inventories;
 
-import io.github.notfoundname.xpwars.XPWars;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,13 +13,18 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.events.*;
+import org.screamingsandals.bedwars.game.GameStore;
+import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
 import org.screamingsandals.bedwars.api.upgrades.Upgrade;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeRegistry;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeStorage;
 import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GamePlayer;
-import org.screamingsandals.bedwars.game.ItemSpawnerType;
+import org.screamingsandals.bedwars.inventories.ShopInventory;
+import org.screamingsandals.bedwars.utils.Debugger;
+import org.screamingsandals.bedwars.utils.Sounds;
+import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.lib.sgui.SimpleInventories;
 import org.screamingsandals.bedwars.lib.sgui.events.GenerateItemEvent;
 import org.screamingsandals.bedwars.lib.sgui.events.PreActionEvent;
@@ -27,10 +33,12 @@ import org.screamingsandals.bedwars.lib.sgui.inventory.Options;
 import org.screamingsandals.bedwars.lib.sgui.item.ItemProperty;
 import org.screamingsandals.bedwars.lib.sgui.item.PlayerItemInfo;
 import org.screamingsandals.bedwars.lib.sgui.utils.MapReader;
-import org.screamingsandals.bedwars.utils.Debugger;
-import org.screamingsandals.bedwars.utils.Sounds;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,12 +47,11 @@ import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
 import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
 
 public class XPWarsInventory implements Listener {
-
-    private SimpleInventories format;
+    private Map<String, SimpleInventories> shopMap = new HashMap<>();
     private Options options = new Options(Main.getInstance());
 
     public XPWarsInventory() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, XPWars.getInstance());
+        Bukkit.getServer().getPluginManager().registerEvents(this, Main.getInstance());
 
         ItemStack backItem = Main.getConfigurator().readDefinedItem("shopback", "BARRIER");
         ItemMeta backItemMeta = backItem.getItemMeta();
@@ -148,18 +155,44 @@ public class XPWarsInventory implements Listener {
             return "";
         });
 
-        format = new SimpleInventories(options);
+        loadNewShop("default", null, true);
+    }
+
+    public void show(Player player, String fileName) {
         try {
-            format.loadFromDataFolder(Main.getInstance().getDataFolder(), "shop.yml");
-        } catch (Exception ignored) {
+            if (fileName != null) {
+                File file = normalizeShopFile(fileName);
+                String name = "-" + file.getAbsolutePath();
+                if (!shopMap.containsKey(name)) {
+                    loadNewShop(name, file, false);
+                }
+                SimpleInventories shop = shopMap.get(name);
+                shop.openForPlayer(player);
+            } else {
+                shopMap.get("default").openForPlayer(player);
+            }
+        } catch (Throwable ignored) {
+            player.sendMessage(i18nonly("prefix") + " Your shop.yml/shop.groovy is invalid! Check it out or contact us on Discord.");
         }
-        Bukkit.getServer().getPluginManager().registerEvents(this, XPWars.getInstance());
-        format.generateData();
+    }
+
+    public static File normalizeShopFile(String name) {
+        if (name.split("\\.").length > 1) {
+            return Main.getInstance().getDataFolder().toPath().resolve(name).toFile();
+        }
+
+        File fileg = Main.getInstance().getDataFolder().toPath().resolve(name + ".groovy").toFile();
+        if (fileg.exists()) {
+            return fileg;
+        }
+        return Main.getInstance().getDataFolder().toPath().resolve(name + ".yml").toFile();
     }
 
     @EventHandler
     public void onGeneratingItem(GenerateItemEvent event) {
-        assert event.getFormat().equals(format);
+        if (!shopMap.containsValue(event.getFormat())) {
+            return;
+        }
 
         PlayerItemInfo item = event.getInfo();
         Player player = event.getPlayer();
@@ -168,7 +201,9 @@ public class XPWarsInventory implements Listener {
         if (reader.containsKey("price") && reader.containsKey("price-type")) {
             int price = reader.getInt("price");
             ItemSpawnerType type = Main.getSpawnerType((reader.getString("price-type")).toLowerCase());
-            assert type != null;
+            if (type == null) {
+                return;
+            }
 
             boolean enabled = Main.getConfigurator().config.getBoolean("lore.generate-automatically", true);
             enabled = reader.getBoolean("generate-lore", enabled);
@@ -211,19 +246,33 @@ public class XPWarsInventory implements Listener {
 
     @EventHandler
     public void onPreAction(PreActionEvent event) {
-        assert event.getFormat().equals(format) || !event.isCancelled();
+        if (!shopMap.containsValue(event.getFormat()) || event.isCancelled()) {
+            return;
+        }
 
-        if (!Main.isPlayerInGame(event.getPlayer()) || Main.getPlayerGameProfile(event.getPlayer()).isSpectator)
+        if (!Main.isPlayerInGame(event.getPlayer())) {
             event.setCancelled(true);
+        }
+
+        if (Main.getPlayerGameProfile(event.getPlayer()).isSpectator) {
+            event.setCancelled(true);
+        }
     }
 
     @EventHandler
     public void onShopTransaction(ShopTransactionEvent event) {
-        assert event.getFormat().equals(format) || !event.isCancelled();
+        if (!shopMap.containsValue(event.getFormat()) || event.isCancelled()) {
+            return;
+        }
+        Game game = Main.getPlayerGameProfile(event.getPlayer()).getGame();
+
         MapReader reader = event.getItem().getReader();
-        if (reader.containsKey("upgrade"))
+
+        if (reader.containsKey("upgrade")) {
             handleUpgrade(event);
-        else handleBuy(event);
+        } else {
+            handleBuy(event);
+        }
     }
 
     @EventHandler
@@ -233,37 +282,67 @@ public class XPWarsInventory implements Listener {
             Player player = event.getPlayer();
             CurrentTeam team = (CurrentTeam) event.getGame().getTeamOfPlayer(player);
 
-            if (Main.getConfigurator().config.getBoolean("automatic-coloring-in-shop"))
+            if (Main.getConfigurator().config.getBoolean("automatic-coloring-in-shop")) {
                 event.setStack(Main.applyColor(team.teamInfo.color, event.getStack()));
+            }
         }
     }
 
-    @EventHandler
-    public void onShopOpen(BedwarsOpenShopEvent event) {
-        event.setResult(BedwarsOpenShopEvent.Result.DISALLOW_UNKNOWN);
-        show(event.getPlayer(), event.getStore().getShopFile());
-    }
-
-    public void show(Player player, String fileName) {
+    private void loadDefault(SimpleInventories format) {
+        format.purgeData();
+        YamlConfiguration configuration = new YamlConfiguration();
         try {
-            format.loadFromDataFolder(Main.getInstance().getDataFolder(), fileName);
-        } catch (Exception e) {
-            e.printStackTrace();
+            configuration.load(new InputStreamReader(ShopInventory.class.getResourceAsStream("/shop.yml")));
+        } catch (IOException | InvalidConfigurationException ioException) {
+            ioException.printStackTrace();
         }
-        format.generateData();
-        format.openForPlayer(player);
+        format.load((List<Object>) configuration.getList("data"));
+    }
+
+    private void loadNewShop(String name, File file, boolean useParent) {
+        SimpleInventories format = new SimpleInventories(options);
+        try {
+            if (useParent) {
+                String shopFileName = "shop.yml";
+                if (Main.getConfigurator().config.getBoolean("turnOnExperimentalGroovyShop", false)) {
+                    shopFileName = "shop.groovy";
+                }
+                format.loadFromDataFolder(Main.getInstance().getDataFolder(), shopFileName);
+            }
+            if (file != null) {
+                format.load(file);
+            }
+        } catch (Exception ex) {
+            Debug.warn("Wrong shop.yml/shop.groovy configuration!", true);
+            Debug.warn("Check validity of your YAML/Groovy!", true);
+            ex.printStackTrace();
+            loadDefault(format);
+        }
+
+        try {
+            format.generateData();
+        } catch (Throwable t) {
+            Debug.warn("Your shop.yml/shop.groovy is wrong! Loading default one instead", true);
+            loadDefault(format);
+            format.generateData();
+        }
+        shopMap.put(name, format);
     }
 
     private static String getNameOrCustomNameOfItem(ItemStack stack) {
         try {
             if (stack.hasItemMeta()) {
                 ItemMeta meta = stack.getItemMeta();
-                if (meta == null)
+                if (meta == null) {
                     return "";
-                if (meta.hasDisplayName())
+                }
+
+                if (meta.hasDisplayName()) {
                     return meta.getDisplayName();
-                if (meta.hasLocalizedName())
+                }
+                if (meta.hasLocalizedName()) {
                     return meta.getLocalizedName();
+                }
             }
         } catch (Throwable ignored) {
         }
@@ -272,9 +351,9 @@ public class XPWarsInventory implements Listener {
         String[] sArray = normalItemName.split(" ");
         StringBuilder stringBuilder = new StringBuilder();
 
-        for (String s : sArray)
+        for (String s : sArray) {
             stringBuilder.append(Character.toUpperCase(s.charAt(0))).append(s.substring(1)).append(" ");
-
+        }
         return stringBuilder.toString().trim();
     }
 
@@ -284,11 +363,10 @@ public class XPWarsInventory implements Listener {
         ClickType clickType = event.getClickType();
         MapReader mapReader = event.getItem().getReader();
         String priceType = event.getType().toLowerCase();
-        ItemSpawnerType itemSpawnerType = Main.getSpawnerType(priceType);
+        ItemSpawnerType type = Main.getSpawnerType(priceType);
         ItemStack newItem = event.getStack();
 
         int amount = newItem.getAmount();
-        int levelAmount = player.getLevel();
         int price = event.getPrice();
         int inInventory = 0;
 
@@ -312,15 +390,16 @@ public class XPWarsInventory implements Listener {
             double maxStackSize;
             int finalStackSize;
 
-            for (ItemStack itemStack : event.getPlayer().getInventory().getStorageContents())
-                if (itemStack != null && itemStack.isSimilar(itemSpawnerType.getStack()))
+            for (ItemStack itemStack : event.getPlayer().getInventory().getStorageContents()) {
+                if (itemStack != null && itemStack.isSimilar(type.getStack())) {
                     inInventory = inInventory + itemStack.getAmount();
-
-
-            if (Main.getConfigurator().config.getBoolean("sell-max-64-per-click-in-shop"))
+                }
+            }
+            if (Main.getConfigurator().config.getBoolean("sell-max-64-per-click-in-shop")) {
                 maxStackSize = Math.min(inInventory / priceOfOne, newItem.getMaxStackSize());
-            else maxStackSize = inInventory / priceOfOne;
-
+            } else {
+                maxStackSize = inInventory / priceOfOne;
+            }
 
             finalStackSize = (int) maxStackSize;
             if (finalStackSize > amount) {
@@ -330,45 +409,38 @@ public class XPWarsInventory implements Listener {
             }
         }
 
-        ItemStack materialItem = itemSpawnerType.getStack(price);
-        if (event.hasProperties()) {
-            for (ItemProperty property : event.getProperties()) {
-                if (property.hasName()) {
-                    BedwarsApplyPropertyToBoughtItem applyEvent = new BedwarsApplyPropertyToBoughtItem(game, player,
-                            newItem, property.getReader(player).convertToMap());
-                    Main.getInstance().getServer().getPluginManager().callEvent(applyEvent);
+        ItemStack materialItem = type.getStack(price);
+        if (event.hasPlayerInInventory(materialItem)) {
+            if (event.hasProperties()) {
+                for (ItemProperty property : event.getProperties()) {
+                    if (property.hasName()) {
+                        BedwarsApplyPropertyToBoughtItem applyEvent = new BedwarsApplyPropertyToBoughtItem(game, player,
+                                newItem, property.getReader(player).convertToMap());
+                        Main.getInstance().getServer().getPluginManager().callEvent(applyEvent);
 
-                    newItem = applyEvent.getStack();
+                        newItem = applyEvent.getStack();
+                    }
                 }
             }
-        }
 
-        if (mapReader.getBoolean("use-levels", false)) {
-            if (levelAmount >= price) {
-                player.setLevel(levelAmount - price);
-                Map<Integer, ItemStack> notFit = event.buyStack(newItem);
-                if (!notFit.isEmpty())
-                    notFit.forEach((i, stack) -> player.getLocation().getWorld().dropItem(player.getLocation(), stack));
-                if (!Main.getConfigurator().config.getBoolean("removePurchaseMessages", false))
-                    player.sendMessage(i18nc("buy_succes", game.getCustomPrefix()).replace("%item%",
-                            getNameOrCustomNameOfItem(newItem)).replace("%material%", price + " " + itemSpawnerType.getItemName()));
-            } else if (!Main.getConfigurator().config.getBoolean("removePurchaseMessages", false))
-                player.sendMessage(i18nc("buy_failed", game.getCustomPrefix()).replace("%item%", amount + "x " + getNameOrCustomNameOfItem(newItem))
-                        .replace("%material%", price + " " + itemSpawnerType.getItemName()));
-            return;
-        } else if (event.hasPlayerInInventory(materialItem)) {
             event.sellStack(materialItem);
             Map<Integer, ItemStack> notFit = event.buyStack(newItem);
-            if (!notFit.isEmpty())
+            if (!notFit.isEmpty()) {
                 notFit.forEach((i, stack) -> player.getLocation().getWorld().dropItem(player.getLocation(), stack));
-            if (!Main.getConfigurator().config.getBoolean("removePurchaseMessages", false))
-                player.sendMessage(i18nc("buy_succes", game.getCustomPrefix()).replace("%item%",
-                        getNameOrCustomNameOfItem(newItem)).replace("%material%", price + " " + itemSpawnerType.getItemName()));
-            return;
-        } else if (!Main.getConfigurator().config.getBoolean("removePurchaseMessages", false))
-            player.sendMessage(i18nc("buy_failed", game.getCustomPrefix()).replace("%item%", amount + "x " + getNameOrCustomNameOfItem(newItem))
-                    .replace("%material%", price + " " + itemSpawnerType.getItemName()));
+            }
 
+            if (!Main.getConfigurator().config.getBoolean("removePurchaseMessages", false)) {
+                player.sendMessage(i18nc("buy_succes", game.getCustomPrefix()).replace("%item%", amount + "x " + getNameOrCustomNameOfItem(newItem))
+                        .replace("%material%", price + " " + type.getItemName()));
+            }
+            Sounds.playSound(player, player.getLocation(),
+                    Main.getConfigurator().config.getString("sounds.on_item_buy"), Sounds.ENTITY_ITEM_PICKUP, 1, 1);
+        } else {
+            if (!Main.getConfigurator().config.getBoolean("removePurchaseMessages", false)) {
+                player.sendMessage(i18nc("buy_failed", game.getCustomPrefix()).replace("%item%", amount + "x " + getNameOrCustomNameOfItem(newItem))
+                        .replace("%material%", price + " " + type.getItemName()));
+            }
+        }
     }
 
     private void handleUpgrade(ShopTransactionEvent event) {
@@ -383,15 +455,17 @@ public class XPWarsInventory implements Listener {
         String itemName = upgradeMapReader.getString("shop-name", "UPGRADE");
 
         int price = event.getPrice();
-        int levelAmount = player.getLevel();
         boolean sendToAll = false;
         boolean isUpgrade = true;
         ItemStack materialItem = itemSpawnerType.getStack(price);
 
-        if (mapReader.getBoolean("use-levels", false) || event.hasPlayerInInventory(materialItem)) {
+        if (event.hasPlayerInInventory(materialItem)) {
+            event.sellStack(materialItem);
             for (MapReader mapEntity : entities) {
                 String configuredType = mapEntity.getString("type");
-                assert configuredType != null;
+                if (configuredType == null) {
+                    return;
+                }
 
                 UpgradeStorage upgradeStorage = UpgradeRegistry.getUpgrade(configuredType);
                 if (upgradeStorage != null) {
@@ -402,9 +476,9 @@ public class XPWarsInventory implements Listener {
                     double addLevels = mapEntity.getDouble("add-levels",
                             mapEntity.getDouble("levels", 0) /* Old configuration */);
                     /* You shouldn't use it in entities */
-                    if (mapEntity.containsKey("shop-name"))
+                    if (mapEntity.containsKey("shop-name")) {
                         itemName = mapEntity.getString("shop-name");
-
+                    }
                     sendToAll = mapEntity.getBoolean("notify-team", false);
 
                     List<Upgrade> upgrades = new ArrayList<>();
@@ -473,13 +547,6 @@ public class XPWarsInventory implements Listener {
                             Sounds.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
                 }
             }
-            if (event.hasPlayerInInventory(materialItem)) {
-                event.sellStack(materialItem);
-                return;
-            } else if (levelAmount >= price) {
-                player.setLevel(levelAmount - price);
-                return;
-            }
         } else {
             if (!Main.getConfigurator().config.getBoolean("removePurchaseMessages", false)) {
                 player.sendMessage(i18nc("buy_failed", game.getCustomPrefix()).replace("%item%", "UPGRADE").replace("%material%",
@@ -487,5 +554,4 @@ public class XPWarsInventory implements Listener {
             }
         }
     }
-
 }
