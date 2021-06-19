@@ -81,7 +81,7 @@ public class Configurator {
         checkOrSetConfig(modify, "features.games-gui", false);
         checkOrSetConfig(modify, "features.action-bar-messages", false);
         checkOrSetConfig(modify, "features.permission-to-join-game", false);
-        checkOrSetConfig(modify, "features.placeholderapi", false);
+        checkOrSetConfig(modify, "features.placeholder-api", false);
         checkOrSetConfig(modify, "features.specials", false);
         checkOrSetConfig(modify, "features.kits", false);
         checkOrSetConfig(modify, "features.hide-enemy-nametags", false);
@@ -172,11 +172,11 @@ public class Configurator {
         checkOrSetConfig(modify, "specials.portable-shop.duration", 15);
         checkOrSetConfig(modify, "specials.portable-shop.baby", false);
 
-        checkOrSetConfig(modify, "placeholderapi.waiting", "&aWaiting...");
-        checkOrSetConfig(modify, "placeholderapi.starting", "&eArena is starting in %time%!");
-        checkOrSetConfig(modify, "placeholderapi.running", "&cRunning! Time left: %time%");
-        checkOrSetConfig(modify, "placeholderapi.end-celebration", "&9Game ended!");
-        checkOrSetConfig(modify, "placeholderapi.rebuilding", "&7Rebuilding...");
+        checkOrSetConfig(modify, "placeholder-api.state.waiting", "&aWaiting...");
+        checkOrSetConfig(modify, "placeholder-api.state.starting", "&eArena is starting in %time%!");
+        checkOrSetConfig(modify, "placeholder-api.state.running", "&cRunning! Time left: %time%");
+        checkOrSetConfig(modify, "placeholder-api.state.end-celebration", "&9Game ended!");
+        checkOrSetConfig(modify, "placeholder-api.state.rebuilding", "&7Rebuilding...");
 
         checkOrSetConfig(modify, "kits.messages.not-enough-score", "&cNot enough score to use this kit!");
         checkOrSetConfig(modify, "kits.messages.not-enough-vault", "&cNot enough money to buy this kit!");
@@ -193,7 +193,7 @@ public class Configurator {
         checkOrSetConfig(modify, "kits.settings.inventory-type", "CHEST");
 
         checkOrSetConfig(modify,"kits.list",
-                Map.of("example_kit", Map.of(
+                Map.of("example-kit", Map.of(
                         "", "")));
 
         saveConfig();

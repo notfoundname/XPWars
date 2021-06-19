@@ -1,4 +1,4 @@
-package io.github.notfoundname.xpwars.inventories;
+package io.github.notfoundname.xpwars.kit;
 
 import io.github.notfoundname.xpwars.XPWars;
 import io.github.notfoundname.xpwars.utils.KitUtils;
@@ -34,7 +34,7 @@ public class KitSelectionInventory implements Listener {
     private SimpleInventories menu;
     private Options options;
     private List<Player> openedForPlayers = new ArrayList<>();
-    private HashMap<Player, String> selectedKit = new HashMap<>();
+    private HashMap<UUID, String> selectedKit = new HashMap<>();
     XPWars plugin;
 
     public KitSelectionInventory(XPWars plugin) {
@@ -114,17 +114,17 @@ public class KitSelectionInventory implements Listener {
         SimpleInventories menu = new SimpleInventories(options);
         FormatBuilder builder = new FormatBuilder();
 
-        List<HashMap<String, Object>> kits = (List<HashMap<String, Object>>)
-                XPWars.getConfigurator().config.get("kits.list");
-        assert kits != null;
+        KitUtils.updateKits();
 
-        kits.forEach(kit -> openedForPlayers.forEach(player ->
-                builder.add(StackParser.parse(kit.get("display-icon")))
-                        .set("kit-items", StackParser.parseAll((Collection<Object>) kit.get("items")))
-                        .set("kit-price", Integer.parseInt(kit.get("price").toString().split(":")[0]))
-                        .set("kit-price-type", kit.get("price").toString().split(":")[1].toLowerCase())
-                        .set("kit-name", kit.get("name"))
-                        .set("kit-give-on-respawn", kit.get("give-on-respawn"))));
+        KitUtils.getKits().values().forEach(kit ->
+                openedForPlayers.forEach(player ->
+                        builder.add(kit.getDisplayIcon())
+                                .set("kit-items", kit.getItems())
+                                .set("kit-price", kit.getPrice())
+                                .set("kit-price-type", kit.getPriceType())
+                                .set("kit-name", kit.getName())
+                                .set("kit-give-on-respawn", kit.isGivenOnRespawn())
+                                .set("kit-respawn-cooldown", kit.getRespawnCooldown())));
 
         menu.load(builder);
         menu.generateData();
@@ -165,9 +165,9 @@ public class KitSelectionInventory implements Listener {
                     break;
             }
             if (pass) {
-                if (selectedKit.containsKey(player))
-                    selectedKit.remove(player);
-                selectedKit.put(player, reader.getString("kit-name"));
+                if (selectedKit.containsKey(player.getUniqueId()))
+                    selectedKit.remove(player.getUniqueId());
+                selectedKit.put(player.getUniqueId(), reader.getString("kit-name"));
                 XPWarsUtils.xpwarsLog(player, XPWars.getConfigurator().config.getString("kits.messages.selected"));
             }
             repaint();
@@ -179,11 +179,11 @@ public class KitSelectionInventory implements Listener {
     public void onGameStart(BedwarsGameStartedEvent event) {
         event.getGame().getConnectedPlayers().forEach(player -> {
             if (selectedKit.containsKey(player)) {
-                KitUtils.Kit kit = KitUtils.getKit(selectedKit.get(player));
+                Kit kit = KitUtils.getKit(selectedKit.get(player));
                 if (kit.getPriceType().equalsIgnoreCase("vault")
                         && XPWars.withdrawPlayer(player, kit.getPrice()))
                     KitUtils.giveKit(player, kit);
-                if (!kit.giveOnRespawn())
+                if (!kit.isGivenOnRespawn())
                     selectedKit.remove(player);
             }
         });

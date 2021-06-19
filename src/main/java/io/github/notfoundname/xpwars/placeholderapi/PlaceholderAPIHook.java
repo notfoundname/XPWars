@@ -11,6 +11,8 @@ import org.screamingsandals.bedwars.game.GamePlayer;
 
 import io.github.notfoundname.xpwars.XPWars;
 
+import java.math.BigInteger;
+
 public class PlaceholderAPIHook extends me.clip.placeholderapi.expansion.PlaceholderExpansion {
 
     private XPWars plugin;
@@ -66,10 +68,14 @@ public class PlaceholderAPIHook extends me.clip.placeholderapi.expansion.Placeho
                     case "state":
                         if (status == GameStatus.WAITING && game.getMinPlayers() <= game.countConnectedPlayers())
                             return ChatColor.translateAlternateColorCodes('&',
-                                    XPWars.getConfigurator().config.getString("placeholderapi.STARTING", "starting")
+                                    XPWars.getConfigurator().config.getString("placeholder-api.state.STARTING", "null")
                                             .replace("%left%", game.getFormattedTimeLeft()));
                         return ChatColor.translateAlternateColorCodes('&',
-                                XPWars.getConfigurator().config.getString("placeholderapi." + status.name(), "null"));
+                                XPWars.getConfigurator().config.getString("placeholder-api.state." + status.name(), "null"));
+                    case "bedstate":
+                        return ChatColor.translateAlternateColorCodes('&',
+                                XPWars.getConfiguration().getString("placeholder-api.bedstate." +
+                                        (team.isTargetBlockExists() ? "bedExists" : "bedLost"), "null"));
                     default:
                         return "";
                 }
@@ -89,10 +95,10 @@ public class PlaceholderAPIHook extends me.clip.placeholderapi.expansion.Placeho
                 case "stateformatted":
                     if (status == GameStatus.WAITING && game.getMinPlayers() <= game.countConnectedPlayers())
                         return ChatColor.translateAlternateColorCodes('&',
-                                XPWars.getConfigurator().config.getString("placeholderapi.STARTING", "starting")
+                                XPWars.getConfigurator().config.getString("placeholder-api.state.STARTING", "null")
                                         .replace("%left%", game.getFormattedTimeLeft()));
                     return ChatColor.translateAlternateColorCodes('&',
-                            XPWars.getConfigurator().config.getString("placeholderapi." + status.name(), "null"));
+                            XPWars.getConfigurator().config.getString("placeholder-api.state." + status.name(), "null"));
                 case "timeleft":
                     return game.getFormattedTimeLeft();
                 case "timepassed":

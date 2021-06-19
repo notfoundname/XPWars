@@ -288,6 +288,7 @@ public class XPWarsInventory implements Listener {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void loadDefault(SimpleInventories format) {
         format.purgeData();
         YamlConfiguration configuration = new YamlConfiguration();

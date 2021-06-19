@@ -4,19 +4,19 @@ import io.github.notfoundname.xpwars.commands.GamesCommand;
 import io.github.notfoundname.xpwars.commands.JoinSortedCommand;
 import io.github.notfoundname.xpwars.commands.XPWarsCommand;
 import io.github.notfoundname.xpwars.inventories.GamesInventory;
-import io.github.notfoundname.xpwars.inventories.KitSelectionInventory;
+import io.github.notfoundname.xpwars.kit.KitSelectionInventory;
 import io.github.notfoundname.xpwars.inventories.XPWarsInventory;
 import io.github.notfoundname.xpwars.listener.ActionBarMessageListener;
 import io.github.notfoundname.xpwars.listener.LevelSystemListener;
 import io.github.notfoundname.xpwars.placeholderapi.PlaceholderAPIHook;
 import io.github.notfoundname.xpwars.special.listener.RegisterSpecialListeners;
+import io.github.notfoundname.xpwars.utils.KitUtils;
 import io.github.notfoundname.xpwars.utils.XPWarsUtils;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import io.github.notfoundname.xpwars.listener.EnemyHideNametagsListener;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -37,13 +37,6 @@ public class XPWars extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-
-        if (Main.getInstance() == null) {
-            Bukkit.getServer().getLogger().warning("Addon won't start without ScreamingBedwars.");
-            Bukkit.getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
-
         instance = this;
 
         new XPWarsCommand();
@@ -83,6 +76,7 @@ public class XPWars extends JavaPlugin implements Listener {
             new EnemyHideNametagsListener();
 
         if (configurator.config.getBoolean("features.kits")) {
+            KitUtils.updateKits();
             kitSelectionInventory = new KitSelectionInventory(this);
             if (Main.isVault()) {
                 try {
@@ -117,6 +111,10 @@ public class XPWars extends JavaPlugin implements Listener {
         return instance.configurator.config;
     }
 
+    public static FileConfiguration getKitOwnersConfiguration() {
+        return instance.configurator.kitConfig;
+    }
+
     public static XPWars getInstance() {
         return instance;
     }
@@ -135,15 +133,6 @@ public class XPWars extends JavaPlugin implements Listener {
 
     public static float getVersion() {
         return Float.parseFloat(XPWars.getInstance().getDescription().getVersion().replace("-SNAPSHOT", ""));
-    }
-
-    public static boolean depositPlayer(Player player, double coins) {
-        if (Main.isVault()) {
-            try {
-                EconomyResponse response = instance.economy.depositPlayer(player, coins);
-                return response.transactionSuccess();
-            } catch (Throwable ignored) { }
-        } return false;
     }
 
     public static boolean withdrawPlayer(Player player, double coins) {

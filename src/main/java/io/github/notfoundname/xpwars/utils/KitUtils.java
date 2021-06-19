@@ -1,8 +1,8 @@
 package io.github.notfoundname.xpwars.utils;
 
 import io.github.notfoundname.xpwars.XPWars;
+import io.github.notfoundname.xpwars.kit.Kit;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.lib.sgui.utils.StackParser;
 
 import javax.annotation.Nullable;
@@ -12,17 +12,21 @@ public class KitUtils {
 
     private static HashMap<String, Kit> kitMap;
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "a"})
     public static void updateKits() {
-        XPWars.getConfigurator().config.getMapList("kits.list").forEach(map ->
-                kitMap.put( (String) map.get("name"), new Kit(
-                        (String) map.get("name"),
-                        StackParser.parse(map.get("kit-icon")),
-                        StackParser.parseAll((Collection<Object>) map.get("items")),
-                        (int) map.get("price"),
-                        (String) map.get("price-type"),
-                        (boolean) map.get("return-on-respawn")
-                )));
+        kitMap.clear();
+        for (String kitName : XPWars.getConfiguration().getConfigurationSection("kits.list").getKeys(false)) {
+            kitMap.put(kitName, new Kit(
+                    kitName,
+                    StackParser.parse(XPWars.getConfiguration().get
+                            ("kits.list." + kitName + ".icon", "BARRIER;1;Your kit icon is broken")),
+                    StackParser.parseAll((Collection<Object>) XPWars.getConfiguration().get
+                            ("kits.list." + kitName + ".items", "BARRIER;1;Your kit list is broken")),
+                    XPWars.getConfiguration().getInt("kits.list." + kitName + ".price", 0),
+                    XPWars.getConfiguration().getString("kits.list." + kitName + ".price-type", "score"),
+                    XPWars.getConfiguration().getBoolean("kits.list." + kitName + ".return-on-respawn", false),
+                    XPWars.getConfiguration().getInt("kits.list." + kitName + ".respawn-cooldown", 30)));
+        }
     }
 
     public static HashMap<String, Kit> getKits() {
@@ -42,54 +46,12 @@ public class KitUtils {
         XPWars.getConfigurator().kitConfig.set(player.getUniqueId().toString(), kit);
     }
 
-    public static boolean hasBoughtKit(Player player, Kit kit) {
+    public static boolean isOwnKit(Player player, Kit kit) {
         return false;
     }
 
-    public static boolean hasBoughtKit(Player player, String kitName) {
+    public static boolean isOwnKit(Player player, String kitName) {
         return false;
-    }
-
-    public static class Kit {
-
-        private String name, priceType;
-        private int price;
-        private ItemStack icon;
-        private List<ItemStack> items;
-        private boolean giveOnRespawn;
-
-        public Kit(String name, ItemStack icon, List<ItemStack> items, int price, String priceType, boolean giveOnRespawn) {
-            this.name = name;
-            this.icon = icon;
-            this.items = items;
-            this.price = price;
-            this.priceType = priceType;
-            this.giveOnRespawn = giveOnRespawn;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public ItemStack getIcon() {
-            return icon;
-        }
-
-        public List<ItemStack> getItems() {
-            return items;
-        }
-
-        public int getPrice() {
-            return price;
-        }
-
-        public String getPriceType() {
-            return priceType;
-        }
-
-        public boolean giveOnRespawn() {
-            return giveOnRespawn;
-        }
     }
 
 }
