@@ -2,7 +2,6 @@ package io.github.notfoundname.xpwars.commands;
 
 import java.util.Collections;
 import java.util.List;
-
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
