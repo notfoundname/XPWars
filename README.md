@@ -1,5 +1,3 @@
-# XPWars [![Build Status](https://ci.screamingsandals.org/job/XPWars/badge/icon)](https://ci.screamingsandals.org:443/job/XPWars/)
-Addon for ScreamingBedwars that adds something probably useful.
-<br />- [Spigot](https://www.spigotmc.org/resources/addon-xpwars.76895/)
-<br />- [Wiki](https://github.com/notfoundname/XPWars/wiki/)
-<br />- [Discord](https://discord.gg/4xB54Ts)
+![xpwars](https://user-images.githubusercontent.com/48317169/142013510-365f7947-1bd6-4309-b96e-8722ab9bb5d0.png)
+
+<br />[Discord](https://discord.gg/4xB54Ts)
