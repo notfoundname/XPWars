@@ -1,0 +1,8 @@
+name: XPWars
+version: '${version}'
+main: io.github.notfoundname.xpwars.XPWars
+api-version: 1.13
+depend: [ BedWars ]
+authors: [ notfoundname ]
+description: Addon for ScreamingBedwars
+website: https://github.com/notfoundname/XPWars

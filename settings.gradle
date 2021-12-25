@@ -1,1 +1,16 @@
+pluginManagement {
+    repositories {
+        maven {
+            url = "https://repo.screamingsandals.org/public/"
+        }
+        gradlePluginPortal()
+    }
+}
+
 rootProject.name = 'XPWars'
+
+include(':XPWars-API')
+project(':XPWars-API').projectDir = file('api')
+
+include(':XPWars')
+project(':XPWars').projectDir = file('plugin')

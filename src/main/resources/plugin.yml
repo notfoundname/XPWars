@@ -1,9 +1,0 @@
-name: XPWars
-author: 'notfoundname'
-main: io.github.notfoundname.xpwars.XPWars
-version: '1.6-SNAPSHOT'
-apiVersion: 1.16
-
-load: POSTWORLD
-depends: ['BedWars']
-softDepends: ['PlaceholderAPI', 'Vault']

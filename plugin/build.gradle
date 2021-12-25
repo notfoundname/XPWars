@@ -1,0 +1,12 @@
+repositories {
+    maven { url = 'https://repo.screamingsandals.org/public/' }
+}
+
+dependencies {
+    compileOnly spigot()
+    compileOnly 'org.screamingsandals.bedwars:BedWars-API:0.2.20'
+    compileOnly 'org.screamingsandals.bedwars:BedWars:0.2.20'
+
+    implementation 'org.spongepowered:configurate-yaml:4.1.2'
+    implementation project(":XPWars-API")
+}
