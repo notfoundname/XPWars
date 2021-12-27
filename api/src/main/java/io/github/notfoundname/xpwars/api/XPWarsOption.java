@@ -2,12 +2,16 @@ package io.github.notfoundname.xpwars.api;
 
 public enum XPWarsOption {
 
+    XPWARS_VERSION("xpwars_version", 1),
+
     FEATURES_PERMANENT_ACTION_BAR_MESSAGES("features.permanent_action_bar_message", false),
     FEATURES_GAMES_GUI("features.games_gui", false),
     FEATURES_HIDE_ENEMY_NAMETAGS("features.hide_enemy_nametags", false),
     FEATURES_KITS("features.kits", false),
     FEATURES_LEVEL_SYSTEM("features.level_system", false),
     FEATURES_MORE_SPECIAL_ITEMS("features.more_special_items", false),
+    FEATURES_GAME_VOTING("features.game_voting", false),
+    FEATURES_SCREAMINGLIB_SIDEBAR("features.screaminglib_sidebar", false),
 
     FEATURES_PERMANENT_ACTION_BAR_MESSAGES_MESSAGE_IN_LOBBY(FEATURES_PERMANENT_ACTION_BAR_MESSAGES.path + ".message_in_lobby", "Your team: %team_colored% ( %team_players% / %team_maxplayers% )"),
     FEATURES_PERMANENT_ACTION_BAR_MESSAGES_MESSAGE_IN_GAME(FEATURES_PERMANENT_ACTION_BAR_MESSAGES.path + ".message_in_game", "Your team: %bed% %team_colored% ( %team_players% / %team_maxplayers% )"),
@@ -32,6 +36,11 @@ public enum XPWarsOption {
     FEATURES_KITS_INVENTORY_ITEMS_ON_ROW(FEATURES_KITS.path + ".inventory.items_on_row", 9),
     FEATURES_KITS_INVENTORY_SHOW_PAGE_NUMBERS(FEATURES_KITS.path + ".inventory.show_page_numbers", false),
     FEATURES_KITS_INVENTORY_INVENTORY_TYPE(FEATURES_KITS.path + ".inventory.inventory_type", "CHEST"),
+
+    FEATURES_GAME_VOTING_LOBBY_WORLD(FEATURES_GAME_VOTING.path + ".lobby_world", "world"),
+    FEATURES_GAME_VOTING_LOBBY_COUNTDOWN(FEATURES_GAME_VOTING.path + ".lobby_countdown", 60),
+
+
     ;
 
 

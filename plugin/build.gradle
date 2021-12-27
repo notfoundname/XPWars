@@ -9,4 +9,7 @@ dependencies {
 
     implementation 'org.spongepowered:configurate-yaml:4.1.2'
     implementation project(":XPWars-API")
+
+    implementation 'org.screamingsandals.lib:sidebar-bukkit:2.0.1-SNAPSHOT'
+    annotationProcessor 'org.screamingsandals.lib:annotation:2.0.1-SNAPSHOT'
 }
