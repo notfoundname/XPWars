@@ -1,28 +1,42 @@
 plugins {
-    id 'org.screamingsandals.plugin-builder' version '1.0.49'
+    id "com.github.johnrengelman.shadow" version "${SHADOWJAR_VERSION}" apply false
 }
 
-defaultTasks 'clean', 'screamCompile'
+defaultTasks "clean", "build"
 
 allprojects {
-    group = 'io.github.notfoundname'
-    version = '2.0-SNAPSHOT'
+    group = "com.notfoundname.xpwars"
+    version = XPWARS_VERSION
 }
 
 subprojects {
-    apply plugin: 'org.screamingsandals.plugin-builder'
-
-    enableShadowPlugin()
+    apply plugin: "java"
 
     repositories {
         mavenCentral()
+        mavenLocal()
+
+        maven { url "https://jitpack.io" }
+        maven { url "https://papermc.io/repo/repository/maven-public/" }
+        maven { url "https://repo.extendedclip.com/content/repositories/placeholderapi/" }
+        maven { url "https://repo.screamingsandals.org/public" }
     }
 
-    sourceCompatibility = 11
+    dependencies {
+        compileOnly "com.destroystokyo.paper:paper-api:" + PAPER_VERSION
+        compileOnly "org.screamingsandals.bedwars:BedWars:" + SCREAMINGBEDWARS_VERSION
+        compileOnly "org.screamingsandals.bedwars:BedWars-API:" + SCREAMINGBEDWARS_VERSION
 
-    compileJava.options.encoding = 'UTF-8'
+        compileOnly "org.screamingsandals.lib:sidebar-bukkit:" + SCREAMINGLIB_VERSION
+    }
+
+    compileJava.options.encoding = "UTF-8"
+
     tasks.withType(JavaCompile) {
-        options.encoding = 'UTF-8'
+        options.encoding = "UTF-8"
+    }
+
+    java {
+        toolchain.languageVersion.set(JavaLanguageVersion.of(11))
     }
 }
-

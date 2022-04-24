@@ -1,15 +1,17 @@
-repositories {
-    maven { url = 'https://repo.screamingsandals.org/public/' }
+import org.apache.tools.ant.filters.ReplaceTokens
+
+plugins {
+    id "com.github.johnrengelman.shadow"
 }
 
 dependencies {
-    compileOnly spigot()
-    compileOnly 'org.screamingsandals.bedwars:BedWars-API:0.2.20'
-    compileOnly 'org.screamingsandals.bedwars:BedWars:0.2.20'
-
-    implementation 'org.spongepowered:configurate-yaml:4.1.2'
+    implementation "org.spongepowered:configurate-gson:" + CONFIGURATE_VERSION
+    implementation "org.screamingsandals.lib:sidebar-bukkit:" + SCREAMINGLIB_VERSION
     implementation project(":XPWars-API")
-
-    implementation 'org.screamingsandals.lib:sidebar-bukkit:2.0.1-SNAPSHOT'
-    annotationProcessor 'org.screamingsandals.lib:annotation:2.0.1-SNAPSHOT'
 }
+
+processResources {
+    filter(ReplaceTokens, tokens: ["version": XPWARS_VERSION])
+}
+
+tasks.build.dependsOn tasks.shadowJar
