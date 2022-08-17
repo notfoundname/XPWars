@@ -6,8 +6,8 @@ It replaces default currency system. I mean, when you pick up a bronze or anythi
 <br />It also does some other things like buyable kits, game inventories ect.
 
 ## Requirements
-- Paper 1.9.4 - 1.18.2
-- ScreamingBedwars 0.2.23
+- Paper ≥ 1.9.4
+- ScreamingBedwars ≥ 0.2.23
 - PlaceholderAPI (optional)
 
 ## Support

@@ -1,17 +1,12 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
-plugins {
-    id "com.github.johnrengelman.shadow"
+processResources {
+    filter ReplaceTokens, tokens: [ 'version': BEDWARS_VERSION ]
 }
 
 dependencies {
-    implementation "org.spongepowered:configurate-gson:" + CONFIGURATE_VERSION
-    implementation "org.screamingsandals.lib:sidebar-bukkit:" + SCREAMINGLIB_VERSION
+    compileOnly "com.github.MilkBowl:VaultAPI:${VAULT_VERSION}"
+    compileOnly "org.screamingsandals.bedwars:BedWars:${BEDWARS_VERSION}"
+    implementation "net.elytrium:elytrium-java-commons:${ELYTRIUM_JAVA_COMMONS_VERSION}"
     implementation project(":XPWars-API")
 }
-
-processResources {
-    filter(ReplaceTokens, tokens: ["version": XPWARS_VERSION])
-}
-
-tasks.build.dependsOn tasks.shadowJar

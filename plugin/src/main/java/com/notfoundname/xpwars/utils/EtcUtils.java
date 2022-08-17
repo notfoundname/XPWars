@@ -18,5 +18,9 @@ public class EtcUtils {
 
     public static List<String> playerNames = XPWars.getInstance().getServer().getOnlinePlayers().stream()
             .map(Player::getName).collect(Collectors.toList());
+    
+    public static void sendActionBar(Player player, String message) {
+
+    }
 
 }

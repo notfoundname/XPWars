@@ -1,5 +1,5 @@
 name: XPWars
-version: '@version@'
+version: "@version@"
 main: com.notfoundname.xpwars.XPWars
 api-version: 1.13
 depend: [ BedWars ]

@@ -1,42 +1,47 @@
 plugins {
-    id "com.github.johnrengelman.shadow" version "${SHADOWJAR_VERSION}" apply false
+    // id "com.github.gmazzo.buildconfig" version "${BUILDCONFIG_VERSION}" apply false
+    id "org.screamingsandals.plugin-builder" version "${SCREAMING_PLUGIN_BUILDER_VERSION}" apply false
 }
-
-defaultTasks "clean", "build"
 
 allprojects {
     group = "com.notfoundname.xpwars"
-    version = XPWARS_VERSION
+    version = "${BEDWARS_VERSION}"
 }
+
+defaultTasks "clean", "screamCompile"
 
 subprojects {
     apply plugin: "java"
+    apply plugin: "org.screamingsandals.plugin-builder"
 
     repositories {
         mavenCentral()
-        mavenLocal()
-
-        maven { url "https://jitpack.io" }
-        maven { url "https://papermc.io/repo/repository/maven-public/" }
-        maven { url "https://repo.extendedclip.com/content/repositories/placeholderapi/" }
-        maven { url "https://repo.screamingsandals.org/public" }
+        maven { url "https://jitpack.io/" }
+        maven { url "https://maven.elytrium.net/repo/" }
+        maven { url "https://repo.codemc.org/repository/maven-public/"  }
+        maven { url "https://repo.extendedclip.com/content/repositories/placeholderapi/"  }
+        maven { url "https://repo.screamingsandals.org/public/" }
+        maven { url "https://repo.papermc.io/repository/maven-public/" }
     }
 
     dependencies {
-        compileOnly "com.destroystokyo.paper:paper-api:" + PAPER_VERSION
-        compileOnly "org.screamingsandals.bedwars:BedWars:" + SCREAMINGBEDWARS_VERSION
-        compileOnly "org.screamingsandals.bedwars:BedWars-API:" + SCREAMINGBEDWARS_VERSION
+        compileOnly "com.destroystokyo.paper:paper-api:${PAPER_VERSION}"
+        implementation "org.bstats:bstats-bukkit:${BSTATS_VERSION}"
+    }
 
-        compileOnly "org.screamingsandals.lib:sidebar-bukkit:" + SCREAMINGLIB_VERSION
+    enableShadowPlugin()
+    shadowJar {
+        relocate "org.bstats", "com.notfoundname.xpwars.thirdparty.bstats"
+        relocate "net.elytrium", "com.notfoundname.xpwars.thirdparty.elytrium"
+
+        if (System.getenv("BUILD_NUMBER") != null) {
+            archiveClassifier.set(System.getenv("BUILD_NUMBER"))
+        } else {
+            archiveClassifier.set("null")
+        }
     }
 
     compileJava.options.encoding = "UTF-8"
 
-    tasks.withType(JavaCompile) {
-        options.encoding = "UTF-8"
-    }
-
-    java {
-        toolchain.languageVersion.set(JavaLanguageVersion.of(11))
-    }
+    sourceCompatibility = "1.8"
 }

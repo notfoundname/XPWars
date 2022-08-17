@@ -1,0 +1,3 @@
+dependencies {
+    compileOnly "org.screamingsandals.bedwars:BedWars-API:${BEDWARS_VERSION}"
+}

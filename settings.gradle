@@ -1,7 +1,11 @@
-rootProject.name = 'XPWars'
-
-include 'XPWars-API', 'XPWars-Plugin'
-
-project(':XPWars-Plugin').projectDir = file('plugin')
-project(':XPWars-API').projectDir = file('api')
-
+pluginManagement {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+        maven { url "https://repo.screamingsandals.org/public/" }
+    }
+}
+rootProject.name = "XPWars"
+include "XPWars-API", "XPWars-Plugin"
+project(":XPWars-Plugin").projectDir = file("plugin")
+project(":XPWars-API").projectDir = file("api")
