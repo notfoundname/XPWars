@@ -13,7 +13,7 @@ import org.screamingsandals.bedwars.lib.sgui.listeners.InventoryListener;
 
 import java.io.File;
 
-public final class XPWars extends JavaPlugin implements XPWarsAPI, Listener {
+public final class XPWars extends JavaPlugin implements XPWarsAPI {
     private static XPWars instance;
 
     @Override
