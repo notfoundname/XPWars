@@ -1,28 +1,37 @@
 package com.notfoundname.xpwars;
 
 import com.notfoundname.xpwars.api.XPWarsAPI;
-import com.notfoundname.xpwars.utils.XPWarsUpdater;
+import net.elytrium.java.commons.updates.UpdatesChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.lib.sgui.listeners.InventoryListener;
-import java.io.IOException;
 
-public final class XPWars extends JavaPlugin implements XPWarsAPI {
+import java.io.File;
+
+public final class XPWars extends JavaPlugin implements XPWarsAPI, Listener {
     private static XPWars instance;
+
     @Override
     public void onEnable() {
         instance = this;
+        File configFile = new File(getDataFolder(), "config.yml");
+        XPWarsConfig.IMP.reload(configFile);
 
         InventoryListener.init(this);
 
-        try {
-            getLogger().info(XPWarsUpdater.getLatestVersionFromSpigot());
-        } catch (IOException e) {
-            e.printStackTrace();
+        getLogger().info(getDescription().getName() + " version " + getDescription().getVersion() + " by " + getDescription().getAuthors());
+
+        getLogger().info("Checking for updates...");
+        if (!UpdatesChecker.checkVersionByURL("https://api.spigotmc.org/legacy/update.php?resource=76895",
+                this.getDescription().getVersion())) {
+            getLogger().info("New version of XPWars is available!\nDownload at https://www.spigotmc.org/resources/76895/");
+        } else {
+            getLogger().info("No updates found.");
         }
     }
 
