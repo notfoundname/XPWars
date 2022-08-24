@@ -5,7 +5,6 @@ import net.elytrium.java.commons.updates.UpdatesChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -13,7 +12,7 @@ import org.screamingsandals.bedwars.lib.sgui.listeners.InventoryListener;
 
 import java.io.File;
 
-public final class XPWars extends JavaPlugin implements XPWarsAPI {
+public class XPWars extends JavaPlugin implements XPWarsAPI {
     private static XPWars instance;
 
     @Override

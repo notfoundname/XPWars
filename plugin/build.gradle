@@ -1,14 +1,14 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
 processResources {
-    filter ReplaceTokens, tokens: [ 'version': XPWARS_VERSION ]
+    filter ReplaceTokens, tokens: [ "version" : XPWARS_VERSION ]
 }
 
 dependencies {
-    annotationProcessor 'org.screamingsandals.lib:annotation:2.0.1-SNAPSHOT'
+    annotationProcessor "org.screamingsandals.lib:annotation:${SCREAMINGLIB_VERSION}"
     compileOnly "com.github.MilkBowl:VaultAPI:${VAULT_VERSION}"
     compileOnly "org.screamingsandals.bedwars:BedWars:${BEDWARS_VERSION}"
     implementation "net.elytrium:elytrium-java-commons:${ELYTRIUM_JAVA_COMMONS_VERSION}"
-    implementation 'org.screamingsandals.lib:sidebar-bukkit:2.0.1-SNAPSHOT'
+    implementation "org.screamingsandals.lib:sidebar-bukkit:${SCREAMINGLIB_VERSION}"
     implementation project(":XPWars-API")
 }
